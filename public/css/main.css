@@ -1,0 +1,281 @@
+:root {
+    --primary-color: #00395F; /* Bleu */
+    --secondary-color: #ffffff; /* Jaune */
+    --background-color: #00395F;
+    --bg-dark-design: #222222; 
+    --text-color-design: #005792;
+    --btnprimary-color: #005792;
+    --bg-gray-primary: #A4A9B7BF;
+    --bg-gray-primary2: #DBE6EC;
+    --text-color-gray: #3B3B3B;
+    --inputbg:rgb(59 130 246 / 0.5); /* Gris clair */
+}
+
+body{
+    background-color: var(--background-color);
+}
+
+.btn-design{
+    background-color: var(--btnprimary-color) !important;
+}
+
+.bg-white-design{
+    background-color: var(--bg-gray-primary);
+}
+
+
+.bg-gray-primary2{
+    background: var(--bg-gray-primary2);
+}
+
+.inputbg{
+    background-color: var(--inputbg);
+}
+
+.text-color-design{
+    color: var(--text-color-design);
+}
+
+.profil-photo{
+    width:40px;
+    height:40px;
+    border-radius: 100%;
+}
+
+.text-color-gray{
+    color: var(--text-color-gray);
+}
+
+.custmer-toggle{
+    padding : 23px !important;
+}
+
+.mt-34{
+    margin-top: -35px;
+}
+
+.mt-64{
+    margin-top: -64px;
+}
+
+.bg-dark-design{
+    background-color: var(--bg-dark-design);
+}
+
+.bg-design{
+    background-color: var(--btnprimary-color);
+}
+
+.bg-gray-primary{
+    background-color: var(--bg-gray-primary);
+}
+
+.rounded-20{
+    border-radius: 20px;
+}
+
+
+
+.margin-nav-coustum .active a{
+    background-color: var(--bg-gray-primary) !important;
+}
+
+.active i{
+    color: var(--text-color-design);
+}
+
+
+.logo-size{
+    width: 123px;
+    position: absolute;
+    margin-top: 83px;
+}
+
+.margin-nav-coustum{
+    margin-top: 65px !important;
+}
+
+.bilan-mobile{
+    display: none;
+}
+
+
+.margin-right-8{
+    margin-right: 1rem;
+}
+
+.margin-bottom-8{
+    margin-bottom: 1rem;
+}
+
+.bg-transparent{
+    background: transparent !important;
+}
+
+.font-small {
+    font-size: 7 !important;
+    font-weight: 200 !important;
+}
+
+.font-bolder-24 {
+    font-size: 20px !important;
+}
+
+.i-w-80 {
+    font-size: 34px;
+    font-weight: 200 !important;
+    border-radius: 7px;
+}
+
+.padding-bottom-0 {
+    padding-bottom: 0px !important;
+}
+
+.display-flex {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.width-86 {
+    width: 86px;
+}
+
+.width-devise-card-stat {
+    width: 207px;
+}
+
+.mrg-t-8 {
+    position: relative;
+    top: -15px !important;
+}
+
+
+.width-custom-btn-deconn {
+    width: 150px;
+}
+
+.search_icon{
+    right: 5rem;
+    top:5rem ;
+}
+
+.-left-25{
+    left: -5.9rem;
+}
+
+.-left-15{
+    left: -1.9rem;
+}
+
+.-left-10{
+    left: -1rem;
+}
+
+.border-bottom-design{
+    border-bottom : solid 3px var(--text-color-design);
+}
+
+.h-120{
+    height: 26rem;
+}
+
+.w-200{
+    width: 59rem;
+}
+
+.w-input-200{
+    width: 100vw;
+}
+
+.image-publicite{
+    width: 250px;
+    height: 184px;
+    gap: 0px;
+    border-radius: 16px 0px 0px 0px;
+    opacity: 0px;
+}
+
+.img-produit{
+    width: 36px;
+    height: 36px;
+    gap: 0px;
+    border-radius: 4px 0px 0px 0px;
+}
+
+.minim-svg{
+    width: 14px;
+height: 14px;
+padding: 1.17px;
+gap: 0px;
+
+margin-top: 10px;
+
+}
+
+.-t-15{
+    top: -8.5rem;
+}
+
+
+
+.costum_close{
+    border-radius: 70%;
+    top: 3px;
+    right: 3px;
+    z-index: 1987612812989012;
+}
+
+.selected_bord_body {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.5s ease-out;
+}
+
+.selected_bord_body.open {
+    height: auto; /* Permet à l'élément d'être affiché à sa hauteur naturelle */
+}
+
+.selected_bord.active {
+    background-color: #005792; /* Couleur de fond active */
+    color: #fff; /* Couleur de texte active */
+}
+
+.selected_bord {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+
+
+@media screen and (max-width:468px) {
+
+    .bilan-pc{
+        display: none !important;
+    }
+
+    .bilan-mobile{
+        display: grid;
+    }
+    
+}
+/* Sidebar Responsive */
+@media screen and (max-width: 768px) {
+    .sidebar-menu {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar-menu.active {
+        transform: translateX(0);
+    }
+    
+    .main.active {
+        margin-left: 0 !important;
+    }
+}
+
+@media screen and (min-width: 769px) {
+    .sidebar-menu {
+        transform: translateX(0);
+    }
+}

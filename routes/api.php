@@ -1,0 +1,67 @@
+<?php
+
+use App\Http\Controllers\Api\ApiNotificationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\PanierController;
+use App\Http\Controllers\Api\PubliciteController;
+use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ApiHistoriqueController;
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
+Route::post('register', [UserController::class, 'createUser']);
+Route::post('login', [UserController::class, 'loginUser']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [UserController::class, 'logout']); // Ajout de la route de déconnexion
+
+    Route::post('ajouter-au-panier', [PanierController::class, 'addToCart']);
+    Route::delete('remove-from-cart/delete/{achat_id}', [PanierController::class, 'removeFromCart']);
+    Route::post('/cart/remove-selected', [PanierController::class, 'removeSelectedItems']);
+    Route::post('update-quantity', [PanierController::class, 'updateQuantity']);
+    Route::post('close-shop', [PanierController::class, 'closeShop']);
+
+    Route::post('numero-beneficiere', [PanierController::class, 'updateBeneficiere']);
+
+    Route::post('deletecompte', [UserController::class, 'dropUserInTable']);
+    Route::get('panier-product', [PanierController::class, 'fetchAchats']);
+    Route::get('faq', [FaqController::class, 'faqapp']);
+    Route::get('/notifications', [ApiNotificationController::class, 'index']);
+    Route::post('/notifications/makereadall', [ApiNotificationController::class, 'makereadAll']);
+    Route::delete('/notifications/delete/{notificationId}', [ApiNotificationController::class, 'deleteAtId']);
+    Route::delete('/notifications/deleteall', [ApiNotificationController::class, 'deleteAll']);
+    Route::post('/notifications/makeread/{id}', [ApiNotificationController::class, 'markAsRead']);
+
+    Route::get('/products', [ProductController::class, 'getProductsByCategory']);
+    Route::get('/all-products', [ProductController::class, 'index']);
+    Route::get('/products/{id}', [ProductController::class, 'show']);
+
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/subcategories/{categoryId}', [CategoryController::class, 'getSubcategories']);
+
+    Route::post('/update-password', [UserController::class, 'updatePassword']);
+    Route::post('/update-profile-image', [UserController::class, 'updateProfileImage']);
+    Route::post('/update-name', [UserController::class, 'updateName']);
+    Route::post('/update-email', [UserController::class, 'updateEmail']);
+    Route::post('/update-number', [UserController::class, 'updateNumber']);
+    Route::get('/historiques', [ApiHistoriqueController::class, 'index'])->name('historiques.index');
+
+    Route::post('/create-transaction', [PanierController::class, 'createTransaction']);
+});
+
+// Dans web.php ou api.php selon votre besoin
+Route::get('paiement/success', [PanierController::class, 'successPage'])->name('paiement.success');
+
+Route::get('/payment-callback', [PanierController::class, 'closePaiement'])->name('payment.callback');
+Route::post('/send-otp', [UserController::class, 'sendOtp']);
+Route::get('/publicites', [PubliciteController::class, 'show']);
+Route::post('/send-otp-mdp', [UserController::class, 'sendOtpMdp']);
+Route::post('/verify-otp', [UserController::class, 'verifyOtp']);
+Route::post('/verify-otp-compte', [UserController::class, 'verifyOtpCompte']);
+Route::post('/update-password-mdp', [UserController::class, 'updatePasswordMdp']);

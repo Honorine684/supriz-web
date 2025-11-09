@@ -1,0 +1,1 @@
+inscription : http://127.0.0.1:8000/api/register?nom=adelin&prenom=adelin&email=exemple@gmail.com&numero=98768911&password=admin&password_confirmation=admin
