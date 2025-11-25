@@ -8,6 +8,7 @@
 .env
 .env.backup
 .env.production
+.env.local
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
@@ -18,3 +19,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+supriz-deploy.tar.gz
+test_auth.php
+.DS_Store
+*.swp
+*.swo
+*~

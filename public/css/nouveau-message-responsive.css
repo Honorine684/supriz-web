@@ -1,0 +1,474 @@
+/* ========================================
+   RESPONSIVE STYLES - NOUVEAU MESSAGE
+   Clean and organized responsive rules
+======================================== */
+
+/* ========================================
+   TABLET & BELOW (< 992px)
+======================================== */
+@media (max-width: 992px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        padding: 15px 20px;
+        gap: 20px;
+    }
+
+    .preview-card {
+        min-height: 400px;
+    }
+}
+
+/* ========================================
+   MOBILE (< 768px)
+======================================== */
+@media (max-width: 768px) {
+    /* Force proper viewport */
+    html,
+    body {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+    }
+
+    body {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+        padding: 15px;
+        grid-template-columns: 1fr;
+    }
+
+    .nav,
+    .nav-right {
+        display: none;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .logo img {
+        height: 38px;
+    }
+
+    /* Main Container */
+    .main-container {
+        padding: 12px;
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    /* Form Card */
+    .form-card {
+        width: 100%;
+        border-radius: 16px;
+    }
+
+    .form-header {
+        padding: 20px 15px;
+        border-radius: 16px 16px 0 0;
+    }
+
+    .form-title {
+        font-size: 18px;
+    }
+
+    .form-subtitle {
+        font-size: 13px;
+    }
+
+    .form-body {
+        padding: 18px 15px 20px;
+        width: 100%;
+    }
+
+    /* Categories */
+    .categories-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .categories-grid {
+        gap: 10px;
+    }
+
+    .category-item {
+        width: 65px;
+        flex-shrink: 0;
+        padding: 8px 4px;
+    }
+
+    .category-icon-wrapper {
+        width: 40px;
+        height: 40px;
+    }
+
+    .category-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .category-label {
+        font-size: 10px;
+        margin-top: 4px;
+    }
+
+    /* Form Elements */
+    .form-group {
+        width: 100%;
+        margin-bottom: 16px;
+    }
+
+    .form-label {
+        font-size: 13px;
+    }
+
+    .form-control,
+    input,
+    textarea {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px !important; /* Prevent iOS zoom */
+        border-radius: 12px;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    /* Upload Zone */
+    .upload-zone {
+        width: 100%;
+        padding: 30px 15px;
+        border-radius: 14px;
+    }
+
+    .media-preview img,
+    .media-preview video {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 12px;
+    }
+
+    /* Date Picker */
+    .date-badge {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+
+    /* Music Section */
+    .music-section {
+        width: 100%;
+    }
+
+    .music-header {
+        padding: 16px;
+    }
+
+    .music-header-left h3 {
+        font-size: 13px;
+    }
+
+    .music-header-left p {
+        font-size: 12px;
+    }
+
+    .music-list.open {
+        max-height: none;
+    }
+
+    .music-item {
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .music-icon-wrapper {
+        width: 48px;
+        height: 48px;
+    }
+
+    .music-icon {
+        width: 26px;
+        height: 26px;
+    }
+
+    .music-title {
+        font-size: 14px;
+    }
+
+    .music-duration {
+        font-size: 12px;
+    }
+
+    /* Buttons */
+    .btn-submit,
+    .btn-preview-mobile {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 12px;
+    }
+
+    .btn-preview-mobile {
+        display: block;
+        margin-top: 14px;
+    }
+
+    /* Hide desktop preview */
+    .preview-card {
+        display: none;
+    }
+
+    /* Modal */
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 18px;
+    }
+
+    .modal-header {
+        padding: 18px 15px;
+    }
+
+    .modal-body {
+        padding: 15px;
+    }
+
+    .preview-content {
+        min-height: 250px;
+    }
+
+    /* Generate Button - Mobile Responsive */
+    .btn-generate-preview {
+        position: relative !important;
+        width: 100% !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        margin: 0 !important;
+        padding: 16px !important;
+        font-size: 16px !important;
+    }
+
+    /* Preview Content Wrapper */
+    .preview-content > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px 12px !important;
+    }
+
+    /* Gift Animation Container */
+    .gift-animation img {
+        max-width: 200px !important;
+        height: auto !important;
+    }
+
+    /* Share Interface - Mobile Responsive */
+    .qrcode-container {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .qrcode-container canvas,
+    .qrcode-container img {
+        max-width: 180px !important;
+        max-height: 180px !important;
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    /* Share Link Text - Simple paragraph display */
+    #shareLink {
+        font-size: 13px !important;
+        color: #111827 !important;
+        word-break: break-all !important;
+        overflow-wrap: break-word !important;
+    }
+
+    /* Copy Button */
+    button[onclick="copyShareLink()"] {
+        flex-shrink: 0 !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        padding: 10px !important;
+    }
+
+    button[onclick="copyShareLink()"] svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    /* Copy Success Message */
+    #copySuccess {
+        font-size: 12px !important;
+        margin-top: 8px !important;
+    }
+
+    /* Share Interface Container - Force responsive width */
+    .preview-content > div,
+    .mobile-preview-content > div {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px 15px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Action Buttons Row */
+    button[onclick^="shareMessage"],
+    button[onclick="downloadQRCode()"] {
+        flex: 1 !important;
+        padding: 14px 12px !important;
+        font-size: 14px !important;
+        gap: 8px !important;
+    }
+
+    button[onclick^="shareMessage"] svg,
+    button[onclick="downloadQRCode()"] svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+}
+
+/* ========================================
+   SMALL MOBILE (< 480px)
+======================================== */
+@media (max-width: 480px) {
+    /* Extra spacing adjustments */
+    .main-container {
+        padding: 10px;
+    }
+
+    .form-header {
+        padding: 18px 12px;
+    }
+
+    .form-title {
+        font-size: 17px;
+    }
+
+    .form-subtitle {
+        font-size: 12px;
+    }
+
+    .form-body {
+        padding: 16px 12px;
+    }
+
+    /* Smaller categories */
+    .category-item {
+        width: 58px;
+        padding: 6px 3px;
+    }
+
+    .category-icon-wrapper {
+        width: 36px;
+        height: 36px;
+    }
+
+    .category-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .category-label {
+        font-size: 9px;
+        margin-top: 3px;
+    }
+
+    /* Form controls */
+    .form-control {
+        padding: 13px;
+        font-size: 16px !important;
+    }
+
+    /* Buttons */
+    .btn-submit,
+    .btn-preview-mobile {
+        padding: 14px;
+        font-size: 15px;
+    }
+
+    /* Music items */
+    .music-item {
+        padding: 12px;
+    }
+
+    .music-icon-wrapper {
+        width: 44px;
+        height: 44px;
+    }
+
+    .btn-play-music,
+    .btn-delete-music {
+        width: 34px;
+        height: 34px;
+    }
+
+    /* Generate Button - Small Mobile */
+    .btn-generate-preview {
+        padding: 14px !important;
+        font-size: 15px !important;
+    }
+
+    /* Gift Animation - Small Mobile */
+    .gift-animation img {
+        max-width: 160px !important;
+    }
+
+    /* QR Code - Small Mobile */
+    .qrcode-container canvas,
+    .qrcode-container img {
+        max-width: 150px !important;
+        max-height: 150px !important;
+    }
+
+    /* Share Link - Small Mobile */
+    #shareLink {
+        font-size: 12px !important;
+    }
+
+    /* Copy Button - Small Mobile */
+    button[onclick="copyShareLink()"] {
+        padding: 8px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+    }
+
+    button[onclick="copyShareLink()"] svg {
+        width: 16px !important;
+        height: 16px !important;
+    }
+}
+
+/* ========================================
+   TOUCH DEVICES
+======================================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Minimum touch target sizes */
+    .category-item,
+    .music-item,
+    .btn-submit,
+    .btn-preview-mobile,
+    button {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+
+    /* Prevent zoom on inputs */
+    input,
+    textarea,
+    select,
+    .form-control {
+        font-size: 16px !important;
+    }
+}

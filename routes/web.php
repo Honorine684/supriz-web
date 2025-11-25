@@ -15,7 +15,9 @@
     use App\Http\Controllers\ParametreController;
     use App\Http\Controllers\DepensesController;
     use App\Http\Controllers\FaqController;
-    
+    use App\Http\Controllers\MusiqueController;
+    use App\Http\Controllers\MessageController;
+
 
     Route::middleware(['auth'])->group(function () {
     Route::get('/', [HomeController::class, 'home' ])->name('home');
@@ -42,7 +44,9 @@
     // Route pour mettre à jour une sous-catégorie existante
     Route::put('/categorie/{id}', [CategorieController::class, 'update'])->name('categorie.update');
     Route::post('/add-categorie', [CategorieController::class, 'store'])->name('add.categorie');
-    Route::post('/categorie/{id}/image', [CategorieController::class, 'updateCategoryImage'])->name('categorie.updateImage');
+    Route::post('/categorie/{id}/toggle-status', [CategorieController::class, 'toggleStatus'])->name('categorie.toggleStatus');
+    Route::post('/categorie/{id}/update-image', [CategorieController::class, 'updateSuprizImage'])->name('categorie.updateSuprizImage');
+    Route::post('/categorie/{id}/update-icone', [CategorieController::class, 'updateSuprizIcone'])->name('categorie.updateSuprizIcone');
     Route::get('/parametre', [ParametreController::class, 'parametre'])->name('parametre');
     Route::post('/updateprofil', [ParametreController::class, 'updateprofil'])->name('updateprofil');
     Route::get('/faq', [FaqController::class, 'faq'])->name('faq');
@@ -62,8 +66,23 @@
     Route::post('/depenses/store', [DepensesController::class, 'store'])->name('depenses.store');
     Route::get('/faq/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
     Route::put('/faq/update/{id}', [FaqController::class, 'update'])->name('faq.update');
-    
+
+    // Routes pour les musiques
+    Route::get('/musique', [MusiqueController::class, 'index'])->name('musique');
+    Route::post('/musique/store', [MusiqueController::class, 'store'])->name('musique.store');
+    Route::put('/musique/{id}', [MusiqueController::class, 'update'])->name('musique.update');
+    Route::post('/musique/{id}/toggle-status', [MusiqueController::class, 'toggleStatus'])->name('musique.toggleStatus');
+    Route::delete('/musique/{id}', [MusiqueController::class, 'destroy'])->name('musique.destroy');
 });
+
+// Route publique pour la page d'accueil
+Route::get('/welcome', [MessageController::class, 'welcome'])->name('welcome');
+
+// Routes publiques pour les messages surprise
+Route::get('/nouveau-message', [MessageController::class, 'index'])->name('nouveau.message');
+Route::post('/message/store', [MessageController::class, 'store'])->name('message.store');
+Route::get('/message/{slug}', [MessageController::class, 'show'])->name('message.show');
+Route::get('/api/musiques/categorie/{categorieId}', [MusiqueController::class, 'getMusiquesByCategorie'])->name('musiques.by.categorie');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);

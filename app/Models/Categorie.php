@@ -19,7 +19,6 @@ class Categorie extends Model
     protected $fillable = [
         'name_id_categories', // 'h', 'f', 'e', 's'
         'libelle_homme_categories', // Descriptive label for the category
-        'image', // Image or GIF for the category
     ];
     
     /**

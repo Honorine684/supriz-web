@@ -60,14 +60,14 @@
         @endif
 
 
-        <form class="mt-5" action="{{ isset($sousCategorie) ? route('categorie.update', $sousCategorie->id) : route('add.categorie') }}" method="POST">
+        <form class="mt-5" action="{{ isset($sousCategorie) ? route('categorie.update', $sousCategorie->id) : route('add.categorie') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if(isset($sousCategorie))
                 @method('PUT')
             @endif
-        
+
             <h2 class="font-bold mb-4">{{ isset($sousCategorie) ? 'Modifier' : 'Ajouter' }} une Sous-Catégorie</h2>
-        
+
             <div class="mb-4">
                 <label for="categorie" class="block text-sm font-medium text-gray-700 mb-2">Catégorie</label>
                 <select name="categorie"  id="categorie" class="block w-full p-2 border rounded">
@@ -81,7 +81,7 @@
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
             </div>
-        
+
             <div class="mb-4">
                 <label for="sousCategorie" class="block text-sm font-medium text-gray-700 mb-2">Sous-Catégorie</label>
                 <input type="text" name="sousCategorie" id="sousCategorie" class="block w-full p-2 border rounded"
@@ -91,7 +91,21 @@
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
             </div>
-        
+
+            <div class="mb-4" id="placeholder_field" style="display: none;">
+                <label for="placeholder_texte" class="block text-sm font-medium text-gray-700 mb-2">
+                    Placeholder du titre (Optionnel)
+                    <span class="text-xs text-gray-500">- Texte affiché dans le champ titre du formulaire</span>
+                </label>
+                <input type="text" name="placeholder_texte" id="placeholder_texte" class="block w-full p-2 border rounded"
+                       placeholder="Ex: Joyeux anniversaire John Doe"
+                       value="{{ isset($sousCategorie) ? $sousCategorie->placeholder_texte : '' }}">
+                <p class="text-xs text-gray-500 mt-1">Ce texte sera affiché comme exemple dans le champ "Titre du message"</p>
+                @error('placeholder_texte')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
             <div class="mb-4">
                 <label for="prix" class="block text-sm font-medium text-gray-700 mb-2">Prix (Optionnel)</label>
                 <input type="number" name="prix" id="prix" class="block w-full p-2 border rounded"
@@ -101,7 +115,93 @@
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
             </div>
-        
+
+            <!-- Champ icône -->
+            <div class="mb-4">
+                <label for="icone" class="block text-sm font-medium text-gray-700 mb-2">Icône (Optionnel - 40x40px recommandé)</label>
+
+                <!-- Zone de drag and drop pour icône -->
+                <div id="iconeDropZone" style="border: 2px dashed #d1d5db; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s; background-color: #fafbfc;">
+                    <input type="file" name="icone" id="icone" accept="image/*" class="hidden">
+
+                    <div id="iconeDropContent">
+                        <div style="width: 60px; height: 60px; margin: 0 auto 12px; border-radius: 50%; background-color: #E5F2FF; display: flex; align-items: center; justify-content: center;">
+                            <svg style="width: 30px; height: 30px; color: #005792;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <p style="font-size: 14px; color: #374151; font-weight: 500; margin-bottom: 4px;">Cliquez ou glissez votre icône</p>
+                        <p style="font-size: 12px; color: #6b7280;">PNG, JPG, SVG - Max 2MB</p>
+                    </div>
+
+                    <!-- Prévisualisation de l'icône -->
+                    <div id="iconePreview" class="hidden">
+                        <img id="iconePreviewImg" src="" alt="Aperçu icône" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 3px solid #005792; margin: 0 auto 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p id="iconeFileName" style="font-size: 13px; color: #374151; font-weight: 500; margin-bottom: 12px;"></p>
+                        <button type="button" id="removeIcone" style="padding: 6px 16px; font-size: 13px; color: white; background-color: #dc2626; border: none; border-radius: 6px; cursor: pointer; font-weight: 500;">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+
+                @if(isset($sousCategorie) && $sousCategorie->icone)
+                <div style="margin-top: 12px; padding: 12px; background-color: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 12px;">
+                    <img src="{{ asset('storage/' . $sousCategorie->icone) }}" alt="Icône actuelle" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 2px solid #005792;">
+                    <div>
+                        <p style="font-size: 12px; color: #6b7280; margin-bottom: 2px;">Icône actuelle</p>
+                        <p style="font-size: 13px; color: #374151; font-weight: 500;">Uploadez une nouvelle icône pour remplacer</p>
+                    </div>
+                </div>
+                @endif
+
+                @error('icone')
+                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <!-- Champ image pour Supriz seulement -->
+            <div class="mb-4" id="imageField" style="display: none;">
+                <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Image/GIF (pour Supriz)</label>
+
+                <!-- Zone de drag and drop -->
+                <div id="dropZone" style="border: 2px dashed #d1d5db; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                    <div id="dropZoneContent">
+                        <svg class="mx-auto text-gray-400" style="width: 48px; height: 48px;" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div style="margin-top: 16px; display: flex; justify-content: center; align-items: center; font-size: 14px; color: #6b7280;">
+                            <label for="image" style="cursor: pointer; font-weight: 600; color: #2563eb;">
+                                <span>Cliquez pour sélectionner</span>
+                            </label>
+                            <p style="padding-left: 4px;">ou glissez-déposez</p>
+                        </div>
+                        <p style="font-size: 12px; color: #6b7280; margin-top: 8px;">PNG, JPG, GIF jusqu'à 5MB</p>
+                    </div>
+
+                    <!-- Prévisualisation de l'image -->
+                    <div id="imagePreview" class="hidden">
+                        <img id="previewImg" src="" alt="Prévisualisation" style="margin: 0 auto; max-height: 192px; border-radius: 8px;">
+                        <p id="fileName" style="margin-top: 8px; font-size: 14px; color: #374151; font-weight: 500;"></p>
+                        <button type="button" id="removeImage" style="margin-top: 8px; font-size: 14px; color: #dc2626; font-weight: 500; background: none; border: none; cursor: pointer;">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+
+                <input type="file" name="image" id="image" accept="image/*,.gif" class="hidden">
+
+                @if(isset($sousCategorie) && $sousCategorie->image)
+                <div style="margin-top: 0.75rem; padding: 0.5rem; background-color: #f9fafb; border-radius: 6px;">
+                    <p style="font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem;">Image actuelle :</p>
+                    <img src="{{ asset('storage/' . $sousCategorie->image) }}" alt="Image actuelle" style="width: 64px; height: 64px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db;">
+                </div>
+                @endif
+
+                @error('image')
+                    <span class="text-red-500 text-sm mt-2 block">{{ $message }}</span>
+                @enderror
+            </div>
+
             <div>
                 <input type="submit" name="submit"
                        class="w-full relative right-0 rounded p-2 text-white cursor-pointer btn-design mt-1"
@@ -110,98 +210,219 @@
         </form>
 
 
-        <!-- Section pour gérer les images des catégories principales -->
-        <div class="mt-8 mb-6">
-            <h2 class="font-bold mb-4">Gérer les Images des Catégories Principales</h2>
+        <!-- Section Catégories Supriz Prédéfinies -->
+        <div style="margin-top: 3rem; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Catégories Supriz Prédéfinies</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                @foreach($categories as $categorie)
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow">
-                    <h3 class="font-semibold text-lg mb-3">{{ $categorie->libelle_homme_categories }}</h3>
-
-                    <!-- Image actuelle -->
-                    @if($categorie->image)
-                    <div class="mb-3">
-                        <img src="{{ asset('storage/' . $categorie->image) }}" alt="{{ $categorie->libelle_homme_categories }}" class="w-full h-32 object-cover rounded">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                @foreach($suprizPredefinies as $supriz)
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5F2FF;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.125rem; font-weight: bold; color: #005792;">{{ $supriz->name_sous_categories }}</h3>
+                        <form action="{{ route('categorie.toggleStatus', $supriz->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit"
+                                    style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $supriz->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $supriz->is_active ? '#166534' : '#991b1b' }};">
+                                {{ $supriz->is_active ? '✓ Actif' : '✗ Inactif' }}
+                            </button>
+                        </form>
                     </div>
-                    @else
-                    <div class="mb-3 bg-gray-100 h-32 flex items-center justify-center rounded">
-                        <span class="text-gray-400">Aucune image</span>
-                    </div>
-                    @endif
 
-                    <!-- Formulaire d'upload -->
-                    <form action="{{ route('categorie.updateImage', $categorie->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="mb-2">
-                            <input type="file" name="image" accept="image/*,.gif" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required>
+                    <!-- Icône -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+                        <p style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icône</p>
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            @if($supriz->icone)
+                                <img src="{{ asset('storage/' . $supriz->icone) }}"
+                                     alt="Icône {{ $supriz->name_sous_categories }}"
+                                     style="width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 3px solid #005792; box-shadow: 0 2px 8px rgba(0, 87, 146, 0.2);">
+                            @else
+                                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #E5F2FF 0%, #B8DAFF 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px dashed #005792;">
+                                    <svg style="width: 24px; height: 24px; color: #005792;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            @endif
+                            <form action="{{ route('categorie.updateSuprizIcone', $supriz->id) }}" method="POST" enctype="multipart/form-data" style="flex: 1;">
+                                @csrf
+                                <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #005792; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                    <input type="file" name="icone" accept="image/*" onchange="this.form.submit()" style="display: none;">
+                                    Choisir une icône
+                                </label>
+                            </form>
                         </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
-                            {{ $categorie->image ? 'Modifier l\'image' : 'Ajouter une image' }}
-                        </button>
-                    </form>
+                    </div>
+
+                    <!-- Image principale -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+                        <p style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Image principale</p>
+
+                        @if($supriz->image)
+                        <div style="position: relative; margin-bottom: 12px;">
+                            <img src="{{ asset('storage/' . $supriz->image) }}"
+                                 alt="{{ $supriz->name_sous_categories }}"
+                                 style="width: 100%; height: 180px; object-fit: cover; border-radius: 10px; border: 2px solid #005792; box-shadow: 0 2px 8px rgba(0, 87, 146, 0.15);">
+                        </div>
+                        @else
+                        <div style="margin-bottom: 12px; text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, #fafbfc 0%, #E5F2FF 100%); border-radius: 10px; border: 2px dashed #005792;">
+                            <div style="width: 60px; height: 60px; margin: 0 auto 12px; border-radius: 50%; background-color: #005792; display: flex; align-items: center; justify-content: center;">
+                                <svg style="width: 30px; height: 30px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p style="font-size: 14px; font-weight: 500; color: #005792;">Aucune image</p>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('categorie.updateSuprizImage', $supriz->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #005792; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                <input type="file" name="image" accept="image/*,.gif" onchange="this.form.submit()" style="display: none;">
+                                {{ $supriz->image ? 'Changer l\'image' : 'Ajouter une image' }}
+                            </label>
+                        </form>
+                    </div>
                 </div>
                 @endforeach
             </div>
         </div>
 
 
-        <p class="mt-3 mb-2">Liste des catégories</p>
+        <div style="margin-top: 2rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Liste des sous-catégories</h2>
 
-        <div
-            class="p-3 overflow-x-auto bg-white border border-gray-100 shadow-md rounded-20 shadow-black/5 lg:col-span-2">
-            <table class="w-full">
+            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #005792;">
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Nom</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Catégorie</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Prix</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Icône</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Image</th>
+                            <th style="padding: 1rem 1.5rem; text-align: center; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Statut</th>
+                            <th style="padding: 1rem 1.5rem; text-align: center; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if ($sousCategories && count($sousCategories) > 0)
+                            @foreach ($sousCategories as $sousCategorie)
+                                <tr style="border-bottom: 1px solid #e5e7eb;">
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <span style="font-size: 0.875rem; font-weight: 600; color: #1f2937;">
+                                            {{ $sousCategorie->name_sous_categories }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        @php
+                                            $bgColor = '#E5F2FF';
+                                            $textColor = '#005792';
+                                            if($sousCategorie->categorie->name_id_categories == 'f') {
+                                                $bgColor = '#fce7f3';
+                                                $textColor = '#9f1239';
+                                            } elseif($sousCategorie->categorie->name_id_categories == 'e') {
+                                                $bgColor = '#dcfce7';
+                                                $textColor = '#166534';
+                                            } elseif($sousCategorie->categorie->name_id_categories == 's') {
+                                                $bgColor = '#E5F2FF';
+                                                $textColor = '#005792';
+                                            }
+                                        @endphp
+                                        <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; background-color: {{ $bgColor }}; color: {{ $textColor }};">
+                                            {{ $sousCategorie->categorie->libelle_homme_categories }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <span style="font-size: 0.875rem; font-weight: 500; color: #374151;">
+                                            {{ $sousCategorie->prix ? number_format($sousCategorie->prix, 0, ',', ' ') . ' FCFA' : 'N/A' }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            @if($sousCategorie->icone)
+                                                <img src="{{ asset('storage/' . $sousCategorie->icone) }}"
+                                                     alt="Icône"
+                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 3px solid #005792; box-shadow: 0 2px 6px rgba(0, 87, 146, 0.2);">
+                                            @else
+                                                <div style="width: 50px; height: 50px; background-color: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px dashed #d1d5db;">
+                                                    <svg style="width: 20px; height: 20px; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        @if($sousCategorie->image)
+                                            <div style="display: flex; align-items: center; justify-content: flex-start;">
+                                                <img src="{{ asset('storage/' . $sousCategorie->image) }}"
+                                                     alt="{{ $sousCategorie->name_sous_categories }}"
+                                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #d1d5db; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                            </div>
+                                        @else
+                                            <span style="font-size: 0.75rem; color: #9ca3af; font-style: italic;">Aucune image</span>
+                                        @endif
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem; text-align: center;">
+                                        <form action="{{ route('categorie.toggleStatus', $sousCategorie->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit"
+                                                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; background-color: {{ $sousCategorie->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $sousCategorie->is_active ? '#166534' : '#991b1b' }};"
+                                                    onmouseover="this.style.opacity='0.8'"
+                                                    onmouseout="this.style.opacity='1'">
+                                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ $sousCategorie->is_active ? '#22c55e' : '#ef4444' }};"></span>
+                                                {{ $sousCategorie->is_active ? 'Activé' : 'Désactivé' }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        @php
+                                            $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+                                            $isPredefined = in_array($sousCategorie->name_sous_categories, $categoriesSuprizPredefinies) && $sousCategorie->categorie->name_id_categories == 's';
+                                        @endphp
 
-                <tbody>
-                    @if ($sousCategories)
-
-                        @foreach ($sousCategories as $sousCategorie)
-                            <!-- Continue this pattern for the rest of the rows -->
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                            @if(!$isPredefined)
+                                                <a href="{{ route('categorie.edit', $sousCategorie->id) }}"
+                                                   style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #A4A9B7BF; transition: background-color 0.2s;"
+                                                   onmouseover="this.style.backgroundColor='#8e94a3'"
+                                                   onmouseout="this.style.backgroundColor='#A4A9B7BF'"
+                                                   title="Modifier">
+                                                    <img src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Modifier" style="width: 20px; height: 20px;">
+                                                </a>
+                                                <form action="{{ route('categorie.destroy', $sousCategorie->id) }}"
+                                                      method="POST"
+                                                      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ?')"
+                                                      style="display: inline-block;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #fee2e2; border: none; cursor: pointer; transition: background-color 0.2s;"
+                                                            onmouseover="this.style.backgroundColor='#fecaca'"
+                                                            onmouseout="this.style.backgroundColor='#fee2e2'"
+                                                            title="Supprimer">
+                                                        <img src="{{ asset('/images/svg/delete-left_svgrepo.com.svg') }}" alt="Supprimer" style="width: 20px; height: 20px;">
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span style="font-size: 0.75rem; color: #6b7280; font-style: italic;">Catégorie système</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
                             <tr>
-                                <td class="px-4 py-2 border-b w-60 border-b-gray-50">
-                                    <span class="text-[13px] font-medium text-gray-400">
-                                        {{ $sousCategorie->name_sous_categories }}
-                                    </span>
+                                <td colspan="7" style="padding: 3rem 1.5rem; text-align: center;">
+                                    <p style="color: #6b7280; font-weight: 500; margin-bottom: 0.5rem;">Aucune sous-catégorie disponible</p>
+                                    <p style="color: #9ca3af; font-size: 0.875rem;">Ajoutez votre première sous-catégorie ci-dessus</p>
                                 </td>
-                                <td class="px-4 py-2 border-b w-60 border-b-gray-50">
-                                    <span class="text-[13px] font-medium text-gray-400">{{ $sousCategorie->categorie->libelle_homme_categories }}</span>
-                                </td>
-
-                                <td class="px-4 py-2 border-b w-60 border-b-gray-50">
-                                    <span class="text-[13px] font-medium text-gray-400">{{ $sousCategorie->prix ?? 'N/A' }}</span>
-                                </td>
-
-                                <td class="flex px-4 py-2 ">
-                                    <a href="{{ route('categorie.edit', $sousCategorie->id) }}" class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer">
-                                        <img class="relative top-1" src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Editer">
-                                    </a>
-                                            <form action="{{ route('categorie.destroy', $sousCategorie->id) }}" method="POST" class="text-[13px] font-medium text-gray-400 cursor-pointer">
-                                                @csrf
-                                                @method('DELETE')
-                                                <!-- Cette méthode est utilisée pour les requêtes de suppression -->
-                                                <button type="submit"
-                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette categorie ?')"> <span
-                                                        ><img
-                                                            class="relative top-1"
-                                                            src="{{ asset('/images/svg/delete-left_svgrepo.com.svg') }}"
-                                                            alt=""></span></button>
-                                            </form>
-                                </td>
-
                             </tr>
-                        @endforeach
-                    @else
-                        <p class="text-center">Aucune données disponible</p>
-                    @endif
-
-                    
-                    <!-- Add the remaining rows as needed -->
-                </tbody>
-            </table>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
-        </div>
-
-
 
 
 
@@ -215,15 +436,255 @@
     <script src="{{ asset('js/imagefile.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
     <script>
-        var categorie = document.querySelector("#categorie");
-        categorie.addEventListener("change", () => {
+        document.addEventListener('DOMContentLoaded', function() {
+            var categorie = document.querySelector("#categorie");
             var prix = document.querySelector('#prix');
-            if (categorie.selectedIndex != 4) {
-                prix.disabled = true;  // Désactive le champ
-            } else {
-                prix.disabled = false; // Réactive le champ si l'index est 3
+            var imageField = document.querySelector('#imageField');
+
+            if (!categorie || !prix || !imageField) {
+                console.error('Éléments introuvables');
+                return;
+            }
+
+            function toggleFields() {
+                if (categorie.selectedIndex == 4) { // Supriz
+                    prix.disabled = false;
+                    imageField.style.display = 'block';
+                } else {
+                    prix.disabled = true;
+                    imageField.style.display = 'none';
+                }
+            }
+
+            // Appliquer au chargement de la page
+            toggleFields();
+
+            // Appliquer lors du changement
+            categorie.addEventListener("change", toggleFields);
+
+            // Gestion du drag and drop et prévisualisation d'image
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('image');
+            const dropZoneContent = document.getElementById('dropZoneContent');
+            const imagePreview = document.getElementById('imagePreview');
+            const previewImg = document.getElementById('previewImg');
+            const fileName = document.getElementById('fileName');
+            const removeImageBtn = document.getElementById('removeImage');
+
+            if (!dropZone || !fileInput) {
+                console.error('Zone de drop introuvable');
+                return;
+            }
+
+            // Empêcher les comportements par défaut
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // Mettre en évidence la zone de drop
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                dropZone.style.borderColor = '#3b82f6';
+                dropZone.style.backgroundColor = '#eff6ff';
+            }
+
+            function unhighlight(e) {
+                dropZone.style.borderColor = '#d1d5db';
+                dropZone.style.backgroundColor = 'transparent';
+            }
+
+            // Gérer le drop
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFiles(files);
+                }
+            }
+
+            // Gérer la sélection par clic
+            fileInput.addEventListener('change', function(e) {
+                if (this.files.length > 0) {
+                    handleFiles(this.files);
+                }
+            });
+
+            // Clic sur la zone
+            dropZone.addEventListener('click', function(e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+
+            // Traiter les fichiers
+            function handleFiles(files) {
+                const file = files[0];
+
+                // Vérifier le type de fichier
+                if (!file.type.match('image.*')) {
+                    alert('Veuillez sélectionner une image');
+                    return;
+                }
+
+                // Vérifier la taille (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('L\'image ne doit pas dépasser 5MB');
+                    return;
+                }
+
+                // Afficher la prévisualisation
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    fileName.textContent = file.name;
+                    dropZoneContent.classList.add('hidden');
+                    imagePreview.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Supprimer l'image
+            if (removeImageBtn) {
+                removeImageBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    fileInput.value = '';
+                    previewImg.src = '';
+                    fileName.textContent = '';
+                    dropZoneContent.classList.remove('hidden');
+                    imagePreview.classList.add('hidden');
+                });
+            }
+
+            // Gestion du drag and drop pour l'icône
+            const iconeDropZone = document.getElementById('iconeDropZone');
+            const iconeInput = document.getElementById('icone');
+            const iconeDropContent = document.getElementById('iconeDropContent');
+            const iconePreview = document.getElementById('iconePreview');
+            const iconePreviewImg = document.getElementById('iconePreviewImg');
+            const iconeFileName = document.getElementById('iconeFileName');
+            const removeIconeBtn = document.getElementById('removeIcone');
+
+            if (iconeDropZone && iconeInput) {
+                // Empêcher les comportements par défaut
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    iconeDropZone.addEventListener(eventName, preventDefaults, false);
+                });
+
+                // Mettre en évidence la zone de drop
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    iconeDropZone.addEventListener(eventName, function() {
+                        iconeDropZone.style.borderColor = '#005792';
+                        iconeDropZone.style.backgroundColor = '#E5F2FF';
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    iconeDropZone.addEventListener(eventName, function() {
+                        iconeDropZone.style.borderColor = '#d1d5db';
+                        iconeDropZone.style.backgroundColor = '#fafbfc';
+                    }, false);
+                });
+
+                // Gérer le drop
+                iconeDropZone.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+
+                    if (files.length > 0) {
+                        iconeInput.files = files;
+                        handleIconeFile(files[0]);
+                    }
+                }, false);
+
+                // Gérer la sélection par clic
+                iconeInput.addEventListener('change', function(e) {
+                    if (this.files.length > 0) {
+                        handleIconeFile(this.files[0]);
+                    }
+                });
+
+                // Clic sur la zone
+                iconeDropZone.addEventListener('click', function(e) {
+                    if (!e.target.closest('#iconePreview')) {
+                        iconeInput.click();
+                    }
+                });
+
+                // Traiter le fichier icône
+                function handleIconeFile(file) {
+                    // Vérifier le type de fichier
+                    if (!file.type.match('image.*')) {
+                        alert('Veuillez sélectionner une image');
+                        return;
+                    }
+
+                    // Vérifier la taille (2MB max)
+                    if (file.size > 2 * 1024 * 1024) {
+                        alert('L\'icône ne doit pas dépasser 2MB');
+                        return;
+                    }
+
+                    // Afficher la prévisualisation
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        iconePreviewImg.src = e.target.result;
+                        iconeFileName.textContent = file.name;
+                        iconeDropContent.classList.add('hidden');
+                        iconePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                // Supprimer l'icône
+                if (removeIconeBtn) {
+                    removeIconeBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        iconeInput.value = '';
+                        iconePreviewImg.src = '';
+                        iconeFileName.textContent = '';
+                        iconeDropContent.classList.remove('hidden');
+                        iconePreview.classList.add('hidden');
+                    });
+                }
             }
         });
+
+        // Afficher/masquer le champ placeholder selon la catégorie sélectionnée
+        const categorieSelect = document.getElementById('categorie');
+        const placeholderField = document.getElementById('placeholder_field');
+
+        function togglePlaceholderField() {
+            const selectedValue = categorieSelect.value;
+            if (selectedValue === 's') {
+                placeholderField.style.display = 'block';
+            } else {
+                placeholderField.style.display = 'none';
+            }
+        }
+
+        // Vérifier au chargement de la page
+        togglePlaceholderField();
+
+        // Vérifier lors du changement de sélection
+        categorieSelect.addEventListener('change', togglePlaceholderField);
     </script>
 </body>
 

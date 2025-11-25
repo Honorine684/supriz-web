@@ -15,9 +15,9 @@ class Faq extends Model
 
     // Les attributs qui sont mass assignable
     protected $fillable = [
-        'type_faq',  // Catégorie de la question (supriz, app)
-        'asq',       // Question
-        'response',  // Réponse
+        'type_faq',      // Catégorie de la question (supriz, app)
+        'question_faq',  // Question
+        'reponse_faq',   // Réponse
     ];
 
     // Si tu utilises des timestamps dans ta table, active cette ligne

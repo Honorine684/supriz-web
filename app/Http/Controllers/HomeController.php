@@ -8,6 +8,9 @@ use App\Models\Commandes;
 use App\Models\Bilan;
 use App\Models\Supriz;
 use App\Models\BilanMessageSupriz;
+use App\Models\SousCategorie;
+use App\Models\Categorie;
+use App\Models\Faq;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // Importer la classe DB
 use Carbon\Carbon;
@@ -18,6 +21,14 @@ class HomeController extends Controller
     {
         // Définir la variable active_link
         $active_link = "h";
+
+        // ============ CATÉGORIES SUPRIZ PRÉDÉFINIES ============
+        $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+        $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+        $categoriesSupriz = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
+            ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
+            ->get();
 
         // ============ STATISTIQUES SUPRIZ PAR CATÉGORIE ============
         $categories = ['Mariage', 'Vœux', 'Anniversaire', 'Nouvel an', 'Noël'];
@@ -133,9 +144,13 @@ class HomeController extends Controller
             $data['totals'][] = $monthlyTotals->get($i)->total_sum ?? 0;
         }
 
+        // ============ FAQs ============
+        $faqs = Faq::where('type_faq', 'supriz')->get();
+
         // Passer les variables à la vue
         return view('welcome', compact(
             'active_link',
+            'categoriesSupriz',
             'statsSupriz',
             'nombresAbonnes',
             'nombreClics',
@@ -150,7 +165,8 @@ class HomeController extends Controller
             'ventes',
             'actif',
             'benefices',
-            'data'
+            'data',
+            'faqs'
         ));
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Auth;
 use App\Models\Faq;
 
 
@@ -22,15 +21,15 @@ class FaqController extends Controller
         // Valider les données
         $request->validate([
             'type_faq' => 'required|in:supriz,app',
-            'asq' => 'required|string',
-            'response' => 'required|string',
+            'question_faq' => 'required|string',
+            'reponse_faq' => 'required|string',
         ]);
 
         // Créer une nouvelle FAQ
         Faq::create([
             'type_faq' => $request->input('type_faq'),
-            'asq' => $request->input('asq'),
-            'response' => $request->input('response'),
+            'question_faq' => $request->input('question_faq'),
+            'reponse_faq' => $request->input('reponse_faq'),
         ]);
 
         // Rediriger ou afficher un message de succès
@@ -65,8 +64,8 @@ public function update(Request $request, $id)
 {
     $request->validate([
         'type_faq' => 'required|in:supriz,app',
-        'asq' => 'required|string',
-        'response' => 'required|string',
+        'question_faq' => 'required|string',
+        'reponse_faq' => 'required|string',
     ]);
 
     // Trouver la FAQ à modifier
@@ -75,8 +74,8 @@ public function update(Request $request, $id)
     // Mettre à jour la FAQ
     $faq->update([
         'type_faq' => $request->input('type_faq'),
-        'asq' => $request->input('asq'),
-        'response' => $request->input('response'),
+        'question_faq' => $request->input('question_faq'),
+        'reponse_faq' => $request->input('reponse_faq'),
     ]);
 
     return redirect()->back()->with('success', 'La FAQ a été modifiée avec succès !');

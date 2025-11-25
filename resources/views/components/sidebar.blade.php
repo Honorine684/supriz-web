@@ -44,6 +44,14 @@
             </a>
         </li>
 
+        <li class="mb-1 group @if ($active_link == 'musique') active @endif">
+            <a href="{{ route('musique') }}"
+                class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                <i class="mr-3 text-lg ri-music-2-line"></i> <!-- Icon for Musique -->
+                <span class="text-sm">Musiques</span>
+            </a>
+        </li>
+
         <li class="mb-1 group @if ($active_link == 'r') active @endif">
             <a href="{{ route('rapportJournalier') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">

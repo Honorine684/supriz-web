@@ -14,8 +14,16 @@ class SousCategorie extends Model
     
     protected $fillable = [
         'type_categorie_id',   // Foreign key to 'homme_categories'
-        'name_sous_categories', 
-        'prix',  
+        'name_sous_categories',
+        'placeholder_texte',
+        'prix',
+        'image',
+        'icone',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     /**
@@ -27,5 +35,13 @@ class SousCategorie extends Model
     public function categorie()
     {
         return $this->belongsTo(Categorie::class, 'type_categorie_id');
+    }
+
+    /**
+     * Relation avec les musiques
+     */
+    public function musiques()
+    {
+        return $this->hasMany(Musique::class, 'sous_categorie_id');
     }
 }

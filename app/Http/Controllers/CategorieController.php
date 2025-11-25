@@ -12,10 +12,17 @@ class CategorieController extends Controller
     {
          // Récupérer toutes les sous-catégories avec leur catégorie associée
         $sousCategories = SousCategorie::with('categorie')->get();
-        // Récupérer toutes les catégories principales
-        $categories = Categorie::all();
+
+        // Récupérer les catégories Supriz prédéfinies
+        $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+        $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+
+        $suprizPredefinies = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
+            ->get();
+
         $active_link = "ca";
-        return view('categorie', compact("active_link","sousCategories","categories"));
+        return view('categorie', compact("active_link","sousCategories", "suprizPredefinies"));
     }
 
     /**
@@ -30,7 +37,10 @@ class CategorieController extends Controller
         $request->validate([
             'categorie' => 'required|in:h,f,e,s',
             'sousCategorie' => 'required|string|max:255',
+            'placeholder_texte' => 'nullable|string|max:100',
             'prix' => 'nullable|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'icone' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         // Recherche de la catégorie par 'name_id_categories'
@@ -49,11 +59,26 @@ class CategorieController extends Controller
             return redirect()->back()->with('error', 'Sous-catégorie existe déjà !');
         }
 
+        // Gérer l'upload de l'image
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('sous-categories', 'public');
+        }
+
+        // Gérer l'upload de l'icône
+        $iconePath = null;
+        if ($request->hasFile('icone')) {
+            $iconePath = $request->file('icone')->store('icones-categories', 'public');
+        }
+
         // Créer une nouvelle sous-catégorie
         SousCategorie::create([
             'type_categorie_id' => $categorie->id,
             'name_sous_categories' => $request->sousCategorie,
+            'placeholder_texte' => $request->placeholder_texte,
             'prix' => $request->prix,
+            'image' => $imagePath,
+            'icone' => $iconePath,
         ]);
 
         return redirect()->route('categorie')->with('success', 'Sous-catégorie ajoutée avec succès');
@@ -87,7 +112,10 @@ public function update(Request $request, $id)
     $request->validate([
         'categorie' => 'required|in:h,f,e,s',
         'sousCategorie' => 'required|string|max:255',
+        'placeholder_texte' => 'nullable|string|max:100',
         'prix' => 'nullable|numeric|min:0',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+        'icone' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     ]);
 
     // Recherche de la sous-catégorie à modifier
@@ -98,44 +126,106 @@ public function update(Request $request, $id)
         return redirect()->back()->with('error', 'Catégorie ou Sous-catégorie non trouvée');
     }
 
+    // Gérer l'upload de l'image
+    $imagePath = $sousCategorie->image;
+    if ($request->hasFile('image')) {
+        // Supprimer l'ancienne image si elle existe
+        if ($sousCategorie->image && Storage::exists('public/' . $sousCategorie->image)) {
+            Storage::delete('public/' . $sousCategorie->image);
+        }
+        $imagePath = $request->file('image')->store('sous-categories', 'public');
+    }
+
+    // Gérer l'upload de l'icône
+    $iconePath = $sousCategorie->icone;
+    if ($request->hasFile('icone')) {
+        // Supprimer l'ancienne icône si elle existe
+        if ($sousCategorie->icone && Storage::exists('public/' . $sousCategorie->icone)) {
+            Storage::delete('public/' . $sousCategorie->icone);
+        }
+        $iconePath = $request->file('icone')->store('icones-categories', 'public');
+    }
+
     // Mise à jour de la sous-catégorie
     $sousCategorie->update([
         'type_categorie_id' => $categorie->id,
         'name_sous_categories' => $request->sousCategorie,
+        'placeholder_texte' => $request->placeholder_texte,
         'prix' => $request->prix,
+        'image' => $imagePath,
+        'icone' => $iconePath,
     ]);
 
     return redirect()->route('categorie')->with('success', 'Sous-catégorie mise à jour avec succès');
 }
 
-/**
- * Mettre à jour l'image d'une catégorie principale
- */
-public function updateCategoryImage(Request $request, $id)
+public function toggleStatus($id)
+{
+    $sousCategorie = SousCategorie::find($id);
+
+    if (!$sousCategorie) {
+        return redirect()->back()->with('error', 'Sous-catégorie non trouvée');
+    }
+
+    $sousCategorie->is_active = !$sousCategorie->is_active;
+    $sousCategorie->save();
+
+    $status = $sousCategorie->is_active ? 'activée' : 'désactivée';
+    return redirect()->route('categorie')->with('success', "Sous-catégorie {$status} avec succès");
+}
+
+public function updateSuprizImage(Request $request, $id)
 {
     $request->validate([
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Max 5MB
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
     ]);
 
-    $categorie = Categorie::find($id);
+    $sousCategorie = SousCategorie::find($id);
 
-    if (!$categorie) {
-        return redirect()->back()->with('error', 'Catégorie non trouvée');
+    if (!$sousCategorie) {
+        return redirect()->back()->with('error', 'Sous-catégorie non trouvée');
     }
 
     // Supprimer l'ancienne image si elle existe
-    if ($categorie->image && Storage::exists('public/' . $categorie->image)) {
-        Storage::delete('public/' . $categorie->image);
+    if ($sousCategorie->image && Storage::exists('public/' . $sousCategorie->image)) {
+        Storage::delete('public/' . $sousCategorie->image);
     }
 
     // Uploader la nouvelle image
     if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('categories', 'public');
-        $categorie->image = $imagePath;
-        $categorie->save();
+        $imagePath = $request->file('image')->store('sous-categories', 'public');
+        $sousCategorie->image = $imagePath;
+        $sousCategorie->save();
     }
 
-    return redirect()->route('categorie')->with('success', 'Image de la catégorie mise à jour avec succès');
+    return redirect()->route('categorie')->with('success', 'Image mise à jour avec succès');
+}
+
+public function updateSuprizIcone(Request $request, $id)
+{
+    $request->validate([
+        'icone' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+
+    $sousCategorie = SousCategorie::find($id);
+
+    if (!$sousCategorie) {
+        return redirect()->back()->with('error', 'Sous-catégorie non trouvée');
+    }
+
+    // Supprimer l'ancienne icône si elle existe
+    if ($sousCategorie->icone && Storage::exists('public/' . $sousCategorie->icone)) {
+        Storage::delete('public/' . $sousCategorie->icone);
+    }
+
+    // Uploader la nouvelle icône
+    if ($request->hasFile('icone')) {
+        $iconePath = $request->file('icone')->store('icones-categories', 'public');
+        $sousCategorie->icone = $iconePath;
+        $sousCategorie->save();
+    }
+
+    return redirect()->route('categorie')->with('success', 'Icône mise à jour avec succès');
 }
 
 }
