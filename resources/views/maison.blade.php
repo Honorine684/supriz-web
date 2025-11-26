@@ -351,11 +351,13 @@
                         'Vœux' => ['icon' => '🎁', 'color' => '#dbeafe'],
                         'Anniversaire' => ['icon' => '🎂', 'color' => '#dbeafe'],
                         'Nouvel an' => ['icon' => '🎊', 'color' => '#dbeafe'],
-                        'Noël' => ['icon' => '🎄', 'color' => '#dcfce7']
+                        'Noël' => ['icon' => '🎄', 'color' => '#dcfce7'],
+                        'mots' => ['icon' => '💌', 'color' => '#fef3c7']
                     ];
                 @endphp
 
                 @foreach($statsSupriz as $categorie => $stats)
+                @if(isset($categories[$categorie]))
                 <div class="stat-card">
                     <div class="stat-card-top">
                         <h3 class="stat-title">{{ $categorie }}</h3>
@@ -371,6 +373,7 @@
                         </span>
                     </div>
                 </div>
+                @endif
                 @endforeach
             </div>
 
