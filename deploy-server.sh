@@ -43,7 +43,7 @@ echo ""
 # 4. Installer/mettre à jour les dépendances Composer (si nécessaire)
 if [ -f "composer.lock" ]; then
     echo -e "${YELLOW}📦 Mise à jour des dépendances Composer...${NC}"
-    php ~/composer.phar install --no-dev --optimize-autoloader --no-interaction
+    composer install --no-dev --optimize-autoloader --no-interaction
     echo -e "${GREEN}✅ Dépendances installées${NC}"
     echo ""
 fi
@@ -96,6 +96,7 @@ echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━
 echo ""
 echo -e "${YELLOW}📋 Actions effectuées :${NC}"
 echo "  ✓ Code mis à jour depuis GitLab"
+echo "  ✓ Dépendances Composer installées"
 echo "  ✓ Base de données migrée"
 echo "  ✓ Fichiers publics synchronisés"
 echo "  ✓ Caches nettoyés et optimisés"
