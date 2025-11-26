@@ -169,7 +169,7 @@
                 padding-top: 60px;
                 min-height: 100vh;
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
                 justify-content: center;
             }
 
@@ -191,8 +191,10 @@
 
             .gift-box h3 {
                 font-size: 16px !important;
-                margin-bottom: 20px !important;
-                line-height: 1.3 !important;
+                margin-bottom: 25px !important;
+                line-height: 1.5 !important;
+                word-wrap: break-word !important;
+                overflow-wrap: break-word !important;
             }
 
             .gift-animation {
@@ -327,7 +329,7 @@
             }
 
             .header-logo img {
-                height: 30px;
+                height: 26px;
             }
 
             .header-cta {
@@ -392,7 +394,7 @@
     <!-- Bouton CTA en haut à droite -->
     <div class="header-cta">
         <a href="/" class="cta-button">
-            Surprendre quelqu'un aussi !
+            Suprend quelaun aussi !
         </a>
     </div>
 

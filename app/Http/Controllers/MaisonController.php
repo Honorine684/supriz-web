@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Supriz;
+use App\Models\Message;
 use App\Models\SousCategorie;
 use App\Models\Categorie;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class MaisonController extends Controller
@@ -28,14 +27,25 @@ class MaisonController extends Controller
         $statsSupriz = [];
 
         foreach ($categories as $categorie) {
+            // Récupérer l'ID de la sous-catégorie
+            $sousCategorie = SousCategorie::where('name_sous_categories', $categorie)->first();
+
+            if (!$sousCategorie) {
+                $statsSupriz[$categorie] = [
+                    'total' => 0,
+                    'variation' => 0
+                ];
+                continue;
+            }
+
             // Messages du mois en cours
-            $currentMonth = Supriz::where('nom_categorie_suprise', $categorie)
+            $currentMonth = Message::where('sous_categorie_id', $sousCategorie->id)
                 ->whereMonth('created_at', Carbon::now()->month)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->count();
 
             // Messages du mois précédent
-            $previousMonth = Supriz::where('nom_categorie_suprise', $categorie)
+            $previousMonth = Message::where('sous_categorie_id', $sousCategorie->id)
                 ->whereMonth('created_at', Carbon::now()->subMonth()->month)
                 ->whereYear('created_at', Carbon::now()->subMonth()->year)
                 ->count();
@@ -53,19 +63,19 @@ class MaisonController extends Controller
         // Nombre total d'abonnés (utilisateurs)
         $nombresAbonnes = User::count();
 
-        // Nombre de clics (nombre total de messages Supriz créés ce mois)
-        $nombreClics = Supriz::whereMonth('created_at', Carbon::now()->month)
+        // Nombre de clics (nombre total de messages créés ce mois)
+        $nombreClics = Message::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
 
-        // Clients actifs (utilisateurs ayant créé un message ce mois)
-        $clientsActifs = User::whereHas('supriz', function($query) {
-            $query->whereMonth('created_at', Carbon::now()->month)
-                  ->whereYear('created_at', Carbon::now()->year);
-        })->count();
+        // Clients actifs (nombre de messages actifs ce mois)
+        $clientsActifs = Message::whereMonth('created_at', Carbon::now()->month)
+            ->whereYear('created_at', Carbon::now()->year)
+            ->where('is_active', true)
+            ->count();
 
         // ============ ACTIVITÉ MENSUELLE DU SITE ============
-        $monthlyActivity = Supriz::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
+        $monthlyActivity = Message::selectRaw('MONTH(created_at) as month, COUNT(*) as total')
             ->whereYear('created_at', Carbon::now()->year)
             ->groupBy('month')
             ->get()
@@ -84,18 +94,18 @@ class MaisonController extends Controller
             $activityData['totals'][] = $monthlyActivity->get($i)->total ?? 0;
         }
 
-        // ============ UTILISATEURS RÉCENTS ============
-        $utilisateursRecents = User::with('supriz')
+        // ============ MESSAGES RÉCENTS ============
+        $utilisateursRecents = Message::with('sousCategorie')
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get()
-            ->map(function($user) {
+            ->map(function($message) {
                 return [
-                    'id' => $user->id,
-                    'nom' => $user->nom ?? 'xxxxxxx',
-                    'avatar' => $user->profil_image ?? null,
-                    'categorie' => $user->supriz->last()->nom_categorie_suprise ?? 'Catégorie',
-                    'date' => $user->created_at->format('d/m/Y')
+                    'id' => $message->id,
+                    'nom' => substr($message->titre, 0, 20) . '...',
+                    'avatar' => null,
+                    'categorie' => $message->sousCategorie->name_sous_categories ?? 'Catégorie',
+                    'date' => $message->created_at->format('d/m/Y')
                 ];
             });
 

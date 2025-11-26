@@ -463,6 +463,10 @@
                 display: block !important;
             }
 
+            .hero-person-animation-mobile {
+                margin: 20px auto 0;
+            }
+
             .hero-content {
                 text-align: center;
                 padding: 20px 15px;
