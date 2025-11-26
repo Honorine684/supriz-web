@@ -2797,26 +2797,34 @@
             }
         });
 
-        // Add loading class removal
-        window.addEventListener('load', function() {
-            document.body.classList.add('loaded');
-            // Hide loading screen
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                if (loadingScreen) {
-                    loadingScreen.classList.add('hidden');
-                }
-            }, 500);
+        // Add loading class removal - Version simplifiée et robuste
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
+                console.log('Hiding loading screen...');
+                loadingScreen.classList.add('hidden');
+                document.body.classList.add('loaded');
+                // Supprimer complètement après l'animation
+                setTimeout(() => {
+                    if (loadingScreen && loadingScreen.parentNode) {
+                        loadingScreen.parentNode.removeChild(loadingScreen);
+                        console.log('Loading screen removed');
+                    }
+                }, 600);
+            }
+        }
+
+        // Timeout de sécurité immédiat - masquer après 1.5 secondes max
+        setTimeout(hideLoadingScreen, 1500);
+
+        // Masquer au chargement DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(hideLoadingScreen, 300);
         });
 
-        // Faster loading screen hide for returning visitors
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const loadingScreen = document.getElementById('loadingScreen');
-                if (loadingScreen && document.readyState === 'complete') {
-                    loadingScreen.classList.add('hidden');
-                }
-            }, 300);
+        // Masquer au chargement complet
+        window.addEventListener('load', function() {
+            hideLoadingScreen();
         });
 
         // Hero person animation - alternate between two images
@@ -2894,19 +2902,19 @@
         window.addEventListener('load', setActiveLink);
 
         // ========== ANIMATIONS AU SCROLL ==========
-        const observerOptions = {
+        const sectionObserverOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -100px 0px'
         };
 
-        const observer = new IntersectionObserver((entries) => {
+        const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('animated');
                     entry.target.classList.add('fade-in-up');
                 }
             });
-        }, observerOptions);
+        }, sectionObserverOptions);
 
         // Observer les sections
         document.addEventListener('DOMContentLoaded', () => {
@@ -2914,7 +2922,7 @@
             const sections = document.querySelectorAll('#categories, #comment, #apropos, #faq, #contact');
             sections.forEach(section => {
                 section.classList.add('animate-on-scroll');
-                observer.observe(section);
+                sectionObserver.observe(section);
             });
 
             // Ajouter les animations aux cartes d'événements avec délai
@@ -2924,7 +2932,7 @@
                 if (index < 5) {
                     card.classList.add(`delay-${index + 1}`);
                 }
-                observer.observe(card);
+                sectionObserver.observe(card);
             });
 
             // Ajouter les animations aux étapes "Comment ça marche"
@@ -2932,7 +2940,7 @@
             steps.forEach((step, index) => {
                 step.classList.add('animate-on-scroll');
                 step.classList.add(`delay-${(index % 3) + 1}`);
-                observer.observe(step);
+                sectionObserver.observe(step);
             });
 
             // Ajouter les animations aux FAQ
@@ -2942,7 +2950,7 @@
                 if (index < 5) {
                     item.classList.add(`delay-${(index % 3) + 1}`);
                 }
-                observer.observe(item);
+                sectionObserver.observe(item);
             });
         });
 
