@@ -436,7 +436,7 @@
             position: relative;
             width: 100%;
             max-width: 300px;
-            margin: 30px auto 0;
+            margin: 4vh auto;
         }
 
         /* Mobile styles */

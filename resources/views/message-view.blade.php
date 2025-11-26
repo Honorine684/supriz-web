@@ -398,7 +398,7 @@
     <!-- Bouton CTA en haut à droite -->
     <div class="header-cta">
         <a href="/" class="cta-button">
-            Suprend quelaun aussi !
+            Surprends-en un aussi !
         </a>
     </div>
 
