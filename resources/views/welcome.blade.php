@@ -271,6 +271,134 @@
             animation: rotateInfinite 20s linear infinite;
         }
 
+        /* ========== ANIMATIONS FLUIDES ========== */
+
+        /* Fade-in au scroll pour les sections */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Classes d'animation */
+        .animate-on-scroll {
+            opacity: 0;
+            transition: all 0.6s ease-out;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .fade-in-left {
+            animation: fadeInLeft 0.8s ease-out forwards;
+        }
+
+        .fade-in-right {
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        .scale-in {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        /* Effet smooth sur les cartes */
+        .occasion-card-new,
+        .category-card,
+        .faq-item-new {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .occasion-card-new:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Parallax léger sur le hero */
+        .hero-parallax {
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Effet ripple au clic */
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ripple-effect::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .ripple-effect:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Animation de délai pour les éléments */
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
         /* Hero person animation */
         .hero-person-animation {
             z-index: 1;
@@ -2764,6 +2892,80 @@
 
         window.addEventListener('scroll', setActiveLink);
         window.addEventListener('load', setActiveLink);
+
+        // ========== ANIMATIONS AU SCROLL ==========
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observer les sections
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ajouter la classe animate-on-scroll aux sections
+            const sections = document.querySelectorAll('#categories, #comment, #apropos, #faq, #contact');
+            sections.forEach(section => {
+                section.classList.add('animate-on-scroll');
+                observer.observe(section);
+            });
+
+            // Ajouter les animations aux cartes d'événements avec délai
+            const cards = document.querySelectorAll('.occasion-card-new');
+            cards.forEach((card, index) => {
+                card.classList.add('animate-on-scroll');
+                if (index < 5) {
+                    card.classList.add(`delay-${index + 1}`);
+                }
+                observer.observe(card);
+            });
+
+            // Ajouter les animations aux étapes "Comment ça marche"
+            const steps = document.querySelectorAll('.how-card');
+            steps.forEach((step, index) => {
+                step.classList.add('animate-on-scroll');
+                step.classList.add(`delay-${(index % 3) + 1}`);
+                observer.observe(step);
+            });
+
+            // Ajouter les animations aux FAQ
+            const faqItems = document.querySelectorAll('.faq-item-new');
+            faqItems.forEach((item, index) => {
+                item.classList.add('animate-on-scroll');
+                if (index < 5) {
+                    item.classList.add(`delay-${(index % 3) + 1}`);
+                }
+                observer.observe(item);
+            });
+        });
+
+        // ========== PARALLAX LÉGER SUR LE HERO ==========
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    const heroImage = document.querySelector('.hero-person-animation');
+                    if (heroImage && scrolled < window.innerHeight) {
+                        heroImage.style.transform = `translateY(${scrolled * 0.3}px)`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // ========== EFFET RIPPLE SUR LES BOUTONS ==========
+        document.querySelectorAll('.hero-btn, .btn').forEach(button => {
+            button.classList.add('ripple-effect');
+        });
     </script>
 </body>
 </html>
