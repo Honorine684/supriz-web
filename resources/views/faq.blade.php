@@ -71,12 +71,12 @@
         <div class="flex w-full mt-2">
             <div class="grid w-1/2">
                 <span class="mb-2">Questions</span>
-                <textarea name="question_faq" id="question_faq" class="rounded p-3 resize-none" cols="3" rows="5">{{ isset($faq) ? $faq->question_faq : '' }}</textarea>
+                <textarea name="question_faq" id="question_faq" class="rounded p-3 resize-none" cols="3" rows="5">{{ isset($faq) ? $faq->asq : '' }}</textarea>
             </div>
 
             <div class="grid w-1/2 ml-10">
                 <span class="mb-2">Réponse</span>
-                <textarea name="reponse_faq" id="reponse_faq" class="rounded p-3 resize-none" cols="3" rows="5">{{ isset($faq) ? $faq->reponse_faq : '' }}</textarea>
+                <textarea name="reponse_faq" id="reponse_faq" class="rounded p-3 resize-none" cols="3" rows="5">{{ isset($faq) ? $faq->response : '' }}</textarea>
             </div>
         </div>
     
@@ -98,11 +98,11 @@
     <tr>
         <td class="px-4 py-2 border-b w-60 border-b-gray-50">
             <span class="text-[13px] font-medium text-gray-400">
-                {{$faq->question_faq}}
+                {{$faq->asq}}
             </span>
         </td>
         <td class="px-4 py-2 border-b w-60 border-b-gray-50">
-            <span class="text-[13px] font-medium text-gray-400">{{$faq->reponse_faq}}</span>
+            <span class="text-[13px] font-medium text-gray-400">{{$faq->response}}</span>
         </td>
 
         <td class="px-4 py-2 border-b w-60 border-b-gray-50">

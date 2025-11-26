@@ -103,7 +103,7 @@
                         <p class="font-semibold" style="color: #005792;">📌 Instructions :</p>
                         <ul class="mt-2 ml-4 text-sm list-disc" style="color: #005792;">
                             <li>Formats audio acceptés : MP3, WAV, OGG</li>
-                            <li>Durée maximale : 20 secondes</li>
+                            <li>Durée maximale : 30 secondes</li>
                             <li>Taille audio maximale : 5 Mo</li>
                             <li>Chaque musique doit être associée à une catégorie Supriz</li>
                         </ul>

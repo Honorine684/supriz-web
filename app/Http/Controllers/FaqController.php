@@ -28,8 +28,8 @@ class FaqController extends Controller
         // Créer une nouvelle FAQ
         Faq::create([
             'type_faq' => $request->input('type_faq'),
-            'question_faq' => $request->input('question_faq'),
-            'reponse_faq' => $request->input('reponse_faq'),
+            'asq' => $request->input('question_faq'),
+            'response' => $request->input('reponse_faq'),
         ]);
 
         // Rediriger ou afficher un message de succès
@@ -74,8 +74,8 @@ public function update(Request $request, $id)
     // Mettre à jour la FAQ
     $faq->update([
         'type_faq' => $request->input('type_faq'),
-        'question_faq' => $request->input('question_faq'),
-        'reponse_faq' => $request->input('reponse_faq'),
+        'asq' => $request->input('question_faq'),
+        'response' => $request->input('reponse_faq'),
     ]);
 
     return redirect()->back()->with('success', 'La FAQ a été modifiée avec succès !');

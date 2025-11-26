@@ -41,6 +41,7 @@ class MessageController extends Controller
         // Récupérer les catégories prédéfinies dans l'ordre spécifique
         $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
         $categoriesSupriz = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->where('is_active', true)
             ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
             ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
             ->get();
@@ -154,6 +155,26 @@ class MessageController extends Controller
         $message->incrementViews();
 
         return view('message-view', compact('message'));
+    }
+
+    /**
+     * Récupérer les catégories Supriz actives (API)
+     */
+    public function getCategoriesSupriz()
+    {
+        $suprizCategorie = \App\Models\Categorie::where('name_id_categories', 's')->first();
+
+        $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+        $categories = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->where('is_active', true)
+            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
+            ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
+            ->get(['id', 'name_sous_categories', 'icone', 'image', 'placeholder_texte']);
+
+        return response()->json([
+            'success' => true,
+            'categories' => $categories
+        ]);
     }
 
     /**

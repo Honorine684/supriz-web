@@ -2342,13 +2342,13 @@
                     @foreach($faqs as $index => $faq)
                     <div class="faq-item-new" style="border-bottom: 1px solid #E5E5E5; padding: 25px 0;">
                         <div class="faq-question-new" onclick="toggleFaq(this)" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
-                            <h3 style="font-size: 18px; font-weight: 400; color: #005792; margin: 0;">{{ $faq->question_faq }}</h3>
+                            <h3 style="font-size: 18px; font-weight: 400; color: #005792; margin: 0;">{{ $faq->asq }}</h3>
                             <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="transition: transform 0.3s ease; flex-shrink: 0; margin-left: 20px;">
                                 <path d="M6 9L12 15L18 9" stroke="#005792" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
                         <div class="faq-answer-new" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
-                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">{{ $faq->reponse_faq }}</p>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">{{ $faq->response }}</p>
                         </div>
                     </div>
                     @endforeach
@@ -2424,9 +2424,9 @@
             <h2 class="text-center" style="font-size: 48px; font-weight: 700; color: #1A1A1A; margin-bottom: 20px;">Contactez-nous</h2>
             <p class="text-center" style="font-size: 16px; color: #666; margin-bottom: 60px;">Notre équipe d'experts est à votre disposition pour répondre à toutes vos préoccupations</p>
 
-            <div class="row align-items-start" style="gap: 40px 0;">
+            <div class="row justify-content-center">
                 <!-- Formulaire de contact -->
-                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                <div class="col-lg-8 col-md-10">
                     <div style="background: #E8E8E8; padding: 40px; border-radius: 15px;">
                         <form action="#" method="POST">
                             @csrf
@@ -2449,32 +2449,6 @@
                                 Envoyez votre requête
                             </button>
                         </form>
-                    </div>
-                </div>
-
-                <!-- Coordonnées -->
-                <div class="col-lg-6 col-md-12">
-                    <div style="border: 2px dashed #005792; border-radius: 15px; padding: 40px; background: #F8FBFD; min-height: 100%;">
-                        <h3 style="font-size: 24px; font-weight: 600; color: #1A1A1A; margin-bottom: 30px;">Nos coordonnées</h3>
-
-                        <div class="mb-4">
-                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Email</p>
-                            <p style="color: #666; margin: 0; font-size: 15px;">contact@supriz.com</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Téléphone</p>
-                            <p style="color: #666; margin: 0; font-size: 15px;">(+229) 0123456789</p>
-                        </div>
-
-                        <div class="mb-4">
-                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Siège</p>
-                            <p style="color: #666; margin: 0; font-size: 15px;">rue 12 34 chin chin, Benin</p>
-                        </div>
-
-                        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #ddd;">
-                            <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">Une question ? Un besoin d'assistance ? Une suggestion ?<br>Notre équipe est à votre écoute.</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -2524,10 +2498,10 @@
                     <h4 style="color: #1A1A1A; font-size: 18px; font-weight: 600; margin-bottom: 20px;">Mentions légales</h4>
                     <ul style="list-style: none; padding: 0; margin: 0;">
                         <li style="margin-bottom: 12px;">
-                            <a href="#" style="color: #666; font-size: 14px; text-decoration: none; transition: color 0.3s ease;">Politique de confidentialité</a>
+                            <a href="{{ route('politique.confidentialite') }}" style="color: #666; font-size: 14px; text-decoration: none; transition: color 0.3s ease;">Politique de confidentialité</a>
                         </li>
                         <li style="margin-bottom: 12px;">
-                            <a href="#" style="color: #666; font-size: 14px; text-decoration: none; transition: color 0.3s ease;">Condition d'utilisation</a>
+                            <a href="{{ route('conditions.utilisation') }}" style="color: #666; font-size: 14px; text-decoration: none; transition: color 0.3s ease;">Conditions d'utilisation</a>
                         </li>
                     </ul>
                 </div>

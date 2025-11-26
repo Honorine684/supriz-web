@@ -286,12 +286,12 @@
             border: 1px solid rgba(96, 149, 186, 0.5);
             border-radius: 10px;
             font-size: 14px;
-            color: white;
+            color: white !important;
             transition: all 0.3s;
         }
 
         .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.5) !important;
         }
 
         .form-control:focus {
@@ -2164,7 +2164,7 @@
 
                         data.musiques.forEach(musique => {
                             const musicItem = `
-                                <div class="music-item" data-music-id="${musique.id}" data-audio-url="{{ asset('storage/') }}/${musique.fichier_audio}">
+                                <div class="music-item" data-music-id="${musique.id}" data-audio-url="{{ asset('storage/') }}/${musique.fichier_audio}" onclick="selectMusic(this, event)">
                                     <div class="music-icon-wrapper">
                                         <img src="{{ asset('images/clientIamges/music.svg') }}" alt="Music" class="music-icon">
                                     </div>
@@ -2173,12 +2173,12 @@
                                         <div class="music-duration">${musique.duree || '00:00'}</div>
                                     </div>
                                     <div class="music-actions">
-                                        <button type="button" class="btn-play-music" onclick="playMusicAjax(event, this)">
+                                        <button type="button" class="btn-play-music" onclick="playMusic(event, this)">
                                             <svg class="play-icon" fill="currentColor" viewBox="0 0 24 24">
                                                 <path d="M8 5v14l11-7z"/>
                                             </svg>
                                         </button>
-                                        <button type="button" class="btn-delete-music" onclick="deleteSelectedMusic(event, this)">
+                                        <button type="button" class="btn-delete-music" onclick="deleteMusic(event, this)">
                                             <svg class="delete-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                             </svg>
@@ -3095,6 +3095,83 @@
             // Update preview when button is clicked
             updatePreview();
         }
+
+        // ========== RECHARGER LES CATÉGORIES DYNAMIQUEMENT ==========
+        function loadCategories() {
+            fetch('/api/categories-supriz')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.categories.length > 0) {
+                        const categoriesGrid = document.querySelector('.categories-grid');
+                        const currentActiveId = document.querySelector('.category-item.active')?.getAttribute('data-category');
+
+                        categoriesGrid.innerHTML = '';
+
+                        data.categories.forEach(categorie => {
+                            const categoryItem = document.createElement('div');
+                            categoryItem.className = 'category-item';
+                            if (currentActiveId == categorie.id) {
+                                categoryItem.classList.add('active');
+                            }
+                            categoryItem.setAttribute('data-category', categorie.id);
+                            categoryItem.setAttribute('data-placeholder', categorie.placeholder_texte || 'Ex: Votre message ici');
+                            categoryItem.setAttribute('data-image', categorie.image || '');
+
+                            const iconWrapper = document.createElement('div');
+                            iconWrapper.className = 'category-icon-wrapper';
+
+                            if (categorie.icone) {
+                                const img = document.createElement('img');
+                                img.src = '{{ asset("storage/") }}/' + categorie.icone;
+                                img.alt = categorie.name_sous_categories;
+                                img.className = 'category-icon';
+                                iconWrapper.appendChild(img);
+                            } else {
+                                iconWrapper.innerHTML = `
+                                    <svg style="width: 40px; height: 40px; color: white;" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                                    </svg>
+                                `;
+                            }
+
+                            const label = document.createElement('div');
+                            label.className = 'category-label';
+                            label.textContent = categorie.name_sous_categories;
+
+                            categoryItem.appendChild(iconWrapper);
+                            categoryItem.appendChild(label);
+                            categoriesGrid.appendChild(categoryItem);
+                        });
+
+                        // Réattacher les événements
+                        attachCategoryEvents();
+                    }
+                })
+                .catch(error => console.error('Erreur lors du chargement des catégories:', error));
+        }
+
+        function attachCategoryEvents() {
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.category-item').forEach(cat => cat.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const placeholder = this.getAttribute('data-placeholder');
+                    contentInput.placeholder = placeholder;
+
+                    document.getElementById('sous_categorie_id').value = this.getAttribute('data-category');
+                });
+            });
+        }
+
+        // Charger les catégories au chargement de la page
+        attachCategoryEvents();
+
+        // Recharger les catégories quand la page reprend le focus (utile quand on revient du dashboard)
+        window.addEventListener('focus', loadCategories);
+
+        // Recharger toutes les 30 secondes
+        setInterval(loadCategories, 30000);
 
     </script>
 </body>

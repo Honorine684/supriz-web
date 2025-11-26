@@ -83,6 +83,17 @@ Route::get('/nouveau-message', [MessageController::class, 'index'])->name('nouve
 Route::post('/message/store', [MessageController::class, 'store'])->name('message.store');
 Route::get('/message/{slug}', [MessageController::class, 'show'])->name('message.show');
 Route::get('/api/musiques/categorie/{categorieId}', [MusiqueController::class, 'getMusiquesByCategorie'])->name('musiques.by.categorie');
+Route::get('/api/categories-supriz', [MessageController::class, 'getCategoriesSupriz'])->name('categories.supriz');
+
+// Page politique de confidentialité
+Route::get('/politique-confidentialite', function () {
+    return view('politique-confidentialite');
+})->name('politique.confidentialite');
+
+// Page conditions d'utilisation
+Route::get('/conditions-utilisation', function () {
+    return view('conditions-utilisation');
+})->name('conditions.utilisation');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
