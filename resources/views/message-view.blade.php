@@ -287,7 +287,9 @@
             /* Media */
             .message-card img,
             .message-card video {
-                height: 220px !important;
+                max-height: 250px !important;
+                height: auto !important;
+                object-fit: contain !important;
             }
 
             /* Content */
@@ -361,7 +363,9 @@
 
             .message-card img,
             .message-card video {
-                height: 200px !important;
+                max-height: 220px !important;
+                height: auto !important;
+                object-fit: contain !important;
             }
 
             .message-card > div:last-child {
@@ -452,11 +456,11 @@
 
             <!-- Image ou vidéo pleine largeur -->
             @if($message->media_path)
-                <div style="width: 100%;">
+                <div style="width: 100%; display: flex; justify-content: center; background: #f8f9fa;">
                     @if($message->media_type === 'image')
-                        <img src="{{ asset('storage/' . $message->media_path) }}" alt="{{ $message->titre }}" style="width: 100%; height: 350px; object-fit: cover; display: block;">
+                        <img src="{{ asset('storage/' . $message->media_path) }}" alt="{{ $message->titre }}" style="width: 100%; max-height: 400px; object-fit: contain; display: block;">
                     @elseif($message->media_type === 'video')
-                        <video controls style="width: 100%; height: 350px; object-fit: cover; display: block;">
+                        <video controls style="width: 100%; max-height: 400px; object-fit: contain; display: block;">
                             <source src="{{ asset('storage/' . $message->media_path) }}" type="video/mp4">
                             Votre navigateur ne supporte pas la vidéo.
                         </video>

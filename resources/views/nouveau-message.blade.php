@@ -354,7 +354,7 @@
 
         .media-preview img,
         .media-preview video {
-            width: 100%;
+            max-width: 100%;
             height: auto;
             max-height: 250px;
             object-fit: contain;
@@ -1298,7 +1298,6 @@
                 max-height: 200px;
                 border-radius: 12px;
                 max-width: 100% !important;
-                width: 100% !important;
             }
 
             /* Date Picker */
