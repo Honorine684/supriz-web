@@ -92,6 +92,19 @@
             transform: translateX(-50%) scaleX(1);
         }
 
+        /* Point pour le lien actif */
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: #FFD700;
+            border-radius: 50%;
+        }
+
         /* Boutons de la navbar */
         .btn:hover {
             transform: translateY(-2px);
@@ -228,7 +241,6 @@
         .hero-section {
             background: linear-gradient(135deg, #00789C 0%, #00A3CE 100%);
             position: relative;
-            overflow: hidden;
             animation: gradientShift 15s ease infinite;
             background-size: 200% 200%;
         }
@@ -1031,7 +1043,6 @@
                 max-width: 100% !important;
                 padding-left: 15px !important;
                 padding-right: 15px !important;
-                overflow-x: hidden;
             }
 
             /* Row responsiveness */
@@ -1120,7 +1131,7 @@
                 min-height: 280px !important;
                 max-height: 380px !important;
                 padding: 0 !important;
-                margin: 20px 0 0 0 !important;
+                margin: -50px 0 0 0 !important;
                 overflow: visible !important;
                 display: block !important;
             }
@@ -1569,11 +1580,11 @@
 
             /* Navigation Logo */
             .navbar-brand img {
-                height: 35px !important;
+                height: 30px !important;
             }
 
             .navbar {
-                padding: 12px 0 !important;
+                padding: 8px 0 !important;
             }
 
 
@@ -1859,7 +1870,6 @@
             .container-fluid,
             [class*="container"] {
                 padding-left: 15px !important;
-                padding-bottom: 23px !important;
                 padding-right: 15px !important;
                 max-width: 100% !important;
             }
@@ -1876,7 +1886,7 @@
     <nav class="navbar navbar-expand-lg position-absolute w-100" style="background: transparent; padding: 30px 0; z-index: 1000;">
         <div class="container">
             <a class="navbar-brand" href="/" style="text-decoration: none;">
-                <img src="{{ asset('images/clientIamges/Frame 3771.png') }}" alt="Supriz" style="height: 40px;">
+                <img src="{{ asset('images/logo.png') }}" alt="Supriz" style="height: 40px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: none;">
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -1921,7 +1931,7 @@
                             Pour anniversaires, mariages, fêtes et toutes les occasions. Exprimez vos vœux, sentiments et intentions d'une manière beaucoup plus originale grâce à un lien unique et mémorable.
                         </p>
                         <a href="{{ route('nouveau.message') }}" class="btn hero-btn mb-4" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
-                            Créer un message supriz
+                            Crée un message
                         </a>
                     </div>
 
@@ -1955,7 +1965,7 @@
             <h2 class="text-center mb-5" style="font-size: 48px; font-weight: 700; color: #1A1A1A;">Choisis ton occasion</h2>
 
             <div class="infinite-scroll-wrapper" style="position: relative; width: 100%; overflow: hidden;">
-                <div class="infinite-scroll" style="display: flex; gap: 15px; animation: scrollInfinite 30s linear infinite;">
+                <div class="infinite-scroll" style="display: flex; gap: 15px; animation: scrollInfinite 20s linear infinite;">
                 @if(isset($categoriesSupriz) && count($categoriesSupriz) > 0)
                     @foreach($categoriesSupriz as $categorie)
                     <div class="occasion-card-wrapper" style="flex: 0 0 auto;">
@@ -2350,20 +2360,14 @@
                 <!-- Logo et description -->
                 <div class="col-lg-4 col-md-6 mb-4">
                     <div class="mb-3">
-                        <img src="{{ asset('images/clientIamges/Frame 3771.png') }}" alt="Supriz" style="height: 40px;">
+                        <img src="{{ asset('images/logo.png') }}" alt="Supriz" style="height: 40px;">
                     </div>
                     <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px; max-width: 300px;">
                         Pour anniversaires, mariages, fêtes et toutes les occasions. Exprimez vos vœux, sentiments et intentions d'une manière beaucoup plus originale grâce à un lien unique et mémorable.
                     </p>
                     <div style="display: flex; gap: 15px; margin-top: 20px;">
-                        <a href="#" aria-label="Facebook" style="width: 35px; height: 35px; background: linear-gradient(135deg, #005792, #2C5F2D); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
+                        <a href="https://www.facebook.com/share/1MFNkDtNgi" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width: 35px; height: 35px; background: linear-gradient(135deg, #005792, #2C5F2D); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
                             <i class="bi bi-facebook" style="color: white; font-size: 18px;"></i>
-                        </a>
-                        <a href="#" aria-label="Instagram" style="width: 35px; height: 35px; background: linear-gradient(135deg, #005792, #2C5F2D); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="bi bi-instagram" style="color: white; font-size: 18px;"></i>
-                        </a>
-                        <a href="#" aria-label="Twitter" style="width: 35px; height: 35px; background: linear-gradient(135deg, #005792, #2C5F2D); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease;">
-                            <i class="bi bi-twitter" style="color: white; font-size: 18px;"></i>
                         </a>
                     </div>
                 </div>
@@ -2725,6 +2729,41 @@
 
         // Start animation when page loads
         document.addEventListener('DOMContentLoaded', animateHeroPerson);
+
+        // Active navigation link detection
+        const sections = document.querySelectorAll('section[id], div[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function setActiveLink() {
+            let current = '';
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    current = sectionId;
+                }
+            });
+
+            // Si on est tout en haut, activer "accueil"
+            if (window.scrollY < 100) {
+                current = 'accueil';
+            }
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                const href = link.getAttribute('href');
+                if (href === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', setActiveLink);
+        window.addEventListener('load', setActiveLink);
     </script>
 </body>
 </html>

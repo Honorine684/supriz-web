@@ -22,16 +22,21 @@ class HomeController extends Controller
         // Définir la variable active_link
         $active_link = "h";
 
-        // ============ CATÉGORIES SUPRIZ PRÉDÉFINIES ============
+        // ============ CATÉGORIES SUPRIZ (TOUTES LES CATÉGORIES ACTIVES) ============
         $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
-        $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
         $categoriesSupriz = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
-            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
-            ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
+            ->where('is_active', true)
+            ->orderBy('name_sous_categories', 'asc')
             ->get();
 
         // ============ STATISTIQUES SUPRIZ PAR CATÉGORIE ============
-        $categories = ['Mariage', 'Vœux', 'Anniversaire', 'Nouvel an', 'Noël'];
+        // Récupérer dynamiquement les catégories actives
+        $categoriesFromDb = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->where('is_active', true)
+            ->pluck('name_sous_categories')
+            ->toArray();
+
+        $categories = !empty($categoriesFromDb) ? $categoriesFromDb : ['Mariage', 'Vœux', 'Anniversaire', 'Nouvel an', 'Noël'];
         $statsSupriz = [];
 
         foreach ($categories as $categorie) {

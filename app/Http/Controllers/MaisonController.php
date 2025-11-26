@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Supriz;
+use App\Models\SousCategorie;
+use App\Models\Categorie;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -15,7 +17,14 @@ class MaisonController extends Controller
         $active_link = "maison";
 
         // ============ STATISTIQUES SUPRIZ PAR CATÉGORIE ============
-        $categories = ['Mariage', 'Vœux', 'Anniversaire', 'Nouvel an', 'Noël'];
+        // Récupérer dynamiquement les catégories Supriz actives depuis la base de données
+        $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+        $categoriesFromDb = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->where('is_active', true)
+            ->pluck('name_sous_categories')
+            ->toArray();
+
+        $categories = !empty($categoriesFromDb) ? $categoriesFromDb : ['Mariage', 'Vœux', 'Anniversaire', 'Nouvel an', 'Noël'];
         $statsSupriz = [];
 
         foreach ($categories as $categorie) {

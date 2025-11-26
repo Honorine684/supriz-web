@@ -1519,6 +1519,14 @@
                 height: 35px;
             }
 
+            .navbar-brand img {
+                height: 30px !important;
+            }
+
+            .navbar {
+                padding: 8px 0 !important;
+            }
+
             .main-container {
                 padding: 110px 12px 15px;
                 overflow: visible !important;
@@ -1914,7 +1922,7 @@
     <nav class="navbar navbar-expand-lg w-100" style="background: transparent; padding: 30px 0; z-index: 1000;">
         <div class="container">
             <a class="navbar-brand" href="/" style="text-decoration: none;">
-                <img src="{{ asset('images/clientIamges/Frame 3771.png') }}" alt="Supriz" style="height: 40px;">
+                <img src="{{ asset('images/logo.png') }}" alt="Supriz" style="height: 40px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="border: none;">
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
@@ -2294,7 +2302,7 @@
                     const videoPreview = document.getElementById('videoPreview');
 
                     if (imagePreview && imagePreview.style.display !== 'none' && imagePreview.src) {
-                        mediaHTML = `<img src="${imagePreview.src}" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 12px;" alt="Preview">`;
+                        mediaHTML = `<img src="${imagePreview.src}" style="width: 100%; max-height: 200px; object-fit: contain; border-radius: 10px; margin-bottom: 12px;" alt="Preview">`;
                     } else if (videoPreview && videoPreview.style.display !== 'none' && videoPreview.src) {
                         mediaHTML = `<video controls style="width: 100%; max-height: 200px; border-radius: 10px; margin-bottom: 12px;"><source src="${videoPreview.src}"></video>`;
                     }
@@ -2360,10 +2368,10 @@
                     </div>` : ''}
 
                     <!-- Gift card clickable - centered with border -->
-                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px;">
+                    <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px;">
                         <div onclick="showMessageContent()" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 50px 80px; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(5px);">
                             <h3 style="color: white; text-align: center; margin-bottom: 40px; font-size: 22px; font-weight: 600;">${title}</h3>
-                            <div class="gift-animation" style="display: flex; justify-content: center;">
+                            <div class="gift-animation" style="display: flex; justify-content: center; align-items: center;">
                                 <img src="${giftImageUrl}" alt="Gift" style="width: 280px; height: auto;" class="${giftImageClass}">
                             </div>
                         </div>
@@ -2912,14 +2920,22 @@
         function selectMusic(element, event) {
             event.stopPropagation();
 
-            // Remove previous selection
+            // Remove previous selection and show all items
             document.querySelectorAll('.music-item').forEach(item => {
                 item.classList.remove('selected');
+                item.style.display = 'flex';
             });
 
             // Add selection to clicked item
             element.classList.add('selected');
             selectedMusicId = element.getAttribute('data-music-id');
+
+            // Hide non-selected items
+            document.querySelectorAll('.music-item').forEach(item => {
+                if (!item.classList.contains('selected')) {
+                    item.style.display = 'none';
+                }
+            });
 
             // Update hidden field for music
             document.getElementById('musique_id').value = selectedMusicId;
@@ -2980,6 +2996,11 @@
                 musicItem.classList.remove('selected');
                 selectedMusicId = null;
                 document.getElementById('musique_id').value = '';
+
+                // Show all music items again
+                document.querySelectorAll('.music-item').forEach(item => {
+                    item.style.display = 'flex';
+                });
 
                 // Stop audio if playing
                 if (currentAudio) {

@@ -327,7 +327,7 @@
             }
 
             .header-logo img {
-                height: 26px;
+                height: 30px;
             }
 
             .header-cta {
@@ -386,7 +386,7 @@
 <body>
     <!-- Logo en haut à gauche -->
     <div class="header-logo">
-        <img src="{{ asset('images/clientIamges/Frame 3771.png') }}" alt="SUPRIZ">
+        <img src="{{ asset('images/logo.png') }}" alt="SUPRIZ">
     </div>
 
     <!-- Bouton CTA en haut à droite -->
@@ -473,7 +473,7 @@
 
         <!-- Audio caché qui joue automatiquement -->
         @if($message->musique)
-            <audio id="backgroundMusic" autoplay loop style="display: none;">
+            <audio id="backgroundMusic" autoplay style="display: none;">
                 <source src="{{ asset('storage/' . $message->musique->fichier_audio) }}" type="audio/mpeg">
             </audio>
         @endif
@@ -518,6 +518,14 @@
                 audio.play();
             }
         }
+
+        // Limiter la durée de lecture à 30 secondes
+        audio.addEventListener('timeupdate', function() {
+            if (audio.currentTime >= 30) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+        });
 
         // Attendre que la page soit complètement chargée
         window.addEventListener('load', function() {
