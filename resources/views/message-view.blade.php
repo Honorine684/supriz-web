@@ -166,10 +166,10 @@
 
             body {
                 padding: 10px;
-                padding-top: 60px;
+                padding-top: 80px;
                 min-height: 100vh;
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: center;
             }
 
