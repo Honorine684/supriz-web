@@ -31,7 +31,29 @@
             display: flex;
             gap: 16px;
             margin-bottom: 24px;
-            flex-wrap: wrap;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+
+        .stats-row::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .stats-row::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .stats-row::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .stats-row::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         .stat-card {
@@ -39,8 +61,9 @@
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            min-width: 180px;
+            flex: 0 0 auto;
+            min-width: 200px;
+            width: 200px;
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -346,7 +369,8 @@
             <!-- Statistiques par Catégorie -->
             <div class="stats-row">
                 @php
-                    $categories = [
+                    // Icônes et couleurs par défaut pour les catégories connues
+                    $categoriesDefaut = [
                         'Mariage' => ['icon' => '💍', 'color' => '#dbeafe'],
                         'Vœux' => ['icon' => '🎁', 'color' => '#dbeafe'],
                         'Anniversaire' => ['icon' => '🎂', 'color' => '#dbeafe'],
@@ -354,15 +378,30 @@
                         'Noël' => ['icon' => '🎄', 'color' => '#dcfce7'],
                         'mots' => ['icon' => '💌', 'color' => '#fef3c7']
                     ];
+
+                    // Icônes et couleurs pour les nouvelles catégories
+                    $iconesAutres = ['🎉', '✨', '🌟', '💝', '🎈', '🎀', '🌺', '🌈', '⭐', '💫'];
+                    $couleursAutres = ['#fce7f3', '#f3e8ff', '#ddd6fe', '#e0e7ff', '#fef3c7', '#d1fae5', '#fef08a', '#fed7aa'];
+                    $indexIcone = 0;
                 @endphp
 
                 @foreach($statsSupriz as $categorie => $stats)
-                @if(isset($categories[$categorie]))
+                @php
+                    // Utiliser l'icône/couleur prédéfinie ou générer une nouvelle
+                    if (isset($categoriesDefaut[$categorie])) {
+                        $icon = $categoriesDefaut[$categorie]['icon'];
+                        $color = $categoriesDefaut[$categorie]['color'];
+                    } else {
+                        $icon = $iconesAutres[$indexIcone % count($iconesAutres)];
+                        $color = $couleursAutres[$indexIcone % count($couleursAutres)];
+                        $indexIcone++;
+                    }
+                @endphp
                 <div class="stat-card">
                     <div class="stat-card-top">
                         <h3 class="stat-title">{{ $categorie }}</h3>
-                        <span class="stat-icon" style="background-color: {{ $categories[$categorie]['color'] }};">
-                            {{ $categories[$categorie]['icon'] }}
+                        <span class="stat-icon" style="background-color: {{ $color }};">
+                            {{ $icon }}
                         </span>
                     </div>
                     <div class="stat-card-bottom">
@@ -373,7 +412,6 @@
                         </span>
                     </div>
                 </div>
-                @endif
                 @endforeach
             </div>
 
