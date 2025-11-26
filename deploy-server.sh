@@ -82,14 +82,27 @@ php artisan route:cache
 echo -e "${GREEN}✅ Optimisations appliquées${NC}"
 echo ""
 
-# 9. Fixer les permissions
+# 9. Vérifier et créer le lien symbolique storage
+echo -e "${YELLOW}🔗 Vérification du lien symbolique storage...${NC}"
+if [ ! -L "public_html/storage" ] || [ ! -e "public_html/storage" ]; then
+    rm -rf public_html/storage
+    cd public_html
+    ln -s ../storage/app/public storage
+    cd ..
+    echo -e "${GREEN}✅ Lien symbolique créé${NC}"
+else
+    echo -e "${GREEN}✅ Lien symbolique déjà configuré${NC}"
+fi
+echo ""
+
+# 10. Fixer les permissions
 echo -e "${YELLOW}🔐 Configuration des permissions...${NC}"
 chmod -R 775 storage bootstrap/cache
 chmod 600 .env
 echo -e "${GREEN}✅ Permissions configurées${NC}"
 echo ""
 
-# 10. Résumé
+# 11. Résumé
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${GREEN}🎉 Déploiement terminé avec succès !${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -100,6 +113,7 @@ echo "  ✓ Dépendances Composer installées"
 echo "  ✓ Base de données migrée"
 echo "  ✓ Fichiers publics synchronisés"
 echo "  ✓ Caches nettoyés et optimisés"
+echo "  ✓ Lien symbolique storage vérifié"
 echo "  ✓ Permissions configurées"
 echo ""
 echo -e "${YELLOW}🌐 Site : http://suprizs.com${NC}"
