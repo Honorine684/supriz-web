@@ -38,12 +38,19 @@ class MessageController extends Controller
     {
         $suprizCategorie = \App\Models\Categorie::where('name_id_categories', 's')->first();
 
-        // Récupérer les catégories prédéfinies dans l'ordre spécifique
+        // Récupérer TOUTES les catégories Supriz actives
+        // Catégories prédéfinies affichées en premier, puis les autres par ordre alphabétique
         $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
         $categoriesSupriz = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
             ->where('is_active', true)
-            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
-            ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
+            ->orderByRaw("CASE
+                WHEN name_sous_categories = 'Anniversaire' THEN 1
+                WHEN name_sous_categories = 'Mariage' THEN 2
+                WHEN name_sous_categories = 'Vœux' THEN 3
+                WHEN name_sous_categories = 'Nouvel an' THEN 4
+                WHEN name_sous_categories = 'Noël' THEN 5
+                ELSE 6
+            END, name_sous_categories ASC")
             ->get();
 
         $musiques = Musique::where('is_active', true)->get();
@@ -164,11 +171,18 @@ class MessageController extends Controller
     {
         $suprizCategorie = \App\Models\Categorie::where('name_id_categories', 's')->first();
 
-        $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+        // Récupérer TOUTES les catégories actives
+        // Catégories prédéfinies en premier, puis les autres par ordre alphabétique
         $categories = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
             ->where('is_active', true)
-            ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
-            ->orderByRaw("FIELD(name_sous_categories, 'Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël')")
+            ->orderByRaw("CASE
+                WHEN name_sous_categories = 'Anniversaire' THEN 1
+                WHEN name_sous_categories = 'Mariage' THEN 2
+                WHEN name_sous_categories = 'Vœux' THEN 3
+                WHEN name_sous_categories = 'Nouvel an' THEN 4
+                WHEN name_sous_categories = 'Noël' THEN 5
+                ELSE 6
+            END, name_sous_categories ASC")
             ->get(['id', 'name_sous_categories', 'icone', 'image', 'placeholder_texte']);
 
         return response()->json([
