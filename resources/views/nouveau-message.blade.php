@@ -144,7 +144,7 @@
 
         /* Category Navigation Buttons */
         .category-nav-btn {
-            background: rgba(0, 87, 146, 0.1);
+            background: white;
             border: 2px solid #005792;
             border-radius: 50%;
             width: 40px;
