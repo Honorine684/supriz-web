@@ -213,13 +213,13 @@
             color: #005792;
         }
 
-        /* Scroll Indicator */
+        /* Scroll Indicator - Pagination dots */
         .scroll-indicator {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 12px;
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -229,26 +229,23 @@
         }
 
         .scroll-indicator span {
-            width: 6px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.4);
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
-        .scroll-indicator span:nth-child(2) {
-            animation: pulse 1.5s ease-in-out infinite;
+        .scroll-indicator span:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(1.2);
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.4;
-            }
-            50% {
-                transform: scale(1.3);
-                opacity: 0.8;
-            }
+        .scroll-indicator span.active {
+            background: rgba(255, 255, 255, 0.9);
+            width: 24px;
+            border-radius: 4px;
         }
 
         /* Form Groups */
@@ -1984,11 +1981,7 @@
                             </div>
                             @endforeach
                         </div>
-                        <div class="scroll-indicator">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
+                        <div class="scroll-indicator"></div>
                     </div>
 
                     <!-- Title -->
@@ -2216,39 +2209,68 @@
                 });
         }
 
-        // Check if categories grid is scrollable and show indicator
-        function checkScrollIndicator() {
+        // Initialize category pagination with dots
+        function initializeCategoryPagination() {
             const categoriesGrid = document.querySelector('.categories-grid');
             const scrollIndicator = document.querySelector('.scroll-indicator');
 
-            if (categoriesGrid && scrollIndicator) {
-                const isScrollable = categoriesGrid.scrollWidth > categoriesGrid.clientWidth;
-                if (isScrollable) {
-                    scrollIndicator.classList.add('visible');
-                } else {
-                    scrollIndicator.classList.remove('visible');
-                }
+            if (!categoriesGrid || !scrollIndicator) return;
+
+            const categoryItems = categoriesGrid.querySelectorAll('.category-item');
+            const containerWidth = categoriesGrid.clientWidth;
+
+            // Calculate how many items are visible at once
+            const firstItem = categoryItems[0];
+            if (!firstItem) return;
+
+            const itemWidth = firstItem.offsetWidth;
+            const computedStyle = window.getComputedStyle(categoriesGrid);
+            const gap = parseFloat(computedStyle.gap) || 8;
+            const itemsPerPage = Math.floor(containerWidth / (itemWidth + gap));
+            const totalPages = Math.ceil(categoryItems.length / itemsPerPage);
+
+            // Only show dots if there are more items than can fit in one view
+            if (totalPages <= 1) {
+                scrollIndicator.classList.remove('visible');
+                scrollIndicator.innerHTML = '';
+                return;
             }
-        }
 
-        // Check on page load and window resize
-        window.addEventListener('load', checkScrollIndicator);
-        window.addEventListener('resize', checkScrollIndicator);
+            // Generate dots
+            scrollIndicator.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const dot = document.createElement('span');
+                if (i === 0) dot.classList.add('active');
 
-        // Hide indicator when scrolled to the end
-        const categoriesGrid = document.querySelector('.categories-grid');
-        if (categoriesGrid) {
+                // Click handler for each dot
+                dot.addEventListener('click', () => {
+                    const scrollPosition = i * itemsPerPage * (itemWidth + gap);
+                    categoriesGrid.scrollTo({
+                        left: scrollPosition,
+                        behavior: 'smooth'
+                    });
+                });
+
+                scrollIndicator.appendChild(dot);
+            }
+
+            scrollIndicator.classList.add('visible');
+
+            // Update active dot on scroll
             categoriesGrid.addEventListener('scroll', function() {
-                const scrollIndicator = document.querySelector('.scroll-indicator');
-                const isAtEnd = this.scrollLeft + this.clientWidth >= this.scrollWidth - 10;
+                const scrollPosition = this.scrollLeft;
+                const pageWidth = itemsPerPage * (itemWidth + gap);
+                const currentPage = Math.round(scrollPosition / pageWidth);
 
-                if (isAtEnd) {
-                    scrollIndicator.classList.remove('visible');
-                } else if (this.scrollWidth > this.clientWidth) {
-                    scrollIndicator.classList.add('visible');
-                }
+                document.querySelectorAll('.scroll-indicator span').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentPage);
+                });
             });
         }
+
+        // Initialize on page load and window resize
+        window.addEventListener('load', initializeCategoryPagination);
+        window.addEventListener('resize', initializeCategoryPagination);
 
         // Category selection
         document.querySelectorAll('.category-item').forEach(item => {
@@ -3144,6 +3166,9 @@
 
                         // Réattacher les événements
                         attachCategoryEvents();
+
+                        // Réinitialiser la pagination
+                        setTimeout(() => initializeCategoryPagination(), 100);
                     }
                 })
                 .catch(error => console.error('Erreur lors du chargement des catégories:', error));
