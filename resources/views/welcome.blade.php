@@ -2432,19 +2432,43 @@
                 <!-- Formulaire de contact -->
                 <div class="col-lg-8 col-md-10">
                     <div style="background: #E8E8E8; padding: 40px; border-radius: 15px;">
-                        <form action="#" method="POST">
+                        @if(session('success'))
+                            <div class="alert alert-success" style="border-radius: 8px; margin-bottom: 20px; padding: 15px; background-color: #d1fae5; border: 1px solid #059669; color: #065f46;">
+                                <i class="bi bi-check-circle-fill"></i> {{ session('success') }}
+                            </div>
+                        @endif
+
+                        @if(session('error'))
+                            <div class="alert alert-danger" style="border-radius: 8px; margin-bottom: 20px; padding: 15px; background-color: #fee2e2; border: 1px solid #dc2626; color: #991b1b;">
+                                <i class="bi bi-exclamation-circle-fill"></i> {{ session('error') }}
+                            </div>
+                        @endif
+
+                        <form action="{{ route('contact.send') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input type="text" name="name" class="form-control" placeholder="Nom" required style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Nom" required value="{{ old('name') }}" style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                @error('name')
+                                    <div class="text-danger" style="font-size: 13px; margin-top: 5px;">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <input type="text" name="subject" class="form-control" placeholder="Sujet" required style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                <input type="text" name="subject" class="form-control @error('subject') is-invalid @enderror" placeholder="Sujet" required value="{{ old('subject') }}" style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                @error('subject')
+                                    <div class="text-danger" style="font-size: 13px; margin-top: 5px;">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-3">
-                                <input type="email" name="email" class="form-control" placeholder="Email" required style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" required value="{{ old('email') }}" style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px;">
+                                @error('email')
+                                    <div class="text-danger" style="font-size: 13px; margin-top: 5px;">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="mb-4">
-                                <textarea name="message" class="form-control" placeholder="Message" rows="5" required style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px; resize: none;"></textarea>
+                                <textarea name="message" class="form-control @error('message') is-invalid @enderror" placeholder="Message" rows="5" required style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; font-size: 15px; resize: none;">{{ old('message') }}</textarea>
+                                @error('message')
+                                    <div class="text-danger" style="font-size: 13px; margin-top: 5px;">{{ $message }}</div>
+                                @enderror
                             </div>
                             <button type="submit" class="btn w-100" style="background: #005792; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 500; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform: rotate(-45deg);">
@@ -2514,7 +2538,7 @@
             <!-- Copyright -->
             <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #D1D5DB; text-align: center;">
                 <p style="color: #666; font-size: 14px; margin: 0;">
-                    © 2025 Supriz. Tous droits réservés. Designed by Imdad adenon
+                    © 2025 Supriz. Tous droits réservés.
                 </p>
             </div>
         </div>

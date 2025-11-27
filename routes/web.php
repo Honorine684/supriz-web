@@ -17,6 +17,7 @@
     use App\Http\Controllers\FaqController;
     use App\Http\Controllers\MusiqueController;
     use App\Http\Controllers\MessageController;
+    use App\Http\Controllers\ContactController;
 
 
     Route::middleware(['auth'])->group(function () {
@@ -94,6 +95,9 @@ Route::get('/politique-confidentialite', function () {
 Route::get('/conditions-utilisation', function () {
     return view('conditions-utilisation');
 })->name('conditions.utilisation');
+
+// Route pour le formulaire de contact
+Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);

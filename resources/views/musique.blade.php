@@ -362,8 +362,8 @@
 
                 durationDisplay.textContent = `✓ Durée: ${duration} secondes`;
 
-                if (duration > 20) {
-                    durationError.textContent = `⚠️ Erreur: La durée ne doit pas dépasser 20 secondes!`;
+                if (duration > 30) {
+                    durationError.textContent = `⚠️ Erreur: La durée ne doit pas dépasser 30 secondes!`;
                     durationError.classList.remove('hidden');
                     durationDisplay.classList.add('hidden');
                     submitBtn.disabled = true;
