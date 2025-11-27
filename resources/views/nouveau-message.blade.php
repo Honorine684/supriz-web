@@ -129,10 +129,49 @@
             flex: 1;
         }
 
+        /* Categories Section */
+        .categories-section {
+            margin-bottom: 16px;
+        }
+
         /* Categories Wrapper */
         .categories-wrapper {
             position: relative;
-            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Category Navigation Buttons */
+        .category-nav-btn {
+            background: rgba(0, 87, 146, 0.1);
+            border: 2px solid #005792;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #005792;
+            flex-shrink: 0;
+        }
+
+        .category-nav-btn:hover {
+            background: #005792;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .category-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .category-nav-btn svg {
+            pointer-events: none;
         }
 
         /* Categories Grid */
@@ -1183,11 +1222,19 @@
             }
 
             /* Categories */
-            .categories-wrapper {
+            .categories-section {
                 margin-bottom: 18px;
+            }
+
+            .categories-wrapper {
                 max-width: 100% !important;
                 overflow-x: auto;
                 overflow-y: hidden;
+            }
+
+            /* Masquer les boutons de navigation sur mobile */
+            .category-nav-btn {
+                display: none !important;
             }
 
             .categories-grid {
@@ -1778,6 +1825,11 @@
                 overflow-x: auto !important;
             }
 
+            /* Masquer les boutons de navigation sur mobile */
+            .category-nav-btn {
+                display: none !important;
+            }
+
             .categories-grid {
                 gap: 10px !important;
                 max-width: 260px !important; /* Limite à 3 catégories visibles sur mobile */
@@ -1966,22 +2018,34 @@
                     <input type="hidden" name="expiration" id="expiration_value" value="24h">
 
                     <!-- Categories -->
-                    <div class="categories-wrapper">
-                        <div class="categories-grid">
-                            @foreach($categoriesSupriz as $categorie)
-                            <div class="category-item" data-category="{{ $categorie->id }}" data-placeholder="{{ $categorie->placeholder_texte ?? 'Ex: Votre message ici' }}" data-image="{{ $categorie->image ?? '' }}">
-                                <div class="category-icon-wrapper">
-                                    @if($categorie->icone)
-                                        <img src="{{ asset('storage/' . $categorie->icone) }}" alt="{{ $categorie->name_sous_categories }}" class="category-icon">
-                                    @else
-                                        <svg style="width: 40px; height: 40px; color: white;" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
-                                        </svg>
-                                    @endif
+                    <div class="categories-section">
+                        <div class="categories-wrapper">
+                            <button class="category-nav-btn category-nav-prev" aria-label="Précédent">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                            <div class="categories-grid">
+                                @foreach($categoriesSupriz as $categorie)
+                                <div class="category-item" data-category="{{ $categorie->id }}" data-placeholder="{{ $categorie->placeholder_texte ?? 'Ex: Votre message ici' }}" data-image="{{ $categorie->image ?? '' }}">
+                                    <div class="category-icon-wrapper">
+                                        @if($categorie->icone)
+                                            <img src="{{ asset('storage/' . $categorie->icone) }}" alt="{{ $categorie->name_sous_categories }}" class="category-icon">
+                                        @else
+                                            <svg style="width: 40px; height: 40px; color: white;" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/>
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <div class="category-label">{{ $categorie->name_sous_categories }}</div>
                                 </div>
-                                <div class="category-label">{{ $categorie->name_sous_categories }}</div>
+                                @endforeach
                             </div>
-                            @endforeach
+                            <button class="category-nav-btn category-nav-next" aria-label="Suivant">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
                         </div>
                         <div class="scroll-indicator"></div>
                     </div>
@@ -2273,6 +2337,53 @@
         // Initialize on page load and window resize
         window.addEventListener('load', initializeCategoryPagination);
         window.addEventListener('resize', initializeCategoryPagination);
+
+        // Category navigation buttons
+        function setupCategoryNavigation() {
+            const categoriesGrid = document.querySelector('.categories-grid');
+            const prevBtn = document.querySelector('.category-nav-prev');
+            const nextBtn = document.querySelector('.category-nav-next');
+
+            if (!categoriesGrid || !prevBtn || !nextBtn) return;
+
+            // Scroll one page of categories
+            const scrollOnePage = (direction) => {
+                const containerWidth = categoriesGrid.clientWidth;
+                const scrollAmount = direction === 'next' ? containerWidth : -containerWidth;
+
+                categoriesGrid.scrollBy({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            };
+
+            prevBtn.addEventListener('click', () => scrollOnePage('prev'));
+            nextBtn.addEventListener('click', () => scrollOnePage('next'));
+
+            // Update button states based on scroll position
+            const updateButtonStates = () => {
+                const scrollLeft = categoriesGrid.scrollLeft;
+                const maxScroll = categoriesGrid.scrollWidth - categoriesGrid.clientWidth;
+
+                prevBtn.disabled = scrollLeft <= 0;
+                nextBtn.disabled = scrollLeft >= maxScroll - 5; // 5px tolerance
+            };
+
+            categoriesGrid.addEventListener('scroll', updateButtonStates);
+            updateButtonStates(); // Initial state
+
+            // Hide buttons if no scroll needed
+            const checkIfScrollNeeded = () => {
+                const needsScroll = categoriesGrid.scrollWidth > categoriesGrid.clientWidth;
+                prevBtn.style.display = needsScroll ? 'flex' : 'none';
+                nextBtn.style.display = needsScroll ? 'flex' : 'none';
+            };
+
+            checkIfScrollNeeded();
+            window.addEventListener('resize', checkIfScrollNeeded);
+        }
+
+        window.addEventListener('load', setupCategoryNavigation);
 
         // Category selection
         document.querySelectorAll('.category-item').forEach(item => {
@@ -3169,8 +3280,11 @@
                         // Réattacher les événements
                         attachCategoryEvents();
 
-                        // Réinitialiser la pagination
-                        setTimeout(() => initializeCategoryPagination(), 100);
+                        // Réinitialiser la pagination et la navigation
+                        setTimeout(() => {
+                            initializeCategoryPagination();
+                            setupCategoryNavigation();
+                        }, 100);
                     }
                 })
                 .catch(error => console.error('Erreur lors du chargement des catégories:', error));
