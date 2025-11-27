@@ -1230,12 +1230,12 @@
                 max-width: 100% !important;
                 overflow-x: auto;
                 overflow-y: hidden;
+                gap: 0 !important; /* Supprimer l'espace sur mobile */
             }
 
-            /* Ajuster les boutons de navigation sur mobile */
+            /* Masquer les boutons de navigation sur mobile */
             .category-nav-btn {
-                width: 36px;
-                height: 36px;
+                display: none !important;
             }
 
             .categories-grid {
@@ -1824,12 +1824,12 @@
             .categories-wrapper {
                 width: 100% !important;
                 overflow-x: auto !important;
+                gap: 0 !important; /* Supprimer l'espace sur mobile */
             }
 
-            /* Ajuster les boutons de navigation sur mobile */
+            /* Masquer les boutons de navigation sur mobile */
             .category-nav-btn {
-                width: 36px;
-                height: 36px;
+                display: none !important;
             }
 
             .categories-grid {
