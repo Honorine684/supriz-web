@@ -1232,9 +1232,10 @@
                 overflow-y: hidden;
             }
 
-            /* Masquer les boutons de navigation sur mobile */
+            /* Ajuster les boutons de navigation sur mobile */
             .category-nav-btn {
-                display: none !important;
+                width: 36px;
+                height: 36px;
             }
 
             .categories-grid {
@@ -1825,9 +1826,10 @@
                 overflow-x: auto !important;
             }
 
-            /* Masquer les boutons de navigation sur mobile */
+            /* Ajuster les boutons de navigation sur mobile */
             .category-nav-btn {
-                display: none !important;
+                width: 36px;
+                height: 36px;
             }
 
             .categories-grid {
