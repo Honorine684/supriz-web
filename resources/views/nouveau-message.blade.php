@@ -146,6 +146,7 @@
             scrollbar-width: none; /* Firefox */
             -ms-overflow-style: none; /* IE and Edge */
             padding-bottom: 4px;
+            max-width: 504px; /* Limite à 4 catégories visibles (4 * 120px + 3 * 8px gap) */
         }
 
         .categories-grid::-webkit-scrollbar {
@@ -1192,7 +1193,7 @@
             .categories-grid {
                 gap: 10px;
                 padding-bottom: 8px;
-                max-width: none;
+                max-width: 260px; /* Limite à 3 catégories visibles sur mobile (3 * 80px + 2 * 10px gap) */
             }
 
             .category-item {
@@ -1779,6 +1780,7 @@
 
             .categories-grid {
                 gap: 10px !important;
+                max-width: 260px !important; /* Limite à 3 catégories visibles sur mobile */
             }
 
             .category-item {
