@@ -1241,7 +1241,7 @@
             .categories-grid {
                 gap: 10px;
                 padding-bottom: 8px;
-                max-width: 260px; /* Limite à 3 catégories visibles sur mobile (3 * 80px + 2 * 10px gap) */
+                max-width: 460px; /* Limite à 3 catégories visibles sur mobile (3 * 80px + 2 * 10px gap) */
             }
 
             .category-item {
@@ -1834,7 +1834,7 @@
 
             .categories-grid {
                 gap: 10px !important;
-                max-width: 260px !important; /* Limite à 3 catégories visibles sur mobile */
+                max-width: 460px !important; /* Limite à 3 catégories visibles sur mobile */
             }
 
             .category-item {
