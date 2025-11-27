@@ -102,9 +102,18 @@ public function edit($id)
 {
     $sousCategorie = SousCategorie::find($id);
     $sousCategories = SousCategorie::with('categorie')->get(); // Pour la liste des catégories existantes
+
+    // Récupérer les catégories Supriz prédéfinies
+    $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
+    $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+
+    $suprizPredefinies = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+        ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
+        ->get();
+
     $active_link = "ca";
 
-    return view('categorie', compact('sousCategorie', 'sousCategories', 'active_link'));
+    return view('categorie', compact('sousCategorie', 'sousCategories', 'suprizPredefinies', 'active_link'));
 }
 
 public function update(Request $request, $id)
