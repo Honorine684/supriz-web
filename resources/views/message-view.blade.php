@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $message->titre }} - Supriz</title>
+
+    <!-- Open Graph Meta Tags pour le partage sur les réseaux sociaux -->
+    <meta property="og:title" content="{{ $message->titre }} - Supriz">
+    <meta property="og:description" content="{{ Str::limit($message->message_texte, 150) }}">
+    <meta property="og:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/logo.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Supriz">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $message->titre }} - Supriz">
+    <meta name="twitter:description" content="{{ Str::limit($message->message_texte, 150) }}">
+    <meta name="twitter:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/logo.png') }}">
+
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * {

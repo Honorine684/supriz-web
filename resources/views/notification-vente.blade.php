@@ -42,10 +42,10 @@
 
         </div>
 
-        <div class="flex mt-3 "><a href="{{ route('notificationVente') }}"><span
+        <div class="flex mt-3 "><a href="{{ route('admin.notificationVente') }}"><span
                     class="mr-4 cursor-pointer border-bottom-design text-color-design">Notification ventes</span></a><a
-                href="{{ route('notificationSupriz') }}"><span class="mr-4 cursor-pointer">Notification
-                    Suppriz</span></a><a href="{{ route('notificationCompte') }}"><span
+                href="{{ route('admin.notificationSupriz') }}"><span class="mr-4 cursor-pointer">Notification
+                    Suppriz</span></a><a href="{{ route('admin.notificationCompte') }}"><span
                     class="cursor-pointer ">Notification Compte Client</span></a></div>
         <hr class="mb-10">
 
@@ -275,7 +275,7 @@
                             <span class="">Livraison :</span>
                             <span class="text-yellow-500">En attente</span>
                         </div>
-                        <form action="{{ route('close.shop') }}" method="POST" class="mt-4">
+                        <form action="{{ route('admin.close.shop') }}" method="POST" class="mt-4">
                             @csrf
                             <div class="mb-4">
                                 <label for="code" class="block text-sm font-medium text-gray-700 mb-2">Entrez le

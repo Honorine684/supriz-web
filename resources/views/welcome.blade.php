@@ -436,7 +436,7 @@
             position: relative;
             width: 100%;
             max-width: 300px;
-            margin: 4vh auto;
+            margin: 4vh auto !important;
         }
 
         /* Mobile styles */
@@ -464,7 +464,7 @@
             }
 
             .hero-person-animation-mobile {
-                margin: 20px auto 0;
+                margin: 6vh auto 0 !important;
             }
 
             .hero-content {
@@ -1206,11 +1206,6 @@
             [style*="display: grid"],
             [class*="grid"] {
                 grid-template-columns: 1fr !important;
-            }
-
-            /* Fix absolute positioned elements */
-            [style*="position: absolute"] {
-                max-width: calc(100% - 30px) !important;
             }
 
             /* Hero Section */
@@ -2069,9 +2064,9 @@
 
                     <!-- Image on mobile - below button -->
                     <div class="hero-image-mobile">
-                        <div class="hero-person-animation-mobile" style="position: relative; width: 100%; max-width: 300px; margin: 30px auto 0;">
-                            <img src="{{ asset('images/landing/Property 1=Default.svg') }}" alt="Person 1" class="person-image-mobile person-1-mobile" style="position: relative; width: 100%; height: auto; display: block;">
-                            <img src="{{ asset('images/landing/Property 1=Variant2.svg') }}" alt="Person 2" class="person-image-mobile person-2-mobile" style="position: absolute; top: 0; left: 0; width: 100%; height: auto; display: none;">
+                        <div class="hero-person-animation-mobile">
+                            <img src="{{ asset('images/landing/Property 1=Default.svg') }}" alt="Person 1" class="person-image-mobile person-1-mobile" style="position: relative; width: 1200px !important; height: auto; display: block;">
+                            <img src="{{ asset('images/landing/Property 1=Variant2.svg') }}" alt="Person 2" class="person-image-mobile person-2-mobile" style="position: absolute; top: 0; left: 0; width: 1200px !important; height: auto; display: none;">
                             <img src="{{ asset('images/landing/Confetti Papers.svg') }}" alt="Confetti" class="floating-icon-mobile confetti-icon-mobile" style="position: absolute; width: 50px; height: auto; top: 5%; left: 5%; animation: float 3s ease-in-out infinite; z-index: 10;">
                             <img src="{{ asset('images/landing/Social Slang.svg') }}" alt="Social" class="floating-icon-mobile social-icon-mobile" style="position: absolute; width: 45px; height: auto; top: 15%; right: 10%; animation: float 4s ease-in-out infinite 0.5s; z-index: 10;">
                         </div>
@@ -2471,10 +2466,10 @@
                                 @enderror
                             </div>
                             <button type="submit" class="btn w-100" style="background: #005792; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 500; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform: rotate(-45deg);">
+                                Envoyez votre requête
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform: rotate(-45deg); flex-shrink: 0;">
                                     <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-                                Envoyez votre requête
                             </button>
                         </form>
                     </div>

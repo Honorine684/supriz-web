@@ -60,7 +60,7 @@
         @endif
 
 
-        <form class="mt-5" action="{{ isset($sousCategorie) ? route('categorie.update', $sousCategorie->id) : route('add.categorie') }}" method="POST" enctype="multipart/form-data">
+        <form class="mt-5" action="{{ isset($sousCategorie) ? route('admin.categorie.update', $sousCategorie->id) : route('admin.add.categorie') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if(isset($sousCategorie))
                 @method('PUT')
@@ -98,7 +98,7 @@
                     <span class="text-xs text-gray-500">- Texte affiché dans le champ titre du formulaire</span>
                 </label>
                 <input type="text" name="placeholder_texte" id="placeholder_texte" class="block w-full p-2 border rounded"
-                       placeholder="Ex: Joyeux anniversaire John Doe"
+                       placeholder="Ex: Joyeux anniversaire Admin"
                        value="{{ isset($sousCategorie) ? $sousCategorie->placeholder_texte : '' }}">
                 <p class="text-xs text-gray-500 mt-1">Ce texte sera affiché comme exemple dans le champ "Titre du message"</p>
                 @error('placeholder_texte')
@@ -219,7 +219,7 @@
                 <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5F2FF;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3 style="font-size: 1.125rem; font-weight: bold; color: #005792;">{{ $supriz->name_sous_categories }}</h3>
-                        <form action="{{ route('categorie.toggleStatus', $supriz->id) }}" method="POST" style="display: inline;">
+                        <form action="{{ route('admin.categorie.toggleStatus', $supriz->id) }}" method="POST" style="display: inline;">
                             @csrf
                             <button type="submit"
                                     style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $supriz->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $supriz->is_active ? '#166534' : '#991b1b' }};">
@@ -243,7 +243,7 @@
                                     </svg>
                                 </div>
                             @endif
-                            <form action="{{ route('categorie.updateSuprizIcone', $supriz->id) }}" method="POST" enctype="multipart/form-data" style="flex: 1;">
+                            <form action="{{ route('admin.categorie.updateSuprizIcone', $supriz->id) }}" method="POST" enctype="multipart/form-data" style="flex: 1;">
                                 @csrf
                                 <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #005792; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
                                     <input type="file" name="icone" accept="image/*" onchange="this.form.submit()" style="display: none;">
@@ -274,7 +274,7 @@
                         </div>
                         @endif
 
-                        <form action="{{ route('categorie.updateSuprizImage', $supriz->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('admin.categorie.updateSuprizImage', $supriz->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #005792; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
                                 <input type="file" name="image" accept="image/*,.gif" onchange="this.form.submit()" style="display: none;">
@@ -364,7 +364,7 @@
                                         @endif
                                     </td>
                                     <td style="padding: 1rem 1.5rem; text-align: center;">
-                                        <form action="{{ route('categorie.toggleStatus', $sousCategorie->id) }}" method="POST" style="display: inline;">
+                                        <form action="{{ route('admin.categorie.toggleStatus', $sousCategorie->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             <button type="submit"
                                                     style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; background-color: {{ $sousCategorie->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $sousCategorie->is_active ? '#166534' : '#991b1b' }};"
@@ -383,14 +383,14 @@
 
                                         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                                             @if(!$isPredefined)
-                                                <a href="{{ route('categorie.edit', $sousCategorie->id) }}"
+                                                <a href="{{ route('admin.categorie.edit', $sousCategorie->id) }}"
                                                    style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #A4A9B7BF; transition: background-color 0.2s;"
                                                    onmouseover="this.style.backgroundColor='#8e94a3'"
                                                    onmouseout="this.style.backgroundColor='#A4A9B7BF'"
                                                    title="Modifier">
                                                     <img src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Modifier" style="width: 20px; height: 20px;">
                                                 </a>
-                                                <form action="{{ route('categorie.destroy', $sousCategorie->id) }}"
+                                                <form action="{{ route('admin.categorie.destroy', $sousCategorie->id) }}"
                                                       method="POST"
                                                       onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ?')"
                                                       style="display: inline-block;">

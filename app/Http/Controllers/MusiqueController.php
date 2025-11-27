@@ -58,7 +58,7 @@ class MusiqueController extends Controller
             'is_predefined' => false,
         ]);
 
-        return redirect()->route('musique')->with('success', 'Musique ajoutée avec succès');
+        return redirect()->route('admin.musique')->with('success', 'Musique ajoutée avec succès');
     }
 
     /**
@@ -97,7 +97,7 @@ class MusiqueController extends Controller
             'duree' => $duree,
         ]);
 
-        return redirect()->route('musique')->with('success', 'Musique mise à jour avec succès');
+        return redirect()->route('admin.musique')->with('success', 'Musique mise à jour avec succès');
     }
 
     /**
@@ -115,7 +115,7 @@ class MusiqueController extends Controller
         $musique->save();
 
         $status = $musique->is_active ? 'activée' : 'désactivée';
-        return redirect()->route('musique')->with('success', "Musique {$status} avec succès");
+        return redirect()->route('admin.musique')->with('success', "Musique {$status} avec succès");
     }
 
     /**
@@ -136,7 +136,7 @@ class MusiqueController extends Controller
 
         $musique->delete();
 
-        return redirect()->route('musique')->with('success', 'Musique supprimée avec succès');
+        return redirect()->route('admin.musique')->with('success', 'Musique supprimée avec succès');
     }
 
     /**

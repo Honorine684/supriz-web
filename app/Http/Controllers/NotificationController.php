@@ -33,7 +33,7 @@ class NotificationController extends Controller
         ]);
 
         // Rediriger vers la page des notifications avec un message de succès
-        return redirect()->route('notification')->with('success', 'Notification envoyée avec succès.');
+        return redirect()->route('admin.notifications')->with('success', 'Notification envoyée avec succès.');
     }
 
 }

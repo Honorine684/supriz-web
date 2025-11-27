@@ -61,7 +61,7 @@
 
 
         <form class="mt-5"
-            action="{{ isset($depenseEdit) ? route('depenses.update', $depenseEdit->id) : route('depenses.store') }}"
+            action="{{ isset($depenseEdit) ? route('admin.depenses.update', $depenseEdit->id) : route('admin.depenses.store') }}"
             method="POST">
             @csrf
             @if (isset($depenseEdit))
@@ -131,7 +131,7 @@
                                 </td>
 
                                 <td class="flex px-4 py-2 ">
-                                    <a href="{{ route('depenses.edit', $depense->id) }}"><span
+                                    <a href="{{ route('admin.depenses.edit', $depense->id) }}"><span
                                             class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer"><img
                                                 class="relative top-1"
                                                 src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}"
@@ -141,7 +141,7 @@
 
                                     </a>
 
-                                    <form action="{{ route('depenses.destroy', $depense->id) }}" method="POST"
+                                    <form action="{{ route('admin.depenses.destroy', $depense->id) }}" method="POST"
                                         class="text-[13px] font-medium text-gray-400 cursor-pointer">
                                         @csrf
                                         @method('DELETE')

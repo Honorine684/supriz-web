@@ -81,7 +81,7 @@ class CategorieController extends Controller
             'icone' => $iconePath,
         ]);
 
-        return redirect()->route('categorie')->with('success', 'Sous-catégorie ajoutée avec succès');
+        return redirect()->route('admin.categorie')->with('success', 'Sous-catégorie ajoutée avec succès');
     }
 
     public function deleteCategorie($id)
@@ -156,7 +156,7 @@ public function update(Request $request, $id)
         'icone' => $iconePath,
     ]);
 
-    return redirect()->route('categorie')->with('success', 'Sous-catégorie mise à jour avec succès');
+    return redirect()->route('admin.categorie')->with('success', 'Sous-catégorie mise à jour avec succès');
 }
 
 public function toggleStatus($id)
@@ -171,7 +171,7 @@ public function toggleStatus($id)
     $sousCategorie->save();
 
     $status = $sousCategorie->is_active ? 'activée' : 'désactivée';
-    return redirect()->route('categorie')->with('success', "Sous-catégorie {$status} avec succès");
+    return redirect()->route('admin.categorie')->with('success', "Sous-catégorie {$status} avec succès");
 }
 
 public function updateSuprizImage(Request $request, $id)
@@ -198,7 +198,7 @@ public function updateSuprizImage(Request $request, $id)
         $sousCategorie->save();
     }
 
-    return redirect()->route('categorie')->with('success', 'Image mise à jour avec succès');
+    return redirect()->route('admin.categorie')->with('success', 'Image mise à jour avec succès');
 }
 
 public function updateSuprizIcone(Request $request, $id)
@@ -225,7 +225,7 @@ public function updateSuprizIcone(Request $request, $id)
         $sousCategorie->save();
     }
 
-    return redirect()->route('categorie')->with('success', 'Icône mise à jour avec succès');
+    return redirect()->route('admin.categorie')->with('success', 'Icône mise à jour avec succès');
 }
 
 }

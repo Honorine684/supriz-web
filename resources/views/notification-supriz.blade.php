@@ -40,10 +40,10 @@
 
         </div>
 
-        <div class="flex mt-3"><a href="{{ route('notificationVente') }}"><span class="mr-4 cursor-pointer">Notification
-                    ventes</span></a><a href="{{ route('notificationSupriz') }}"><span
+        <div class="flex mt-3"><a href="{{ route('admin.notificationVente') }}"><span class="mr-4 cursor-pointer">Notification
+                    ventes</span></a><a href="{{ route('admin.notificationSupriz') }}"><span
                     class="mr-4 cursor-pointer border-bottom-design text-color-design">Notification Suppriz</span></a><a
-                href="{{ route('notificationCompte') }}"><span class="cursor-pointer ">Notification Compte
+                href="{{ route('admin.notificationCompte') }}"><span class="cursor-pointer ">Notification Compte
                     Client</span></a></div>
         <hr>
 
@@ -121,7 +121,7 @@
                                     </tfoot>
                                 </table>
                             </div>
-                            <form action="{{route('close.supriz')}}" method="POST">
+                            <form action="{{route('admin.close.supriz')}}" method="POST">
                                 @csrf
                                 <input type="hidden" name="supriz_id" value="{{$supriz->id}}">
                                 <button class="relative w-full p-1 mt-4 text-white bg-green-600 rounded" type="submit">Validé</button>

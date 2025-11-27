@@ -111,7 +111,7 @@
                 </div>
             </div>
 
-            <form action="{{ route('musique.store') }}" method="POST" enctype="multipart/form-data" id="addMusiqueForm">
+            <form action="{{ route('admin.musique.store') }}" method="POST" enctype="multipart/form-data" id="addMusiqueForm">
                 @csrf
 
                 <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
@@ -252,7 +252,7 @@
 
                                 <!-- Statut -->
                                 <div>
-                                    <form action="{{ route('musique.toggleStatus', $musique->id) }}" method="POST">
+                                    <form action="{{ route('admin.musique.toggleStatus', $musique->id) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="px-4 py-2 font-semibold text-white rounded-lg transition-all hover:opacity-90"
                                                 style="background-color: {{ $musique->is_active ? '#10B981' : '#EF4444' }};">
@@ -267,7 +267,7 @@
 
                                 <!-- Actions -->
                                 <div>
-                                    <form action="{{ route('musique.destroy', $musique->id) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.musique.destroy', $musique->id) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"

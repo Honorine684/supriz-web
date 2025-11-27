@@ -40,9 +40,9 @@
     </div>
 
     <div class="flex mt-3">
-        <a href="{{ route('notification') }}"><span class="mr-4 cursor-pointer border-bottom-design text-color-design">Rédiger une
+        <a href="{{ route('admin.notifications') }}"><span class="mr-4 cursor-pointer border-bottom-design text-color-design">Rédiger une
             notification</span></a>
-        <a href="{{ route('publicite') }}"><span class="cursor-pointer ">Faire une publicité</span></a>
+        <a href="{{ route('admin.publicite') }}"><span class="cursor-pointer ">Faire une publicité</span></a>
     </div>
     <hr>
 
@@ -64,7 +64,7 @@
             <p class="text-center">Aucune données disponible</p>
         @endif
 
-        <form action="{{route('notification.store')}}" method="POST">
+        <form action="{{route('admin.notification.store')}}" method="POST">
             @csrf
             <div class="fixed flex w-200 p-5 m-0 pr-8 cursor-pointer bg-gray-50 bottom-10">
                 <textarea name="contenus" placeholder="Tapez votre message ici.."

@@ -1994,7 +1994,7 @@
                     <!-- Title -->
                     <div class="form-group">
                         <label class="form-label">Titre du message *</label>
-                        <input type="text" class="form-control" name="titre" id="messageTitle" placeholder="Ex: Joyeux anniversaire John Doe" maxlength="60" required>
+                        <input type="text" class="form-control" name="titre" id="messageTitle" placeholder="Ex: Joyeux anniversaire Admin" maxlength="60" required>
                         <div class="char-counter" id="titleCounter">0/60</div>
                     </div>
 
@@ -2770,7 +2770,7 @@
             if (navigator.share) {
                 navigator.share({
                     title: 'Message Supriz',
-                    text: 'Découvrez mon message surprise!',
+                    text: 'Un petit mot rien que pour toi 💌',
                     url: url
                 }).catch(err => console.log('Error sharing:', err));
             } else {

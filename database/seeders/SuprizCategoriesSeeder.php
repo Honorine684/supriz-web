@@ -25,7 +25,7 @@ class SuprizCategoriesSeeder extends Seeder
         $sousCategories = [
             [
                 'name' => 'Anniversaire',
-                'placeholder' => 'Ex: Joyeux anniversaire John Doe',
+                'placeholder' => 'Ex: Joyeux anniversaire Admin',
                 'icone' => 'categories/Birthday Cake.png',
             ],
             [

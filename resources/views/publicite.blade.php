@@ -40,8 +40,8 @@
 
         </div>
 
-        <div class="flex mt-3"><a href="{{ route('notification') }}"><span class="mr-4 cursor-pointer">Rédiger une
-                    notification</span></a><a href="{{ route('publicite') }}"><span
+        <div class="flex mt-3"><a href="{{ route('admin.notifications') }}"><span class="mr-4 cursor-pointer">Rédiger une
+                    notification</span></a><a href="{{ route('admin.publicite') }}"><span
                     class="cursor-pointer text-color-design border-bottom-design">Faire une publicité</span></a></div>
         <hr class="bottom-10">
         <div class="p-2">
@@ -59,7 +59,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('publicite.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.publicite.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <h1 class="mt-4 font-bold text-color-design f-20">Faire une publicité</h1>
                 <div class="h-input-file relative">
@@ -110,7 +110,7 @@
                 @foreach ($publicite as $item)
                     <div class="grid p-3 mr-3 rounded-20 bg-gray-primary2">
                         <div class="relative img-pub image-publicite">
-                            <form action="{{ route('publicite.destroy', $item->id) }}" method="POST" class="absolute right-0 float-right cursor-pointer text-end ">
+                            <form action="{{ route('admin.publicite.destroy', $item->id) }}" method="POST" class="absolute right-0 float-right cursor-pointer text-end ">
                                 @csrf
                                 @method('DELETE') <!-- Cette méthode est utilisée pour les requêtes de suppression -->
                                 <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette Publicite ?')"><img src="{{ asset('/images/svg/streamline_delete-1-solid.svg') }}"

@@ -45,7 +45,7 @@
         @endif
 
 
-        <form action="{{ route('updateprofil') }}" class=" mt-6 relative" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.updateprofil') }}" class=" mt-6 relative" method="POST" enctype="multipart/form-data">
             @csrf <!-- Protection CSRF -->
 
             <div class="h-input-file rounded-pofil relative">
@@ -66,13 +66,13 @@
                         <span class="font-bold mb-3">Nom : </span>
                         <input type="text" value="{{ $user->nom }}"
                             class="border-none mr-10 index-30 rounded bg-transparent" name="nom"
-                            placeholder="John Doe">
+                            placeholder="Admin">
                     </div>
 
                     <div class="w-full grid mr-7">
                         <span class="font-bold mb-3">Prenom : </span>
                         <input type="text" value="{{ $user->prenom }}"
-                            class="border-none mr-10 rounded bg-transparent" name="prenom" placeholder="John Doe">
+                            class="border-none mr-10 rounded bg-transparent" name="prenom" placeholder="Admin">
                     </div>
 
                     <div class="w-full ml-7 grid">

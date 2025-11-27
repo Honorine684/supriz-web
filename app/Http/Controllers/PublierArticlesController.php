@@ -217,7 +217,7 @@ public function update(Request $request, $id)
         $produits = Product::all()->take(7);
         $active_link = "s";
         // Rediriger avec un message de succès
-        return redirect()->route('publierArticles')  // Remplacez 'article.index' par le nom de votre route de redirection
+        return redirect()->route('admin.publierArticles')  // Remplacez 'article.index' par le nom de votre route de redirection
         ->with('success', 'Modification réussie !');
         } catch (\Exception $e) {
         // En cas d'erreur, rediriger avec un message d'erreur

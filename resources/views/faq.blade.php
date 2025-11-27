@@ -53,7 +53,7 @@
         </div>
     @endif
 
-    <form action="{{ isset($faq) ? route('faq.update', $faq->id) : route('store.faq') }}" method="POST">
+    <form action="{{ isset($faq) ? route('admin.faq.update', $faq->id) : route('admin.store.faq') }}" method="POST">
         @csrf
         @if(isset($faq))
             @method('PUT')
@@ -113,12 +113,12 @@
 
         <td class="flex px-4 py-2">
             <!-- Bouton Modifier -->
-            <a href="{{ route('faq.edit', $faq->id) }}" class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer">
+            <a href="{{ route('admin.faq.edit', $faq->id) }}" class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer">
                 <img class="relative top-1" src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Modifier">
             </a>
 
             <!-- Bouton Supprimer -->
-            <form action="{{ route('faq.destroy', $faq->id) }}" method="POST" class="text-[13px] font-medium text-gray-400 cursor-pointer">
+            <form action="{{ route('admin.faq.destroy', $faq->id) }}" method="POST" class="text-[13px] font-medium text-gray-400 cursor-pointer">
                 @csrf
                 @method('DELETE')
                 <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer la FAQ ?')">

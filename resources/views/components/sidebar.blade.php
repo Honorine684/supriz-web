@@ -5,97 +5,89 @@
     </a>
     <ul class="margin-nav-coustum index-30">
         <li class="mb-1 group @if ($active_link == 'maison') active @endif">
-            <a href="{{ route('maison') }}"
+            <a href="{{ route('admin.dashboard') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-home-2-line"></i> <!-- Icon for Maison -->
-                <span class="text-sm">Maison</span>
-            </a>
-        </li>
-
-        <li class="mb-1 group @if ($active_link == 'h') active @endif">
-            <a href="{{ route('home') }}"
-                class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-dashboard-line"></i> <!-- Icon for Dashboard -->
+                <i class="mr-3 text-lg ri-dashboard-line"></i>
                 <span class="text-sm">Dashboard</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'c') active @endif">
-            <a href="{{ route('client') }}"
+            <a href="{{ route('admin.clients') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-user-3-line"></i> <!-- Icon for Clients -->
+                <i class="mr-3 text-lg ri-user-3-line"></i>
                 <span class="text-sm">Clients</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 's') active @endif">
-            <a href="{{ route('stocks') }}"
+            <a href="{{ route('admin.stocks') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-archive-line"></i> <!-- Icon for Stock -->
+                <i class="mr-3 text-lg ri-archive-line"></i>
                 <span class="text-sm">Stock</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'ca') active @endif">
-            <a href="{{ route('categorie') }}"
+            <a href="{{ route('admin.categorie') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-archive-line"></i> <!-- Icon for Stock -->
+                <i class="mr-3 text-lg ri-list-check"></i>
                 <span class="text-sm">Catégorie</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'musique') active @endif">
-            <a href="{{ route('musique') }}"
+            <a href="{{ route('admin.musique') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-music-2-line"></i> <!-- Icon for Musique -->
+                <i class="mr-3 text-lg ri-music-2-line"></i>
                 <span class="text-sm">Musiques</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'r') active @endif">
-            <a href="{{ route('rapportJournalier') }}"
+            <a href="{{ route('admin.rapportJournalier') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-bar-chart-box-line"></i> <!-- Icon for Rapport -->
+                <i class="mr-3 text-lg ri-bar-chart-box-line"></i>
                 <span class="text-sm">Rapport</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'dep') active @endif">
-            <a href="{{ route('depenses') }}"
+            <a href="{{ route('admin.depenses') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-bar-chart-box-line"></i> <!-- Icon for Rapport -->
+                <i class="mr-3 text-lg ri-money-dollar-circle-line"></i>
                 <span class="text-sm">Dépenses</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'm') active @endif">
-            <a href="{{ route('notification') }}"
+            <a href="{{ route('admin.notifications') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-message-2-line"></i> <!-- Icon for Message -->
+                <i class="mr-3 text-lg ri-message-2-line"></i>
                 <span class="text-sm">Message</span>
             </a>
         </li>
 
         <li class="mb-1 group @if ($active_link == 'n') active @endif">
-            <a href="{{ route('notificationVente') }}"
+            <a href="{{ route('admin.notificationVente') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-notification-line"></i> <!-- Icon for Notifications -->
+                <i class="mr-3 text-lg ri-notification-line"></i>
                 <span class="text-sm">Notifications</span>
             </a>
         </li>
 
         <li class="group @if ($active_link == 'faq') active @endif">
-            <a href="{{ route('faq') }}"
+            <a href="{{ route('admin.faq') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-settings-3-line"></i> <!-- Icon for Paramètres -->
+                <i class="mr-3 text-lg ri-question-line"></i>
                 <span class="text-sm">FAQ</span>
             </a>
         </li>
 
         <li class="mb-6 group @if ($active_link == 'p') active @endif">
-            <a href="{{ route('parametre') }}"
+            <a href="{{ route('admin.parametre') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
-                <i class="mr-3 text-lg ri-settings-3-line"></i> <!-- Icon for Paramètres -->
+                <i class="mr-3 text-lg ri-settings-3-line"></i>
                 <span class="text-sm">Paramètres</span>
             </a>
         </li>
@@ -110,7 +102,7 @@
         @endif
         
 
-            <div class="grid ml-2"><span class="text-white">John doe</span><span>Admin</span></div>
+            <div class="grid ml-2"><span class="text-white">Admin</span><span>Admin</span></div>
         </li>
     </ul>
 

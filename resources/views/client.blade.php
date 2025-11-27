@@ -87,7 +87,7 @@ document.getElementById('search-client').addEventListener('input', function () {
     let query = this.value;
 
     // AJAX request to search clients
-    fetch(`{{ route('search.clients') }}?query=${query}`)
+    fetch(`{{ route('admin.search.clients') }}?query=${query}`)
         .then(response => response.text())
         .then(html => {
             document.getElementById('client-list').innerHTML = html;

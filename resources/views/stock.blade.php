@@ -62,7 +62,7 @@
 
         <div class="flex items-center justify-between mb-4">
             <p class="font-light text-black">Informations sur les produits</p>
-            <a href="{{ route('publierArticles') }}" class="flex p-2 text-white bg-green-900 rounded-20"><span><img
+            <a href="{{ route('admin.publierArticles') }}" class="flex p-2 text-white bg-green-900 rounded-20"><span><img
                         class="mr-2" src="{{ asset('/images/svg/add-square_svgrepo.com.svg') }}"
                         alt=""></span> <span>Ajouter
                     un produit</span></a>
@@ -106,10 +106,10 @@
                                 <span class="text-[13px] font-medium text-gray-400">{{ $item->entreprise }}</span>
                             </td>
                             <td class="flex px-4 py-2">
-                                <a href="{{ route('article.edit', $item->id) }}" class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer">
+                                <a href="{{ route('admin.article.edit', $item->id) }}" class="mr-2 text-[13px] font-medium text-gray-400 cursor-pointer">
                                     <img class="relative top-1" src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Editer">
                                 </a>
-                                <form action="{{ route('produit.destroy', $item->id) }}" method="POST" class="text-[13px] font-medium text-gray-400 cursor-pointer">
+                                <form action="{{ route('admin.produit.destroy', $item->id) }}" method="POST" class="text-[13px] font-medium text-gray-400 cursor-pointer">
                                     @csrf
                                     @method('DELETE')
                                     <!-- Cette méthode est utilisée pour les requêtes de suppression -->
@@ -144,7 +144,7 @@
                 var statut = $(this).val();
 
                 $.ajax({
-                    url: "{{ route('produit.changerStatut') }}",
+                    url: "{{ route('admin.produit.changerStatut') }}",
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',

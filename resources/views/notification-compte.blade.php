@@ -42,10 +42,10 @@
 
         </div>
 
-        <div class="flex mt-3"><a href="{{ route('notificationVente') }}"><span class="mr-4 cursor-pointer">Notification
-                    ventes</span></a><a href="{{ route('notificationSupriz') }}"><span
+        <div class="flex mt-3"><a href="{{ route('admin.notificationVente') }}"><span class="mr-4 cursor-pointer">Notification
+                    ventes</span></a><a href="{{ route('admin.notificationSupriz') }}"><span
                     class="mr-4 cursor-pointer">Notification Suppriz</span></a><a
-                href="{{ route('notificationCompte') }}"><span
+                href="{{ route('admin.notificationCompte') }}"><span
                     class="cursor-pointer border-bottom-design text-color-design">Notification Compte Client</span></a>
         </div>
         <hr>
@@ -61,7 +61,7 @@
             let query = this.value;
     
             // Requête AJAX pour récupérer les résultats filtrés
-            fetch(`{{ route('search.users') }}?query=${query}`)
+            fetch(`{{ route('admin.search.users') }}?query=${query}`)
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('user-list').innerHTML = html;

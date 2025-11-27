@@ -27,7 +27,7 @@ class DepensesController extends Controller
             'prix' => $request->prix,
         ]);
     
-        return redirect()->route('depenses')->with('success', 'Dépense ajoutée avec succès');
+        return redirect()->route('admin.depenses')->with('success', 'Dépense ajoutée avec succès');
     }
 
     public function deleteDepenses($id)
@@ -70,9 +70,9 @@ public function update(Request $request, $id)
             'prix' => $request->prix,
         ]);
 
-        return redirect()->route('depenses')->with('success', 'Dépense modifiée avec succès.');
+        return redirect()->route('admin.depenses')->with('success', 'Dépense modifiée avec succès.');
     } else {
-        return redirect()->route('depenses')->with('error', 'Dépense introuvable.');
+        return redirect()->route('admin.depenses')->with('error', 'Dépense introuvable.');
     }
 }
 
