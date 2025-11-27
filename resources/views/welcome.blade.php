@@ -2423,9 +2423,9 @@
             <h2 class="text-center" style="font-size: 48px; font-weight: 700; color: #1A1A1A; margin-bottom: 20px;">Contactez-nous</h2>
             <p class="text-center" style="font-size: 16px; color: #666; margin-bottom: 60px;">Notre équipe d'experts est à votre disposition pour répondre à toutes vos préoccupations</p>
 
-            <div class="row justify-content-center">
+            <div class="row align-items-start" style="gap: 40px 0;">
                 <!-- Formulaire de contact -->
-                <div class="col-lg-8 col-md-10">
+                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
                     <div style="background: #E8E8E8; padding: 40px; border-radius: 15px;">
                         @if(session('success'))
                             <div class="alert alert-success" style="border-radius: 8px; margin-bottom: 20px; padding: 15px; background-color: #d1fae5; border: 1px solid #059669; color: #065f46;">
@@ -2472,6 +2472,27 @@
                                 </svg>
                             </button>
                         </form>
+                    </div>
+                </div>
+
+                <!-- Coordonnées -->
+                <div class="col-lg-6 col-md-12">
+                    <div style="border: 2px dashed #005792; border-radius: 15px; padding: 40px; background: #F8FBFD; min-height: 100%;">
+                        <h3 style="font-size: 24px; font-weight: 600; color: #1A1A1A; margin-bottom: 30px;">Nos coordonnées</h3>
+
+                        <div class="mb-4">
+                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Email</p>
+                            <p style="color: #666; margin: 0; font-size: 15px;">contact@suprizs.com</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Téléphone</p>
+                            <p style="color: #666; margin: 0; font-size: 15px;">+229 01 61 55 66 80</p>
+                        </div>
+
+                        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #ddd;">
+                            <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">Une question ? Un besoin d'assistance ? Une suggestion ?<br>Notre équipe est à votre écoute.</p>
+                        </div>
                     </div>
                 </div>
             </div>
