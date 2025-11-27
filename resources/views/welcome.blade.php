@@ -1771,8 +1771,8 @@
             }
 
             .occasion-card-new {
-                width: 240px !important;
-                height: 145px !important;
+                width: 140px !important;
+                height: 105px !important;
                 margin: 0 !important;
                 flex-shrink: 0 !important;
             }
