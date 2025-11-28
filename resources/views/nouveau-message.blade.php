@@ -2120,7 +2120,7 @@
         <!-- Form Card -->
         <div class="form-card">
             <div class="form-header">
-                <h1 class="form-title">Envoie un message surprise inoubliable</h1>
+                <h1 class="form-title">Envoie un message supriz inoubliable</h1>
                 <p class="form-subtitle">Choisissez une occasion et faite sourire un proche !!</p>
             </div>
 
@@ -2313,7 +2313,7 @@
     </div>
 
     <!-- Image Crop Modal -->
-    <div class="modal-overlay" id="cropModal" style="display: none;" onclick="closeCropModal(event)">
+    <div class="modal-overlay" id="cropModal" onclick="closeCropModal(event)">
         <div class="modal-content crop-modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h3 class="modal-title">Recadrer l'image</h3>

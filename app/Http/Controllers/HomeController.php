@@ -41,13 +41,13 @@ class HomeController extends Controller
 
         foreach ($categories as $categorie) {
             // Messages du mois en cours
-            $currentMonth = Supriz::where('nom_categorie_suprise', $categorie)
+            $currentMonth = Supriz::where('nom_categorie_supriz', $categorie)
                 ->whereMonth('created_at', Carbon::now()->month)
                 ->whereYear('created_at', Carbon::now()->year)
                 ->count();
 
             // Messages du mois précédent
-            $previousMonth = Supriz::where('nom_categorie_suprise', $categorie)
+            $previousMonth = Supriz::where('nom_categorie_supriz', $categorie)
                 ->whereMonth('created_at', Carbon::now()->subMonth()->month)
                 ->whereYear('created_at', Carbon::now()->subMonth()->year)
                 ->count();
@@ -106,7 +106,7 @@ class HomeController extends Controller
                     'id' => $user->id,
                     'nom' => $user->name ?? 'xxxxxxx',
                     'avatar' => $user->profile_photo_path ?? null,
-                    'categorie' => $user->supriz->last()->nom_categorie_suprise ?? 'Catégorie',
+                    'categorie' => $user->supriz->last()->nom_categorie_supriz ?? 'Catégorie',
                     'date' => $user->created_at->format('d/m/Y')
                 ];
             });

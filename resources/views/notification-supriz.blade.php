@@ -103,7 +103,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="px-4 py-2 border">{{ $supriz->nom_categorie_suprise }}</td>
+                                            <td class="px-4 py-2 border">{{ $supriz->nom_categorie_supriz }}</td>
                                             <td class="px-4 py-2 border">
                                                 {{ $supriz->numero_destinateur ? $supriz->numero_destinateur : 'Non spécifié' }}
                                             </td>
@@ -166,7 +166,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="px-4 py-2 border">{{ $supriz->nom_categorie_suprise }}</td>
+                                            <td class="px-4 py-2 border">{{ $supriz->nom_categorie_supriz }}</td>
                                             <td class="px-4 py-2 border">
                                                 {{ $supriz->numero_destinateur ? $supriz->numero_destinateur : 'Non spécifié' }}
                                             </td>

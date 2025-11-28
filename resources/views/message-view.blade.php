@@ -30,7 +30,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #00789C 0%, #00A3CE 100%);
-            background-image: url('{{ asset('images/landing/Bg.png') }}');
+            background-image: url('{{ asset('images/landing/Bg.svg') }}');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

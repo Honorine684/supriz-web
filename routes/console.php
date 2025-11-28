@@ -55,7 +55,7 @@ Schedule::call(function () {
         ]);
 
         // Ajouter le BilanMessageSupriz
-        $categoriesSupriz = $supriz->groupBy('nom_categorie_suprise');
+        $categoriesSupriz = $supriz->groupBy('nom_categorie_supriz');
         foreach ($categoriesSupriz as $nomCategorie => $categorySupriz) {
             BilanMessageSupriz::create([
                 'nom' => $nomCategorie,

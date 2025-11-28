@@ -12,7 +12,7 @@ class Supriz extends Model
     protected $table = 'supriz'; // Nom de la table
 
     protected $fillable = [
-        'nom_categorie_suprise',
+        'nom_categorie_supriz',
         'users_id',
         'numero_destinateur',
         'prix',

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supriz - Envoie un message surprise inoubliable</title>
+    <title>Supriz - Envoie un message supriz inoubliable</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2046,13 +2046,13 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="accueil" class="hero-section position-relative" style="background-image: url('{{ asset('images/landing/Bg.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+    <section id="accueil" class="hero-section position-relative" style="background-image: url('{{ asset('images/landing/Bg.svg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
         <div class="container hero-container">
             <div class="row align-items-center hero-row">
                 <div class="col-lg-7 col-md-12">
                     <div class="hero-content">
                         <h1 class="hero-title mb-4" style="color: white; font-weight: 700; line-height: 1.1;">
-                            Envoie un message <br>surprise inoubliable
+                            Envoie un message <br>supriz inoubliable
                         </h1>
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
                             Pour anniversaires, mariages, fêtes et toutes les occasions. Exprimez vos vœux, sentiments et intentions d'une manière beaucoup plus originale grâce à un lien unique et mémorable.
@@ -2361,7 +2361,7 @@
                             </svg>
                         </div>
                         <div class="faq-answer-new" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
-                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">Supriz est une plateforme qui permet de créer et envoyer des messages surprise personnalisés pour toutes les occasions spéciales.</p>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">Supriz est une plateforme qui permet de créer et envoyer des messages supriz personnalisés pour toutes les occasions spéciales.</p>
                         </div>
                     </div>
 
@@ -2373,7 +2373,7 @@
                             </svg>
                         </div>
                         <div class="faq-answer-new" style="max-height: 0; overflow: hidden; transition: max-height 0.3s ease;">
-                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">Oui ! Supriz est entièrement gratuit. Tu peux créer et partager autant de messages surprise que tu le souhaites sans aucun frais.</p>
+                            <p style="color: #666; font-size: 16px; line-height: 1.6; margin: 15px 0 0 0; padding-right: 40px;">Oui ! Supriz est entièrement gratuit. Tu peux créer et partager autant de messages supriz que tu le souhaites sans aucun frais.</p>
                         </div>
                     </div>
 
