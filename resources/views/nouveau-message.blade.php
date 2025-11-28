@@ -1101,6 +1101,47 @@
             background: #003555;
         }
 
+        /* Crop Modal Responsive */
+        @media (max-width: 768px) {
+            .crop-modal-content {
+                max-width: 95vw !important;
+                max-height: 90vh !important;
+            }
+
+            .crop-container {
+                max-height: 300px !important;
+            }
+
+            .crop-instructions {
+                font-size: 12px;
+                margin-top: 12px;
+            }
+
+            .modal-footer {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .btn-cancel-crop,
+            .btn-apply-crop {
+                padding: 12px 20px;
+                font-size: 13px;
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .crop-container {
+                max-height: 250px !important;
+            }
+
+            .btn-cancel-crop,
+            .btn-apply-crop {
+                padding: 14px 18px;
+                font-size: 14px;
+            }
+        }
+
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -3072,19 +3113,27 @@
         const musicSection = document.querySelector('.music-section');
 
         mediaFile.addEventListener('change', function(e) {
+            console.log('📁 File input changed');
             const file = e.target.files[0];
+            console.log('📄 Selected file:', file);
             if (file) {
                 handleMediaFile(file);
             }
         });
 
         function handleMediaFile(file) {
+            console.log('🎯 handleMediaFile called with:', file);
             const fileType = file.type;
             const fileURL = URL.createObjectURL(file);
+            console.log('🔗 File URL created:', fileURL);
+            console.log('📝 File type:', fileType);
 
             if (fileType.startsWith('image/')) {
+                console.log('✅ File is an image, opening crop modal');
                 // Ouvrir le modal de crop pour les images
                 openCropModal(fileURL, file);
+            } else {
+                console.log('❌ File is not an image');
             }
         }
 
@@ -3126,42 +3175,88 @@
         let croppedImageBlob = null; // Stocker le blob de l'image recadrée
 
         function openCropModal(imageURL, file) {
+            console.log('🔍 openCropModal called with file:', file);
             originalImageFile = file;
             const cropModal = document.getElementById('cropModal');
             const cropImage = document.getElementById('cropImage');
 
-            cropImage.src = imageURL;
-            cropModal.style.display = 'flex';
+            console.log('📦 cropModal element:', cropModal);
+            console.log('🖼️ cropImage element:', cropImage);
+
+            if (!cropModal || !cropImage) {
+                console.error('❌ Modal elements not found!');
+                alert('Erreur: Éléments du modal non trouvés');
+                return;
+            }
+
+            // Vérifier si Cropper est disponible
+            if (typeof Cropper === 'undefined') {
+                console.error('❌ Cropper.js not loaded!');
+                alert('Erreur: Cropper.js n\'est pas chargé. Veuillez rafraîchir la page.');
+                return;
+            }
+
+            console.log('✅ Cropper.js is loaded');
+
+            // Afficher le modal avec la classe active
+            cropModal.classList.add('active');
+            cropModal.style.zIndex = '10000';
             document.body.style.overflow = 'hidden';
+
+            console.log('✅ Modal active class added');
+            console.log('📏 Modal computed style:', window.getComputedStyle(cropModal).display);
+
+            // Charger l'image et initialiser Cropper.js
+            cropImage.src = imageURL;
+            console.log('🔄 Loading image:', imageURL);
 
             // Initialiser Cropper.js après que l'image soit chargée
             cropImage.onload = function() {
-                if (cropperInstance) {
-                    cropperInstance.destroy();
-                }
+                console.log('✅ Image loaded successfully');
+                // Petit délai pour s'assurer que tout est bien affiché
+                setTimeout(() => {
+                    if (cropperInstance) {
+                        console.log('🗑️ Destroying previous cropper instance');
+                        cropperInstance.destroy();
+                    }
 
-                cropperInstance = new Cropper(cropImage, {
-                    aspectRatio: 1, // Ratio carré
-                    viewMode: 1,
-                    dragMode: 'move',
-                    autoCropArea: 1,
-                    restore: false,
-                    guides: true,
-                    center: true,
-                    highlight: false,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false,
-                    minContainerWidth: 200,
-                    minContainerHeight: 200,
-                });
+                    try {
+                        console.log('🚀 Initializing new Cropper instance');
+                        cropperInstance = new Cropper(cropImage, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 1,
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false,
+                            minContainerWidth: 200,
+                            minContainerHeight: 200,
+                            responsive: true,
+                            checkOrientation: true,
+                        });
+                        console.log('✅ Cropper initialized successfully');
+                    } catch (error) {
+                        console.error('❌ Error initializing Cropper:', error);
+                        alert('Erreur lors de l\'initialisation du recadrage: ' + error.message);
+                    }
+                }, 100);
+            };
+
+            cropImage.onerror = function() {
+                console.error('❌ Error loading image');
+                alert('Erreur lors du chargement de l\'image');
             };
         }
 
         function closeCropModal(event) {
             if (!event || event.target === event.currentTarget || event === undefined) {
                 const cropModal = document.getElementById('cropModal');
-                cropModal.style.display = 'none';
+                cropModal.classList.remove('active');
                 document.body.style.overflow = '';
 
                 if (cropperInstance) {
@@ -3205,7 +3300,6 @@
                 const croppedImageURL = URL.createObjectURL(blob);
                 imagePreview.src = croppedImageURL;
                 imagePreview.style.display = 'block';
-                videoPreview.style.display = 'none';
 
                 uploadPlaceholder.style.display = 'none';
                 mediaPreview.classList.add('active');
