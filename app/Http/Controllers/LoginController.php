@@ -29,8 +29,8 @@ class LoginController extends Controller
         // Tenter de se connecter avec les informations d'identification fournies
         if (Auth::attempt($credentials)) {
             Auth::user()->update(['last_login_at' => Carbon::now()]);
-            // Authentification réussie, rediriger vers la page d'accueil ou tableau de bord
-            return redirect('/'); // Changez 'home' selon vos besoins
+            // Authentification réussie, rediriger vers le dashboard admin
+            return redirect()->route('admin.dashboard');
         }
         // Authentification échouée, rediriger vers le formulaire de connexion avec un message d'erreur
         return back()->withErrors([

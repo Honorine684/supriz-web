@@ -7,6 +7,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <!-- Cropper.js pour le recadrage d'images -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
     <link href="{{ asset('css/nouveau-message-responsive.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="{{ asset('css/nouveau-message-fix.css') }}?v={{ time() }}" rel="stylesheet">
     <link href="{{ asset('css/mobile-fix-final.css') }}?v={{ time() }}" rel="stylesheet">
@@ -758,7 +761,7 @@
             padding: 20px;
             flex: 1;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             overflow-y: auto;
             position: relative;
@@ -1030,6 +1033,72 @@
             padding: 20px;
             overflow-y: auto;
             flex: 1;
+        }
+
+        /* Crop Modal Styles */
+        .crop-modal-content {
+            max-width: 600px;
+        }
+
+        .crop-container {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 0 auto;
+            background: #f3f4f6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #cropImage {
+            max-width: 100%;
+            display: block;
+        }
+
+        .crop-instructions {
+            text-align: center;
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 16px;
+            padding: 0 10px;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px;
+            border-top: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .btn-cancel-crop,
+        .btn-apply-crop {
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel-crop {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-cancel-crop:hover {
+            background: #d1d5db;
+        }
+
+        .btn-apply-crop {
+            background: #005792;
+            color: white;
+        }
+
+        .btn-apply-crop:hover {
+            background: #003555;
         }
 
         @media (max-width: 1200px) {
@@ -1507,10 +1576,12 @@
 
             .modal-body {
                 padding: 18px 20px 20px;
+                display: flex;
+                flex-direction: column;
             }
 
             .preview-content {
-                min-height: 250px !important;
+                min-height: 400px !important;
                 border-radius: 14px;
             }
 
@@ -2066,23 +2137,22 @@
                         <div class="char-counter" id="messageCounter">0/500</div>
                     </div>
 
-                    <!-- Image/Video Upload -->
+                    <!-- Image Upload -->
                     <div class="form-group">
-                        <label class="form-label">Image ou vidéo</label>
+                        <label class="form-label">Image</label>
                         <div class="upload-zone" id="uploadZone" onclick="document.getElementById('mediaFile').click()">
-                            <input type="file" name="media" id="mediaFile" accept="image/*,video/*" style="display: none;">
+                            <input type="file" name="media" id="mediaFile" accept="image/*" style="display: none;">
 
                             <div id="uploadPlaceholder">
                                 <svg class="upload-icon" fill="none" stroke="white" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
-                                <p class="upload-text">Ajouter une image ou vidéo</p>
+                                <p class="upload-text">Ajouter une image</p>
                                 <p class="upload-subtext">Max 10 MB</p>
                             </div>
 
                             <div id="mediaPreview" class="media-preview">
                                 <img id="imagePreview" style="display: none;" alt="Preview">
-                                <video id="videoPreview" controls style="display: none;"></video>
                                 <button type="button" class="btn-remove-media" onclick="removeMedia(event)">Supprimer</button>
                             </div>
                         </div>
@@ -2197,6 +2267,28 @@
                         <p>de votre message supriz.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Crop Modal -->
+    <div class="modal-overlay" id="cropModal" style="display: none;" onclick="closeCropModal(event)">
+        <div class="modal-content crop-modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title">Recadrer l'image</h3>
+                <button class="btn-close-modal" onclick="closeCropModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="crop-container">
+                    <img id="cropImage" src="" alt="Image à recadrer">
+                </div>
+                <div class="crop-instructions">
+                    Positionnez l'image dans la zone carrée en glissant et en redimensionnant
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel-crop" onclick="closeCropModal()">Annuler</button>
+                <button class="btn-apply-crop" onclick="applyCrop()">Valider</button>
             </div>
         </div>
     </div>
@@ -2670,11 +2762,11 @@
 
                             <!-- Image full width -->
                             ${mediaHTML ? `
-                            <div style="width: 100%;">
+                            <div style="width: 100%; background: #f8f9fa;">
                                 ${imagePreview && imagePreview.style.display !== 'none' && imagePreview.src ?
-                                    `<img src="${imagePreview.src}" style="width: 100%; height: 300px; object-fit: cover; display: block;" alt="Preview">` :
+                                    `<img src="${imagePreview.src}" style="width: 100%; height: auto; max-height: 500px; object-fit: contain; display: block;" alt="Preview">` :
                                     (videoPreview && videoPreview.style.display !== 'none' && videoPreview.src ?
-                                        `<video controls style="width: 100%; height: 300px; object-fit: cover; display: block;"><source src="${videoPreview.src}"></video>` : '')
+                                        `<video controls style="width: 100%; max-height: 300px; object-fit: contain; display: block;"><source src="${videoPreview.src}"></video>` : '')
                                 }
                             </div>` : ''}
 
@@ -2700,6 +2792,16 @@
         function finalizeMessage() {
             const form = document.getElementById('messageForm');
             const formData = new FormData(form);
+
+            // Si une image recadrée existe, remplacer le fichier media par le blob
+            if (croppedImageBlob) {
+                // Supprimer l'ancien fichier media du FormData
+                formData.delete('media');
+
+                // Ajouter le blob de l'image recadrée avec un nom de fichier
+                const fileName = originalImageFile ? originalImageFile.name : 'cropped-image.jpg';
+                formData.append('media', croppedImageBlob, fileName);
+            }
 
             // Validation
             const title = document.getElementById('messageTitle').value.trim();
@@ -2967,7 +3069,6 @@
         const uploadPlaceholder = document.getElementById('uploadPlaceholder');
         const mediaPreview = document.getElementById('mediaPreview');
         const imagePreview = document.getElementById('imagePreview');
-        const videoPreview = document.getElementById('videoPreview');
         const musicSection = document.querySelector('.music-section');
 
         mediaFile.addEventListener('change', function(e) {
@@ -2981,32 +3082,9 @@
             const fileType = file.type;
             const fileURL = URL.createObjectURL(file);
 
-            uploadPlaceholder.style.display = 'none';
-            mediaPreview.classList.add('active');
-            uploadZone.classList.add('has-media');
-
             if (fileType.startsWith('image/')) {
-                imagePreview.src = fileURL;
-                imagePreview.style.display = 'block';
-                videoPreview.style.display = 'none';
-                // Allow music for images
-                musicSection.classList.remove('disabled');
-            } else if (fileType.startsWith('video/')) {
-                videoPreview.src = fileURL;
-                videoPreview.style.display = 'block';
-                imagePreview.style.display = 'none';
-                // Disable music for videos
-                musicSection.classList.add('disabled');
-                // Deselect any selected music
-                document.querySelectorAll('.music-item').forEach(item => {
-                    item.classList.remove('selected');
-                });
-                selectedMusicId = null;
-                document.getElementById('musique_id').value = '';
-                if (currentAudio) {
-                    currentAudio.pause();
-                    currentAudio = null;
-                }
+                // Ouvrir le modal de crop pour les images
+                openCropModal(fileURL, file);
             }
         }
 
@@ -3015,12 +3093,14 @@
 
             mediaFile.value = '';
             imagePreview.src = '';
-            videoPreview.src = '';
             imagePreview.style.display = 'none';
-            videoPreview.style.display = 'none';
             mediaPreview.classList.remove('active');
             uploadPlaceholder.style.display = 'block';
             uploadZone.classList.remove('has-media');
+
+            // Réinitialiser le blob de l'image recadrée
+            croppedImageBlob = null;
+            originalImageFile = null;
 
             // Re-enable music section
             musicSection.classList.remove('disabled');
@@ -3038,6 +3118,105 @@
                 document.getElementById('previewModal').classList.remove('active');
                 document.body.style.overflow = '';
             }
+        }
+
+        // Crop Modal functions
+        let cropperInstance = null;
+        let originalImageFile = null;
+        let croppedImageBlob = null; // Stocker le blob de l'image recadrée
+
+        function openCropModal(imageURL, file) {
+            originalImageFile = file;
+            const cropModal = document.getElementById('cropModal');
+            const cropImage = document.getElementById('cropImage');
+
+            cropImage.src = imageURL;
+            cropModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // Initialiser Cropper.js après que l'image soit chargée
+            cropImage.onload = function() {
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                }
+
+                cropperInstance = new Cropper(cropImage, {
+                    aspectRatio: 1, // Ratio carré
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 1,
+                    restore: false,
+                    guides: true,
+                    center: true,
+                    highlight: false,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false,
+                    minContainerWidth: 200,
+                    minContainerHeight: 200,
+                });
+            };
+        }
+
+        function closeCropModal(event) {
+            if (!event || event.target === event.currentTarget || event === undefined) {
+                const cropModal = document.getElementById('cropModal');
+                cropModal.style.display = 'none';
+                document.body.style.overflow = '';
+
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                    cropperInstance = null;
+                }
+
+                // Réinitialiser le champ de fichier
+                mediaFile.value = '';
+                originalImageFile = null;
+            }
+        }
+
+        function applyCrop() {
+            if (!cropperInstance) return;
+
+            // Obtenir le canvas avec l'image recadrée
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 800,
+                height: 800,
+                imageSmoothingQuality: 'high'
+            });
+
+            // Convertir le canvas en blob
+            canvas.toBlob(function(blob) {
+                // Stocker le blob dans la variable globale
+                croppedImageBlob = blob;
+
+                // Créer un nouveau fichier à partir du blob
+                const croppedFile = new File([blob], originalImageFile.name, {
+                    type: originalImageFile.type,
+                    lastModified: Date.now()
+                });
+
+                // Créer un nouveau FileList et l'assigner à l'input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                mediaFile.files = dataTransfer.files;
+
+                // Afficher l'image recadrée dans la prévisualisation
+                const croppedImageURL = URL.createObjectURL(blob);
+                imagePreview.src = croppedImageURL;
+                imagePreview.style.display = 'block';
+                videoPreview.style.display = 'none';
+
+                uploadPlaceholder.style.display = 'none';
+                mediaPreview.classList.add('active');
+                uploadZone.classList.add('has-media');
+
+                // Allow music for images
+                musicSection.classList.remove('disabled');
+
+                // Fermer le modal
+                closeCropModal();
+            }, originalImageFile.type);
         }
 
         // Music section toggle
@@ -3298,10 +3477,17 @@
                     document.querySelectorAll('.category-item').forEach(cat => cat.classList.remove('active'));
                     this.classList.add('active');
 
+                    // Update title placeholder only
                     const placeholder = this.getAttribute('data-placeholder');
-                    contentInput.placeholder = placeholder;
+                    if (placeholder && titleInput) {
+                        titleInput.placeholder = placeholder;
+                    }
 
-                    document.getElementById('sous_categorie_id').value = this.getAttribute('data-category');
+                    const categoryId = this.getAttribute('data-category');
+                    document.getElementById('sous_categorie_id').value = categoryId;
+
+                    // Load musiques for this category
+                    loadMusiquesByCategorie(categoryId);
                 });
             });
         }

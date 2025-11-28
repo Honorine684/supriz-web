@@ -34,13 +34,13 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
         }
 
 
@@ -184,17 +184,18 @@
                 padding-top: 80px;
                 min-height: 100vh;
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
                 justify-content: center;
             }
 
             #giftContainer {
-                min-height: auto;
+                min-height: calc(100vh - 160px);
                 padding: 10px 0;
                 width: 100%;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
+                justify-content: center;
             }
 
             .gift-box {
@@ -300,7 +301,12 @@
             }
 
             /* Media */
-            .message-card img,
+            .message-card img {
+                max-height: 400px !important;
+                height: auto !important;
+                object-fit: contain !important;
+            }
+
             .message-card video {
                 max-height: 250px !important;
                 height: auto !important;
@@ -376,7 +382,12 @@
                 font-size: 15px !important;
             }
 
-            .message-card img,
+            .message-card img {
+                max-height: 350px !important;
+                height: auto !important;
+                object-fit: contain !important;
+            }
+
             .message-card video {
                 max-height: 220px !important;
                 height: auto !important;
@@ -473,7 +484,7 @@
             @if($message->media_path)
                 <div style="width: 100%; display: flex; justify-content: center; background: #f8f9fa;">
                     @if($message->media_type === 'image')
-                        <img src="{{ asset('storage/' . $message->media_path) }}" alt="{{ $message->titre }}" style="width: 100%; max-height: 400px; object-fit: contain; display: block;">
+                        <img src="{{ asset('storage/' . $message->media_path) }}" alt="{{ $message->titre }}" style="width: 100%; height: auto; max-height: 600px; object-fit: contain; display: block;">
                     @elseif($message->media_type === 'video')
                         <video controls style="width: 100%; max-height: 400px; object-fit: contain; display: block;">
                             <source src="{{ asset('storage/' . $message->media_path) }}" type="video/mp4">

@@ -67,7 +67,7 @@ class MessageController extends Controller
             'titre' => 'required|string|max:60',
             'contenu' => 'nullable|string|max:500',
             'sous_categorie_id' => 'required|exists:homme_sous_categories,id',
-            'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,mp4,mov,avi|max:10240',
+            'media' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
             'musique_id' => 'nullable|exists:musiques,id',
             'expiration' => 'nullable|string',
         ]);
@@ -75,21 +75,17 @@ class MessageController extends Controller
         $mediaPath = null;
         $mediaType = null;
 
-        // Upload du media
+        // Upload de l'image
         if ($request->hasFile('media')) {
             $file = $request->file('media');
             $extension = $file->getClientOriginalExtension();
 
-            // Déterminer le type de media
+            // Vérifier que c'est une image
             $imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            $videoExtensions = ['mp4', 'mov', 'avi'];
 
             if (in_array(strtolower($extension), $imageExtensions)) {
                 $mediaType = 'image';
                 $mediaPath = $file->store('messages/images', 'public');
-            } elseif (in_array(strtolower($extension), $videoExtensions)) {
-                $mediaType = 'video';
-                $mediaPath = $file->store('messages/videos', 'public');
             }
         }
 
