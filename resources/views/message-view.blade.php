@@ -506,7 +506,7 @@
 
         <!-- Audio caché qui joue automatiquement -->
         @if($message->musique)
-            <audio id="backgroundMusic" autoplay style="display: none;">
+            <audio id="backgroundMusic" autoplay loop style="display: none;">
                 <source src="{{ asset('storage/' . $message->musique->fichier_audio) }}" type="audio/mpeg">
             </audio>
         @endif
@@ -564,14 +564,6 @@
                 audio.play();
             }
         }
-
-        // Limiter la durée de lecture à 30 secondes
-        audio.addEventListener('timeupdate', function() {
-            if (audio.currentTime >= 30) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-        });
 
         // Attendre que la page soit complètement chargée
         window.addEventListener('load', function() {
