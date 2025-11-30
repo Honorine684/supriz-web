@@ -3066,7 +3066,6 @@
             if (navigator.share) {
                 navigator.share({
                     title: 'Message Supriz',
-                    text: 'Un petit mot rien que pour toi 💌',
                     url: url
                 }).catch(err => console.log('Error sharing:', err));
             } else {
