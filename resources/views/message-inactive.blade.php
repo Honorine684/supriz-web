@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Message inactif - Supriz</title>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Message inactif - Supriz">
+    <meta property="og:description" content="Ce message supriz est actuellement inactif.">
+    <meta property="og:image" content="{{ asset('images/landing/og-im.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Supriz">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Message inactif - Supriz">
+    <meta name="twitter:description" content="Ce message supriz est actuellement inactif.">
+    <meta name="twitter:image" content="{{ asset('images/landing/og-im.png') }}">
+
+    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * {

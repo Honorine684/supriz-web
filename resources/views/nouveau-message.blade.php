@@ -4,6 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nouveau Message Supriz</title>
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Nouveau Message Supriz">
+    <meta property="og:description" content="Créez votre message supriz personnalisé et partagez-le avec vos proches.">
+    <meta property="og:image" content="{{ asset('images/landing/og-im.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Supriz">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Nouveau Message Supriz">
+    <meta name="twitter:description" content="Créez votre message supriz personnalisé et partagez-le avec vos proches.">
+    <meta name="twitter:image" content="{{ asset('images/landing/og-im.png') }}">
+
+    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>

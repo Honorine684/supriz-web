@@ -8,7 +8,7 @@
     <!-- Open Graph Meta Tags pour le partage sur les réseaux sociaux -->
     <meta property="og:title" content="{{ $message->titre }} - Supriz">
     <meta property="og:description" content="{{ Str::limit($message->message_texte, 150) }}">
-    <meta property="og:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/logo.png') }}">
+    <meta property="og:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/landing/og-im.png') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Supriz">
@@ -17,8 +17,9 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $message->titre }} - Supriz">
     <meta name="twitter:description" content="{{ Str::limit($message->message_texte, 150) }}">
-    <meta name="twitter:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/logo.png') }}">
+    <meta name="twitter:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/landing/og-im.png') }}">
 
+    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * {
@@ -526,9 +527,20 @@
 
     <!-- Bouton Mute en bas à droite -->
     @if($message->musique)
-    <button id="muteButton" onclick="toggleMute()" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: white; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 100;">
+    <button id="muteButton" onclick="toggleMute()" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #FFD700 0%, #FFC700 50%, #FFB700 100%); border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 100; animation: glowPulse 2s ease-in-out infinite;">
         <i id="muteIcon" class="ri-volume-up-fill" style="font-size: 24px; color: #005792;"></i>
     </button>
+
+    <style>
+        @keyframes glowPulse {
+            0%, 100% {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 0 30px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.6);
+            }
+        }
+    </style>
 
     <script>
         const audio = document.getElementById('backgroundMusic');
@@ -543,10 +555,12 @@
             if (isMuted) {
                 muteIcon.className = 'ri-volume-mute-fill';
                 muteButton.style.background = '#e5e7eb';
+                muteButton.style.animation = 'none';
                 audio.pause();
             } else {
                 muteIcon.className = 'ri-volume-up-fill';
-                muteButton.style.background = 'white';
+                muteButton.style.background = 'linear-gradient(145deg, #FFD700 0%, #FFC700 50%, #FFB700 100%)';
+                muteButton.style.animation = 'glowPulse 2s ease-in-out infinite';
                 audio.play();
             }
         }
