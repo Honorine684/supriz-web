@@ -6,24 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supriz - Envoie un message supriz inoubliable</title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Supriz - Envoie un message supriz inoubliable">
-    <meta property="og:description" content="Créez et partagez des messages supriz personnalisés avec vos proches. Une expérience unique et mémorable.">
-    <meta property="og:image" content="{{ asset('images/landing/og-im.png') }}">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Supriz">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Supriz - Envoie un message supriz inoubliable">
-    <meta name="twitter:description" content="Créez et partagez des messages supriz personnalisés avec vos proches. Une expérience unique et mémorable.">
-    <meta name="twitter:image" content="{{ asset('images/landing/og-im.png') }}">
+    {{-- SEO Meta Tags --}}
+    @include('partials.seo', [
+        'title' => 'Supriz - Envoie un message supriz inoubliable',
+        'description' => 'Créez et partagez des messages surprises personnalisés avec vos proches. Anniversaire, mariage, voeux - une expérience unique et mémorable.',
+        'keywords' => 'supriz, message surprise, cadeau personnalisé, anniversaire, mariage, voeux, nouvel an, noel, message personnalisé, carte virtuelle, surprise, cadeau original, Bénin, Afrique, message vidéo, message audio'
+    ])
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
     <style>
         /* Smooth scroll behavior */

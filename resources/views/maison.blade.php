@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     @vite('resources/css/app.css')
     <link rel="stylesheet" href={{ asset('css/main.css') }}>
-    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>Supriz - Maison</title>
     <style>
@@ -114,6 +114,16 @@
             border-radius: 8px;
             background: #d1fae5;
             color: #059669;
+        }
+
+        .stat-variation.down {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .stat-variation.neutral {
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         /* Section métriques + graphique */
@@ -407,10 +417,22 @@
                     </div>
                     <div class="stat-card-bottom">
                         <span class="stat-number">{{ $stats['total'] }}</span>
-                        <span class="stat-variation">
-                            <i class="ri-arrow-up-line"></i>
-                            +{{ abs($stats['variation']) }}
-                        </span>
+                        @if($stats['variation'] > 0)
+                            <span class="stat-variation">
+                                <i class="ri-arrow-up-line"></i>
+                                +{{ $stats['variation'] }}
+                            </span>
+                        @elseif($stats['variation'] < 0)
+                            <span class="stat-variation down">
+                                <i class="ri-arrow-down-line"></i>
+                                {{ $stats['variation'] }}
+                            </span>
+                        @else
+                            <span class="stat-variation neutral">
+                                <i class="ri-subtract-line"></i>
+                                0
+                            </span>
+                        @endif
                     </div>
                 </div>
                 @endforeach

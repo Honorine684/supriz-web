@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="{{ Str::limit($message->message_texte, 150) }}">
     <meta name="twitter:image" content="{{ $message->image ? asset('storage/' . $message->image) : asset('images/landing/og-im.png') }}">
 
-    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         * {

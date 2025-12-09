@@ -6,21 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Politique de confidentialité - Supriz</title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Politique de confidentialité - Supriz">
-    <meta property="og:description" content="Consultez notre politique de confidentialité pour comprendre comment nous protégeons vos données personnelles.">
-    <meta property="og:image" content="{{ asset('images/landing/og-im.png') }}">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Supriz">
-
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Politique de confidentialité - Supriz">
-    <meta name="twitter:description" content="Consultez notre politique de confidentialité pour comprendre comment nous protégeons vos données personnelles.">
-    <meta name="twitter:image" content="{{ asset('images/landing/og-im.png') }}">
-
-    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
+    {{-- SEO Meta Tags --}}
+    @include('partials.seo', [
+        'title' => 'Politique de confidentialité - Supriz',
+        'description' => 'Consultez notre politique de confidentialité pour comprendre comment Supriz protège vos données personnelles et respecte votre vie privée.',
+        'keywords' => 'politique confidentialité, protection données, vie privée, RGPD, Supriz, données personnelles'
+    ])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>

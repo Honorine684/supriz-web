@@ -20,7 +20,7 @@
     <meta name="twitter:description" content="Votre paiement a été effectué avec succès. Merci pour votre confiance !">
     <meta name="twitter:image" content="{{ asset('images/landing/og-im.png') }}">
 
-    <link rel="shortcut icon" href="{{asset('/images/svg/llogosupriz2.svg')}}" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 </head>
 
 <style>

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     @vite('resources/css/app.css')
     <link rel="stylesheet" href={{ asset('css/main.css') }}>
-    <link rel="shortcut icon" href="{{ asset('/images/svg/llogosupriz2.svg') }}" type="image/x-icon">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <title>Supriz - Catégorie</title>
 </head>

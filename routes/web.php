@@ -18,6 +18,7 @@
     use App\Http\Controllers\MusiqueController;
     use App\Http\Controllers\MessageController;
     use App\Http\Controllers\ContactController;
+    use App\Http\Controllers\SitemapController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -45,6 +46,9 @@
 
     // Formulaire de contact
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+
+    // Sitemap pour SEO
+    Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
     // Authentification
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
