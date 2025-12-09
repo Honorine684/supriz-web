@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    @include('partials.gtm-head')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supriz - Envoie un message supriz inoubliable</title>
@@ -2020,7 +2021,8 @@
     </style>
 </head>
 <body>
-    
+    @include('partials.gtm-body')
+
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>

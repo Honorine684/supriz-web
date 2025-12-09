@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    @include('partials.gtm-head')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nouveau Message Supriz</title>
@@ -2092,6 +2093,8 @@
     </style>
 </head>
 <body>
+    @include('partials.gtm-body')
+
     <!-- Decorative Background -->
     <div class="decorative-bg">
         <img src="{{ asset('images/clientIamges/1.png') }}" alt="" class="decorative-icon wallet">
@@ -3065,6 +3068,8 @@
         function shareMessage(url) {
             if (navigator.share) {
                 navigator.share({
+
+
                     title: 'Message Supriz',
                     url: url
                 }).catch(err => console.log('Error sharing:', err));

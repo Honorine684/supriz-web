@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    @include('partials.gtm-head')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
@@ -16,6 +17,7 @@
 
 
 <body class="text-gray-800 bg-dark-design custmer-toggle font-inter">
+    @include('partials.gtm-body')
 
     <!-- start: Sidebar -->
     @include('components.sidebar')

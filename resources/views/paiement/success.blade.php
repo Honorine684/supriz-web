@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    @include('partials.gtm-head')
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paiement Réussi - Supriz</title>
@@ -33,7 +34,8 @@
 
 
 <body>
-    
+    @include('partials.gtm-body')
+
     <h1>Paiement réussi... !</h1>
     
 </body>

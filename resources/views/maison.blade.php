@@ -2,6 +2,7 @@
 <html lang="fr">
 
 <head>
+    @include('partials.gtm-head')
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     @vite('resources/css/app.css')
@@ -349,6 +350,7 @@
 </head>
 
 <body class="text-gray-800 font-inter" style="background: #e5e7eb;">
+    @include('partials.gtm-body')
 
     <!-- start: Sidebar -->
     @include("components.sidebar")

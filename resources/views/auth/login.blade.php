@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    @include('partials.gtm-head')
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Form</title>
@@ -9,6 +10,8 @@
     <link rel="stylesheet" href={{asset('css/main.css') }}>
 </head>
 <body class="flex items-center justify-center min-h-screen">
+    @include('partials.gtm-body')
+
     <div class="flex bg-white rounded-lg shadow-lg max-w-4xl">
         <!-- Image to the left -->
         <div class="w-1/2 hidden lg:block">
