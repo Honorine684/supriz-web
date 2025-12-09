@@ -2363,6 +2363,18 @@
     <script>
         const titleInput = document.getElementById('messageTitle');
 
+        // Function to format music duration
+        function formatDuration(duree) {
+            if (!duree) return '0s';
+            const minutes = Math.floor(duree / 60);
+            const seconds = duree % 60;
+            if (minutes > 0) {
+                return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            } else {
+                return `${seconds}s`;
+            }
+        }
+
         // Function to load musiques by category
         function loadMusiquesByCategorie(categorieId) {
             fetch(`/api/musiques/categorie/${categorieId}`)
@@ -2386,7 +2398,7 @@
                                     </div>
                                     <div class="music-info">
                                         <div class="music-title">${musique.titre}</div>
-                                        <div class="music-duration">${musique.duree || '00:00'}</div>
+                                        <div class="music-duration">${formatDuration(musique.duree)}</div>
                                     </div>
                                     <div class="music-actions">
                                         <button type="button" class="btn-play-music" onclick="playMusic(event, this)">
