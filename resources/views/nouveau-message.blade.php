@@ -2255,11 +2255,15 @@
                                             @php
                                                 $minutes = floor($musique->duree / 60);
                                                 $seconds = $musique->duree % 60;
-                                                $formatted = sprintf('%02d:%02d', $minutes, $seconds);
+                                                if ($minutes > 0) {
+                                                    $formatted = sprintf('%d:%02d', $minutes, $seconds);
+                                                } else {
+                                                    $formatted = $seconds . 's';
+                                                }
                                             @endphp
                                             {{ $formatted }}
                                         @else
-                                            00:00
+                                            0s
                                         @endif
                                     </div>
                                 </div>
