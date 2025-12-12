@@ -23,6 +23,12 @@
             <p class="text-color-gray mb-3">Veuillez entrer vos identifiant de connexion</p>
             <form method="POST" action="{{ url('/login') }}"  class="space-y-6">
                 @csrf
+                <!-- Success Message -->
+                @if(session('success'))
+                <div class="bg-green-500 text-center p-2 rounded text-white mb-4">
+                    <p>{{ session('success') }}</p>
+                </div>
+                @endif
                 <!-- Email -->
                 @if($errors->any())
                 <div class="bg-red-500 text-center p-2 rounded text-white">

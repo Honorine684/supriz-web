@@ -19,6 +19,7 @@
     use App\Http\Controllers\MessageController;
     use App\Http\Controllers\ContactController;
     use App\Http\Controllers\SitemapController;
+    use App\Http\Controllers\PasswordResetController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -54,6 +55,10 @@
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    // Réinitialisation du mot de passe
+    Route::get('/password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
+    Route::post('/password/reset', [PasswordResetController::class, 'resetPassword'])->name('password.reset');
 
     // ============================================
     // ROUTES ADMIN (Nécessitent authentification)
@@ -125,6 +130,7 @@
         // Paramètres
         Route::get('/parametre', [ParametreController::class, 'parametre'])->name('parametre');
         Route::post('/updateprofil', [ParametreController::class, 'updateprofil'])->name('updateprofil');
+        Route::post('/send-password-reset', [PasswordResetController::class, 'sendResetLink'])->name('send.password.reset');
 
         // FAQ
         Route::get('/faq', [FaqController::class, 'faq'])->name('faq');

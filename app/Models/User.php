@@ -7,7 +7,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -53,14 +52,6 @@ class User extends Authenticatable
         return $this->hasMany(NotificationMakereadUser::class, 'userId');
     }
 
-    // Mutateur pour le mot de passe
-    public function setPasswordAttribute($password)
-    {
-        if ($password) {
-            $this->attributes['password'] = Hash::make($password); // Hash the password
-        }
-    }
-
     // Scope pour les utilisateurs actifs
     public function scopeActive($query)
     {
@@ -70,9 +61,7 @@ class User extends Authenticatable
         // Méthode utilitaire pour mettre à jour le profil
         public function updateProfile(array $data)
         {
-            if (isset($data['password'])) {
-                $data['password'] = Hash::make($data['password']); // Hash the password when updating
-            }
+            // Le cast 'hashed' sur le champ password gère automatiquement le hachage
             return $this->update($data);
         }
         

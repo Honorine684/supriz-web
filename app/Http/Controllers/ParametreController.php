@@ -21,7 +21,6 @@ class ParametreController extends Controller
         'nom' => 'required|string|max:255',
         'prenom' => 'required|string|max:255',
         'email' => 'required|email|max:255',
-        'password' => 'nullable|string|min:8',
         'profil_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validation de l'image
     ]);
 
@@ -31,11 +30,6 @@ class ParametreController extends Controller
     $user->nom = $request->nom;
     $user->prenom = $request->prenom;
     $user->email = $request->email;
-
-    // Mise à jour du mot de passe si fourni
-    if ($request->filled('password')) {
-        $user->password = bcrypt($request->password);
-    }
 
     // Gestion de l'image de profil
     if ($request->hasFile('profil_image')) {

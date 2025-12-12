@@ -84,17 +84,26 @@
                     </div>
                 </div>
 
-                <div class="w-1/2 grid">
-                    <span class="font-bold mb-3">Mot de passe : </span>
-                    <input type="password" class="bg-transparent rounded border-none"
-                        placeholder="Veuillez entrer le nouveau mot de passe" name="password">
-                </div>
-
                 <input type="submit" name="submit"
-                    class="w-80 relative right-0 rounded p-2 text-white cursor-pointer btn-design mt-20"
+                    class="w-80 relative right-0 rounded p-2 text-white cursor-pointer btn-design mt-10"
                     value="Enregistrer les modifications">
             </div>
         </form>
+
+        <!-- Section Mot de passe -->
+        <div class="mt-10 border-t pt-6">
+            <h2 class="font-bold mb-4">Modifier le mot de passe</h2>
+            <p class="text-gray-600 mb-4">Pour changer votre mot de passe, un email vous sera envoyé avec un lien de réinitialisation.</p>
+            <form action="{{ route('admin.send.password.reset') }}" method="POST">
+                @csrf
+                <input type="hidden" name="user_id" value="{{ $user->id }}">
+                <button type="submit"
+                    class="w-80 rounded p-2 text-white cursor-pointer btn-design flex items-center justify-center gap-2">
+                    <i class="ri-mail-send-line"></i>
+                    Recevoir un email de réinitialisation
+                </button>
+            </form>
+        </div>
 
 
 
