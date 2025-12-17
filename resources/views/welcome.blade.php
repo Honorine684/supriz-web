@@ -271,6 +271,33 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
+        /* Stats styles */
+        .stat-value {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1B7B6A;
+        }
+
+        .stat-plus {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1B7B6A;
+            margin-left: 2px;
+        }
+
+        .stat-label {
+            color: #fff;
+            font-size: 14px;
+            margin-top: 8px;
+            opacity: 0.9;
+        }
+
         /* How it works cards */
         .how-it-works-card {
             transition: transform 0.3s ease;
@@ -1451,27 +1478,75 @@
                 white-space: nowrap !important;
             }
 
-            /* Stats sur une ligne mobile */
+            /* Stats sur une ligne mobile - sans scroll */
             #stats .row {
                 flex-wrap: nowrap !important;
+                display: flex !important;
+                justify-content: space-between !important;
             }
 
             #stats .col-6 {
-                flex: 0 0 25% !important;
-                width: 25% !important;
-                padding: 0 5px !important;
+                flex: 1 1 0 !important;
+                width: auto !important;
+                min-width: 0 !important;
+                padding: 0 4px !important;
+                margin: 0 !important;
+            }
+
+            #stats .stat-item {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+
+            #stats .stat-value {
+                display: inline-flex !important;
+                align-items: baseline !important;
             }
 
             #stats .stat-number {
-                font-size: 28px !important;
+                font-size: 22px !important;
             }
 
             #stats .stat-plus {
-                font-size: 18px !important;
+                font-size: 14px !important;
             }
 
-            #stats p {
-                font-size: 11px !important;
+            #stats .stat-label {
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+                margin: 5px 0 0 0 !important;
+            }
+
+            /* Testimonials/Avis section mobile */
+            #testimonials {
+                padding: 50px 0 !important;
+            }
+
+            #testimonials .container {
+                padding: 0 15px !important;
+            }
+
+            #testimonials .row {
+                margin: 0 !important;
+                justify-content: center !important;
+            }
+
+            #testimonials .col-lg-4,
+            #testimonials .col-md-6,
+            #testimonials .col-11 {
+                display: flex !important;
+                justify-content: center !important;
+            }
+
+            .testimonial-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 20px !important;
+            }
+
+            .testimonial-card p {
+                font-size: 13px !important;
             }
 
             /* Categories Cards (legacy) */
@@ -1795,29 +1870,68 @@
                 overflow: hidden !important;
             }
 
-            /* Stats section mobile - 4 colonnes sur une ligne */
+            /* Stats section mobile - 4 colonnes sur une ligne sans scroll */
             #stats .row {
                 flex-wrap: nowrap !important;
-                overflow-x: auto !important;
+                display: flex !important;
+                justify-content: space-between !important;
             }
 
             #stats .col-6 {
-                flex: 0 0 auto !important;
+                flex: 1 1 0 !important;
                 width: auto !important;
-                min-width: 80px !important;
-                padding: 0 8px !important;
+                min-width: 0 !important;
+                padding: 0 3px !important;
+                margin: 0 !important;
+            }
+
+            #stats .stat-item {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+            }
+
+            #stats .stat-value {
+                display: inline-flex !important;
+                align-items: baseline !important;
             }
 
             #stats .stat-number {
-                font-size: 24px !important;
+                font-size: 18px !important;
             }
 
             #stats .stat-plus {
-                font-size: 16px !important;
+                font-size: 12px !important;
             }
 
-            #stats p {
-                font-size: 10px !important;
+            #stats .stat-label {
+                font-size: 8px !important;
+                line-height: 1.2 !important;
+                margin: 4px 0 0 0 !important;
+            }
+
+            /* Testimonials/Avis section petit écran */
+            #testimonials {
+                padding: 40px 0 !important;
+            }
+
+            #testimonials .container {
+                padding: 0 12px !important;
+            }
+
+            #testimonials .row {
+                margin: 0 !important;
+                justify-content: center !important;
+            }
+
+            .testimonial-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 18px !important;
+            }
+
+            .testimonial-card p {
+                font-size: 12px !important;
             }
 
             .container,
@@ -2258,32 +2372,22 @@
     <section id="stats" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 50px 0;">
         <div class="container">
             <div class="row text-center">
-                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                <div class="col-4">
                     <div class="stat-item">
-                        <span class="stat-number" data-target="{{ $stats['messages_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
-                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
-                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Messages envoyés</p>
+                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['messages_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <p class="stat-label">Messages envoyés</p>
                     </div>
                 </div>
-                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                <div class="col-4">
                     <div class="stat-item">
-                        <span class="stat-number" data-target="{{ $stats['satisfaction_rate'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
-                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">%</span>
-                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Satisfaction client</p>
+                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <p class="stat-label">Catégories</p>
                     </div>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-4">
                     <div class="stat-item">
-                        <span class="stat-number" data-target="{{ $stats['categories_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
-                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
-                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Catégories disponibles</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-item">
-                        <span class="stat-number" data-target="{{ $stats['avis_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
-                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
-                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Avis clients</p>
+                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['avis_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <p class="stat-label">Avis clients</p>
                     </div>
                 </div>
             </div>
@@ -2444,7 +2548,7 @@
     </style>
 
     <!-- 3. Témoignages clients -->
-    <section id="testimonials" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0; overflow: hidden;">
+    <section id="testimonials" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0;">
         <div class="container">
             <h2 class="text-center mb-2" style="font-size: 42px; font-weight: 700; color: #1A1A1A;">Ce que disent nos utilisateurs</h2>
             <p class="text-center mb-5" style="color: #666; font-size: 16px;">Des milliers de moments inoubliables créés</p>
@@ -2470,86 +2574,45 @@
                 // Combiner avis réels et par défaut
                 $allAvis = collect($defaultAvis);
                 if(isset($avisClients) && $avisClients->count() > 0) {
-                    $avisClientsArray = $avisClients->map(function($avis, $index) use ($avatarGradients) {
-                        return [
-                            'nom' => $avis->nom,
-                            'initiales' => $avis->initiales ?? strtoupper(substr($avis->nom, 0, 2)),
-                            'note' => $avis->note,
-                            'message' => $avis->message ?: 'Super expérience avec Supriz !',
-                            'gradient' => $avatarGradients[$index % count($avatarGradients)],
-                        ];
-                    })->toArray();
-                    $allAvis = collect(array_merge($avisClientsArray, $defaultAvis));
+                    $avisClientsArray = $avisClients->map(fn($avis, $index) => [
+                        'nom' => $avis->nom,
+                        'initiales' => $avis->initiales ?? strtoupper(substr($avis->nom, 0, 2)),
+                        'note' => $avis->note,
+                        'message' => $avis->message ?: 'Super expérience avec Supriz !',
+                        'gradient' => $avatarGradients[$index % count($avatarGradients)],
+                    ])->toArray();
+                    $allAvis = collect([...$avisClientsArray, ...$defaultAvis]);
                 }
-
-                $totalAvis = $allAvis->count();
-                $useMarquee = $totalAvis > 3;
             @endphp
 
-            @if($useMarquee)
-                <!-- Mode Marquee pour plus de 3 avis -->
-                <div class="testimonials-marquee-wrapper" style="position: relative; width: 100vw; left: 50%; transform: translateX(-50%); overflow: hidden;">
-                    <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to right, #f8f9fa, transparent); z-index: 2;"></div>
-                    <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to left, #e9ecef, transparent); z-index: 2;"></div>
-
-                    <div class="testimonials-marquee-track" style="display: flex; gap: 25px; animation: testimonialsScroll {{ $totalAvis * 8 }}s linear infinite; width: max-content; padding: 10px 0;">
-                        @for($i = 0; $i < 2; $i++)
-                            @foreach($allAvis as $avis)
-                                <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: relative; min-width: 320px; max-width: 320px; flex-shrink: 0;">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div style="width: 45px; height: 45px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">{{ $avis['initiales'] }}</div>
-                                        <div class="ms-3">
-                                            <h5 style="margin: 0; font-size: 15px; font-weight: 600;">{{ $avis['nom'] }}</h5>
-                                            <div style="color: #ffc107; font-size: 14px;">
-                                                @for($j = 1; $j <= 5; $j++)
-                                                    @if($j <= $avis['note'])
-                                                        <i class="bi bi-star-fill"></i>
-                                                    @else
-                                                        <i class="bi bi-star"></i>
-                                                    @endif
-                                                @endfor
-                                            </div>
-                                        </div>
+            <!-- Grille d'avis -->
+            <div class="row g-4 justify-content-center">
+                @foreach($allAvis->take(6) as $avis)
+                    <div class="col-lg-4 col-md-6 col-11">
+                        <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); height: 100%; position: relative;">
+                            <div class="d-flex align-items-center mb-3">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px;">{{ $avis['initiales'] }}</div>
+                                <div class="ms-3">
+                                    <h5 style="margin: 0; font-size: 16px; font-weight: 600;">{{ $avis['nom'] }}</h5>
+                                    <div style="color: #ffc107;">
+                                        @for($j = 1; $j <= 5; $j++)
+                                            @if($j <= $avis['note'])
+                                                <i class="bi bi-star-fill"></i>
+                                            @else
+                                                <i class="bi bi-star"></i>
+                                            @endif
+                                        @endfor
                                     </div>
-                                    <p style="color: #555; font-size: 13px; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">"{{ $avis['message'] }}"</p>
-                                    <div style="position: absolute; top: 15px; right: 15px; opacity: 0.1;">
-                                        <i class="bi bi-quote" style="font-size: 30px; color: #1B7B6A;"></i>
-                                    </div>
-                                </div>
-                            @endforeach
-                        @endfor
-                    </div>
-                </div>
-            @else
-                <!-- Mode Grille pour 3 avis ou moins -->
-                <div class="row g-4">
-                    @foreach($allAvis->take(3) as $avis)
-                        <div class="col-md-4">
-                            <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); height: 100%; position: relative;">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div style="width: 50px; height: 50px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px;">{{ $avis['initiales'] }}</div>
-                                    <div class="ms-3">
-                                        <h5 style="margin: 0; font-size: 16px; font-weight: 600;">{{ $avis['nom'] }}</h5>
-                                        <div style="color: #ffc107;">
-                                            @for($j = 1; $j <= 5; $j++)
-                                                @if($j <= $avis['note'])
-                                                    <i class="bi bi-star-fill"></i>
-                                                @else
-                                                    <i class="bi bi-star"></i>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                    </div>
-                                </div>
-                                <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0;">"{{ $avis['message'] }}"</p>
-                                <div style="position: absolute; top: 20px; right: 20px; opacity: 0.1;">
-                                    <i class="bi bi-quote" style="font-size: 40px; color: #1B7B6A;"></i>
                                 </div>
                             </div>
+                            <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0;">"{{ $avis['message'] }}"</p>
+                            <div style="position: absolute; top: 15px; right: 15px; opacity: 0.1;">
+                                <i class="bi bi-quote" style="font-size: 35px; color: #1B7B6A;"></i>
+                            </div>
                         </div>
-                    @endforeach
-                </div>
-            @endif
+                    </div>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -2735,8 +2798,8 @@
                             </div>
                             <button type="submit" class="btn w-100" style="background: #005792; color: white; border: none; padding: 15px; border-radius: 8px; font-weight: 500; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease;">
                                 Envoyez votre requête
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform: rotate(-45deg); flex-shrink: 0;">
-                                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="transform: rotate(35deg); flex-shrink: 0;">
+                                    <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
                             </button>
                         </form>
@@ -3373,8 +3436,21 @@
         }
 
         /* Hover effect pour les testimonials */
+        .testimonials-marquee-wrapper {
+            cursor: grab;
+        }
+        .testimonials-marquee-wrapper:active {
+            cursor: grabbing;
+        }
+        .testimonials-marquee-wrapper::-webkit-scrollbar {
+            display: none;
+        }
         .testimonial-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: grab;
+        }
+        .testimonial-card:active {
+            cursor: grabbing;
         }
         .testimonial-card:hover {
             transform: translateY(-5px);
@@ -3398,6 +3474,7 @@
             transform: translateY(-2px);
         }
     </style>
+
 </body>
 </html>
 
