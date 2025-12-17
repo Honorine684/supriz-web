@@ -3705,7 +3705,7 @@
 
             const submitBtn = document.getElementById('avisSubmitBtn');
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Envoi...';
+            submitBtn.innerHTML = '<i class="ri-loader-4-line"></i> Envoi...';
 
             fetch('{{ route("avis.store") }}', {
                 method: 'POST',
@@ -3725,7 +3725,7 @@
                     // Afficher message de succès
                     document.getElementById('avisForm').innerHTML = `
                         <div style="text-align: center; padding: 30px 0;">
-                            <i class="bi bi-check-circle-fill" style="font-size: 60px; color: #1B7B6A;"></i>
+                            <i class="ri-checkbox-circle-fill" style="font-size: 60px; color: #1B7B6A;"></i>
                             <h3 style="margin-top: 20px; color: #1a1a1a;">Merci pour votre avis !</h3>
                             <p style="color: #666;">Votre avis sera publié après validation.</p>
                         </div>
@@ -3754,7 +3754,7 @@
 
             <div class="avis-popup-header">
                 <div class="avis-popup-icon">
-                    <i class="bi bi-chat-heart-fill"></i>
+                    <i class="ri-chat-heart-fill"></i>
                 </div>
                 <h3>Votre avis compte !</h3>
                 <p>Partagez votre expérience avec Supriz</p>
@@ -4011,11 +4011,41 @@
         }
 
         /* Responsive Mobile */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .avis-popup-overlay {
+                padding: 0;
+                align-items: flex-end;
+            }
+
             .avis-popup {
+                width: calc(100vw - 30px);
+                max-width: calc(100vw - 30px);
+                margin: 0 15px 15px 15px;
                 padding: 25px 20px;
-                border-radius: 16px;
-                margin: 10px;
+                border-radius: 20px;
+                box-sizing: border-box;
+            }
+
+            /* Override global button styles for close button */
+            .avis-popup-close {
+                position: absolute !important;
+                top: 12px !important;
+                right: 12px !important;
+                width: 32px !important;
+                height: 32px !important;
+                max-width: 32px !important;
+                min-width: 32px !important;
+                flex: 0 0 32px !important;
+                font-size: 20px !important;
+                background: #f3f4f6 !important;
+                border: 1px solid #e5e7eb !important;
+                line-height: 32px !important;
+                padding: 0 !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                box-sizing: border-box !important;
             }
 
             .avis-popup-icon {
@@ -4035,14 +4065,33 @@
                 font-size: 28px;
             }
 
+            /* Force border visibility on mobile for inputs */
+            .avis-field input,
+            .avis-field textarea {
+                border: 2px solid #d1d5db !important;
+                background: #fff !important;
+                -webkit-appearance: none !important;
+                appearance: none !important;
+                border-radius: 12px !important;
+                box-sizing: border-box !important;
+            }
+
+            .avis-field input:focus,
+            .avis-field textarea:focus {
+                border-color: #1B7B6A !important;
+                box-shadow: 0 0 0 3px rgba(27, 123, 106, 0.1) !important;
+            }
+
             .avis-actions {
                 flex-direction: column;
             }
 
+            /* Override for action buttons - they should be full width */
             .avis-btn-skip,
             .avis-btn-submit {
                 flex: none;
-                width: 100%;
+                width: 100% !important;
+                padding: 14px 20px !important;
             }
         }
     </style>
