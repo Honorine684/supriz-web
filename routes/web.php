@@ -20,6 +20,7 @@
     use App\Http\Controllers\ContactController;
     use App\Http\Controllers\SitemapController;
     use App\Http\Controllers\PasswordResetController;
+    use App\Http\Controllers\AvisController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -47,6 +48,9 @@
 
     // Formulaire de contact
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
+
+    // Avis clients (route publique pour soumettre)
+    Route::post('/avis/store', [AvisController::class, 'store'])->name('avis.store');
 
     // Sitemap pour SEO
     Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
@@ -152,4 +156,9 @@
         Route::put('/musique/{id}', [MusiqueController::class, 'update'])->name('musique.update');
         Route::post('/musique/{id}/toggle-status', [MusiqueController::class, 'toggleStatus'])->name('musique.toggleStatus');
         Route::delete('/musique/{id}', [MusiqueController::class, 'destroy'])->name('musique.destroy');
+
+        // Avis clients
+        Route::get('/avis', [AvisController::class, 'index'])->name('avis');
+        Route::post('/avis/{avis}/toggle-visibility', [AvisController::class, 'toggleVisibility'])->name('avis.toggleVisibility');
+        Route::delete('/avis/{avis}', [AvisController::class, 'destroy'])->name('avis.destroy');
     });

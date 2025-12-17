@@ -28,7 +28,31 @@ class MessageController extends Controller
         // Récupérer les FAQs
         $faqs = \App\Models\Faq::orderBy('created_at', 'desc')->get();
 
-        return view('welcome', compact('categoriesSupriz', 'faqs'));
+        // Récupérer les avis visibles
+        $avisClients = \App\Models\Avis::visible()
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Statistiques : valeurs par défaut + données réelles
+        $realMessagesCount = Message::count();
+        $realAvisCount = $avisClients->count();
+        $realCategoriesCount = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->where('is_active', true)
+            ->count();
+
+        // Taux de satisfaction basé sur les avis réels (note >= 4)
+        $realSatisfactionRate = $realAvisCount > 0
+            ? round(($avisClients->where('note', '>=', 4)->count() / $realAvisCount) * 100)
+            : 0;
+
+        $stats = [
+            'messages_count' => 1500 + $realMessagesCount,
+            'satisfaction_rate' => $realAvisCount > 0 ? $realSatisfactionRate : 98, // Garde 98% si pas d'avis
+            'categories_count' => $realCategoriesCount, // Nombre réel de catégories actives
+            'avis_count' => 2000 + $realAvisCount,
+        ];
+
+        return view('welcome', compact('categoriesSupriz', 'faqs', 'avisClients', 'stats'));
     }
 
     /**

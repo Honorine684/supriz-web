@@ -3019,6 +3019,11 @@
                     }
                 });
             }, 100);
+
+            // Afficher le popup d'avis après 1 seconde
+            setTimeout(() => {
+                showAvisPopup();
+            }, 1000);
         }
 
         function copyShareLink() {
@@ -3622,6 +3627,424 @@
         // Recharger toutes les 30 secondes
         setInterval(loadCategories, 30000);
 
+        // ========== POPUP AVIS ==========
+        let selectedRating = 5;
+
+        function showAvisPopup() {
+            const popup = document.getElementById('avisPopup');
+            if (popup) {
+                popup.classList.add('show');
+                initStarsEvents();
+            }
+        }
+
+        function closeAvisPopup() {
+            const popup = document.getElementById('avisPopup');
+            if (popup) {
+                popup.classList.remove('show');
+            }
+        }
+
+        function initStarsEvents() {
+            const stars = document.querySelectorAll('.avis-star');
+            const starsContainer = document.querySelector('.avis-stars');
+
+            stars.forEach(star => {
+                // Supprimer les anciens événements
+                star.replaceWith(star.cloneNode(true));
+            });
+
+            // Réattacher les événements
+            document.querySelectorAll('.avis-star').forEach(star => {
+                star.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    updateStars(selectedRating);
+                });
+
+                star.addEventListener('mouseenter', function() {
+                    const rating = parseInt(this.getAttribute('data-rating'));
+                    updateStars(rating);
+                });
+            });
+
+            if (starsContainer) {
+                starsContainer.addEventListener('mouseleave', function() {
+                    updateStars(selectedRating);
+                });
+            }
+
+            updateStars(selectedRating);
+        }
+
+        function updateStars(rating) {
+            document.querySelectorAll('.avis-star').forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        // Initialiser au chargement du DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            initStarsEvents();
+        });
+
+        // Soumettre l'avis
+        function submitAvis() {
+            const nom = document.getElementById('avisNom').value.trim();
+            const message = document.getElementById('avisMessage').value.trim();
+
+            if (!nom) {
+                alert('Veuillez entrer votre nom');
+                return;
+            }
+
+            const submitBtn = document.getElementById('avisSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Envoi...';
+
+            fetch('{{ route("avis.store") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({
+                    nom: nom,
+                    message: message,
+                    note: selectedRating
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Afficher message de succès
+                    document.getElementById('avisForm').innerHTML = `
+                        <div style="text-align: center; padding: 30px 0;">
+                            <i class="bi bi-check-circle-fill" style="font-size: 60px; color: #1B7B6A;"></i>
+                            <h3 style="margin-top: 20px; color: #1a1a1a;">Merci pour votre avis !</h3>
+                            <p style="color: #666;">Votre avis sera publié après validation.</p>
+                        </div>
+                    `;
+                    setTimeout(closeAvisPopup, 2500);
+                } else {
+                    alert('Erreur lors de l\'envoi de l\'avis');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Envoyer mon avis';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Une erreur est survenue');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Envoyer mon avis';
+            });
+        }
+
     </script>
+
+    <!-- Popup Avis -->
+    <div id="avisPopup" class="avis-popup-overlay">
+        <div class="avis-popup">
+            <button class="avis-popup-close" onclick="closeAvisPopup()">&times;</button>
+
+            <div class="avis-popup-header">
+                <div class="avis-popup-icon">
+                    <i class="bi bi-chat-heart-fill"></i>
+                </div>
+                <h3>Votre avis compte !</h3>
+                <p>Partagez votre expérience avec Supriz</p>
+            </div>
+
+            <div id="avisForm" class="avis-popup-form">
+                <!-- Étoiles -->
+                <div class="avis-rating">
+                    <span class="avis-rating-label">Votre note</span>
+                    <div class="avis-stars">
+                        <i class="ri-star-fill avis-star active" data-rating="1"></i>
+                        <i class="ri-star-fill avis-star active" data-rating="2"></i>
+                        <i class="ri-star-fill avis-star active" data-rating="3"></i>
+                        <i class="ri-star-fill avis-star active" data-rating="4"></i>
+                        <i class="ri-star-fill avis-star active" data-rating="5"></i>
+                    </div>
+                </div>
+
+                <!-- Nom -->
+                <div class="avis-field">
+                    <label for="avisNom">Votre nom <span style="color: #e63946;">*</span></label>
+                    <input type="text" id="avisNom" placeholder="Ex: Marie D." maxlength="100">
+                </div>
+
+                <!-- Message -->
+                <div class="avis-field">
+                    <label for="avisMessage">Votre message (optionnel)</label>
+                    <textarea id="avisMessage" placeholder="Partagez votre expérience..." maxlength="500" rows="3"></textarea>
+                </div>
+
+                <!-- Boutons -->
+                <div class="avis-actions">
+                    <button type="button" class="avis-btn-skip" onclick="closeAvisPopup()">Plus tard</button>
+                    <button type="button" id="avisSubmitBtn" class="avis-btn-submit" onclick="submitAvis()">Envoyer mon avis</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Popup Avis Styles */
+        .avis-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .avis-popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .avis-popup {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+            position: relative;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .avis-popup-overlay.show .avis-popup {
+            transform: scale(1) translateY(0);
+        }
+
+        .avis-popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f3f4f6;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .avis-popup-close:hover {
+            background: #e5e7eb;
+            color: #333;
+        }
+
+        .avis-popup-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avis-popup-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #1B7B6A 0%, #2da891 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .avis-popup-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        .avis-popup-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0 0 8px 0;
+        }
+
+        .avis-popup-header p {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .avis-rating {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .avis-rating-label {
+            display: block !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin-bottom: 10px !important;
+        }
+
+        .avis-stars {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .avis-star {
+            font-size: 32px;
+            color: #ddd;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .avis-star.active {
+            color: #ffc107;
+        }
+
+        .avis-star:hover {
+            transform: scale(1.2);
+        }
+
+        .avis-field {
+            margin-bottom: 18px;
+        }
+
+        .avis-field label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .avis-field input,
+        .avis-field textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .avis-field input:focus,
+        .avis-field textarea:focus {
+            outline: none;
+            border-color: #1B7B6A;
+        }
+
+        .avis-field input::placeholder,
+        .avis-field textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .avis-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .avis-btn-skip {
+            flex: 1;
+            padding: 14px 20px;
+            background: #f3f4f6;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .avis-btn-skip:hover {
+            background: #e5e7eb;
+        }
+
+        .avis-btn-submit {
+            flex: 2;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #1B7B6A 0%, #2da891 100%);
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .avis-btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(27, 123, 106, 0.4);
+        }
+
+        .avis-btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 480px) {
+            .avis-popup {
+                padding: 25px 20px;
+                border-radius: 16px;
+                margin: 10px;
+            }
+
+            .avis-popup-icon {
+                width: 60px;
+                height: 60px;
+            }
+
+            .avis-popup-icon i {
+                font-size: 28px;
+            }
+
+            .avis-popup-header h3 {
+                font-size: 20px;
+            }
+
+            .avis-star {
+                font-size: 28px;
+            }
+
+            .avis-actions {
+                flex-direction: column;
+            }
+
+            .avis-btn-skip,
+            .avis-btn-submit {
+                flex: none;
+                width: 100%;
+            }
+        }
+    </style>
 </body>
 </html>

@@ -237,6 +237,40 @@
             animation-play-state: paused;
         }
 
+        /* Marquee animation for categories banner */
+        @keyframes marqueeScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-25%);
+            }
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Animation marquee pour témoignages */
+        @keyframes testimonialsScroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .testimonials-marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-item:hover {
+            background: rgba(255,255,255,0.3) !important;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
         /* How it works cards */
         .how-it-works-card {
             transition: transform 0.3s ease;
@@ -1363,7 +1397,8 @@
             }
 
             #categories {
-                padding: 30px 0 !important;
+                padding: 8px 0 !important;
+                margin-top: 0 !important;
             }
 
             #comment {
@@ -1376,35 +1411,38 @@
                 margin-bottom: 15px !important;
             }
 
-            #categories h2 {
-                font-size: 24px !important;
+            /* Categories Marquee Mobile */
+            .marquee-container {
+                overflow: hidden !important;
             }
 
-            #categories p {
-                margin-bottom: 15px !important;
+            .marquee-container > div:first-child,
+            .marquee-container > div:nth-child(2) {
+                width: 30px !important;
             }
 
-            /* Categories Section */
-            #categories {
-                padding: 30px 0 !important;
-                overflow-x: hidden !important;
+            .marquee-item {
+                padding: 6px 14px !important;
+                gap: 6px !important;
             }
 
-            .infinite-scroll-wrapper {
-                width: 100% !important;
-                max-width: 100vw !important;
-                overflow-x: hidden !important;
-                padding: 0 !important;
+            .marquee-item span {
+                font-size: 12px !important;
             }
 
-            .infinite-scroll {
-                padding-left: 15px !important;
-                flex-wrap: nowrap !important;
-                display: flex !important;
-                gap: 15px !important;
+            .marquee-item i,
+            .marquee-item img {
+                font-size: 14px !important;
+                width: 14px !important;
+                height: 14px !important;
             }
 
-            /* Categories Cards */
+            .marquee-track {
+                gap: 10px !important;
+                animation: marqueeScroll 25s linear infinite !important;
+            }
+
+            /* Categories Cards (legacy) */
             .occasion-card-new {
                 width: 150px !important;
                 height: 95px !important;
@@ -2019,6 +2057,53 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
     </div>
+
+    <!-- Categories Marquee Banner -->
+    <section id="categories" style="background: linear-gradient(135deg, #1B7B6A 0%, #145C50 100%); padding: 10px 0; overflow: hidden; position: relative; z-index: 1001;">
+        <div class="marquee-container" style="position: relative; width: 100%; overflow: hidden;">
+            <!-- Gradient fade edges -->
+            <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to right, #1B7B6A, transparent); z-index: 2;"></div>
+            <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to left, #145C50, transparent); z-index: 2;"></div>
+
+            <div class="marquee-track" style="display: flex; gap: 20px; animation: marqueeScroll 40s linear infinite; width: max-content;">
+                @php
+                    $defaultCategoriesMarquee = [
+                        ['name' => 'Anniversaire', 'icon' => 'bi-gift'],
+                        ['name' => 'Mariage', 'icon' => 'bi-heart'],
+                        ['name' => 'Naissance', 'icon' => 'bi-balloon'],
+                        ['name' => 'Nouvel an', 'icon' => 'bi-stars'],
+                        ['name' => 'Encouragement', 'icon' => 'bi-hand-thumbs-up'],
+                        ['name' => 'Remerciement', 'icon' => 'bi-emoji-smile'],
+                        ['name' => 'Fete des meres', 'icon' => 'bi-flower1'],
+                        ['name' => 'Saint-Valentin', 'icon' => 'bi-suit-heart'],
+                    ];
+                @endphp
+
+                @for($i = 0; $i < 4; $i++)
+                    @if(isset($categoriesSupriz) && count($categoriesSupriz) > 0)
+                        @foreach($categoriesSupriz as $categorie)
+                        <a href="{{ route('nouveau.message') }}?categorie={{ $categorie->id }}" class="marquee-item" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+                            @if($categorie->icone)
+                                <img src="{{ asset('storage/' . $categorie->icone) }}" alt="" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
+                            @else
+                                <i class="bi bi-gift" style="font-size: 16px; color: white;"></i>
+                            @endif
+                            <span style="color: white; font-size: 13px; font-weight: 500; white-space: nowrap;">{{ $categorie->name_sous_categories }}</span>
+                        </a>
+                        @endforeach
+                    @else
+                        @foreach($defaultCategoriesMarquee as $cat)
+                        <a href="{{ route('nouveau.message') }}" class="marquee-item" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+                            <i class="{{ $cat['icon'] }}" style="font-size: 16px; color: white;"></i>
+                            <span style="color: white; font-size: 13px; font-weight: 500; white-space: nowrap;">{{ $cat['name'] }}</span>
+                        </a>
+                        @endforeach
+                    @endif
+                @endfor
+            </div>
+        </div>
+    </section>
+
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg position-absolute w-100" style="background: transparent; padding: 30px 0; z-index: 1000;">
         <div class="container">
@@ -2095,119 +2180,62 @@
         </div>
     </section>
 
-    <!-- Categories Section -->
-    <section id="categories" style="background: #E8EDF2; padding: 100px 0; overflow: hidden;">
-        <div class="container-fluid px-0">
-            <p class="text-center mb-3" style="color: #4B6B8A; font-size: 18px; font-style: italic;">Célèbre chaque moment à ta façon</p>
-            <h2 class="text-center mb-5" style="font-size: 48px; font-weight: 700; color: #1A1A1A;">Choisis ton occasion</h2>
-
-            <div class="infinite-scroll-wrapper" style="position: relative; width: 100%; overflow: hidden;">
-                <div class="infinite-scroll" style="display: flex; gap: 15px; animation: scrollInfinite 20s linear infinite;">
-                @if(isset($categoriesSupriz) && count($categoriesSupriz) > 0)
-                    @foreach($categoriesSupriz as $categorie)
-                    <div class="occasion-card-wrapper" style="flex: 0 0 auto;">
-                        <div class="occasion-card-new" data-href="{{ route('nouveau.message') }}?categorie={{ $categorie->id }}" onclick="window.location.href=this.dataset.href" style="cursor: pointer; position: relative; width: 350px; height: 200px; border-radius: 12px; overflow: hidden;">
-                            @if($categorie->image_supriz)
-                                <img src="{{ asset('storage/' . $categorie->image_supriz) }}" alt="{{ $categorie->name_sous_categories }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            @else
-                                @php
-                                    $defaultImages = [
-                                        'Anniversaire' => 'couples-celebrating-birthday.jpg',
-                                        'Mariage' => 'groom-putting-ring-bride-s-finger.jpg',
-                                        'Vœux' => '7097.jpg',
-                                        'Nouvel an' => 'new-year-lettering-high-view-decor.jpg',
-                                        'Noël' => 'champagne-bottle-with-shiny-baubles-table.jpg'
-                                    ];
-                                    $imageName = $defaultImages[$categorie->name_sous_categories] ?? '120_82.jpg';
-                                @endphp
-                                <img src="{{ asset('images/landing/' . $imageName) }}" alt="{{ $categorie->name_sous_categories }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            @endif
-
-                            <!-- Dark overlay gradient -->
-                            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);"></div>
-
-                            <!-- Icon SVG blanc sans fond -->
-                            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-                                @if($categorie->icone)
-                                    <img src="{{ asset('storage/' . $categorie->icone) }}" alt="" style="width: 40px; height: 40px; filter: brightness(0) invert(1);">
-                                @else
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
-                                        <path d="M20 7h-1.209A2.99 2.99 0 0 0 16 5c-.919 0-1.738.416-2.29 1.071l-3.42-3.42A1 1 0 0 0 9 2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 .293.707l3.42 3.42A2.992 2.992 0 0 0 5 16c0 1.654 1.346 3 3 3s3-1.346 3-3c0-.919-.416-1.738-1.071-2.29l3.42-3.42A1 1 0 0 0 14 10h6a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM8 17c-.552 0-1-.449-1-1s.448-1 1-1 1 .449 1 1-.448 1-1 1zm8-10c-.552 0-1-.449-1-1s.448-1 1-1 1 .449 1 1-.448 1-1 1z"/>
-                                    </svg>
-                                @endif
-                            </div>
-
-                            <!-- Title -->
-                            <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;">
-                                <h3 style="color: white; font-size: 22px; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">{{ $categorie->name_sous_categories }}</h3>
-                            </div>
-                        </div>
+    <!-- 1. Compteurs animés (Social Proof Stats) -->
+    <section id="stats" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 50px 0;">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="{{ $stats['messages_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
+                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
+                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Messages envoyés</p>
                     </div>
-                    @endforeach
-
-                    <!-- Duplicate for infinite scroll -->
-                    @foreach($categoriesSupriz as $categorie)
-                    <div class="occasion-card-wrapper" style="flex: 0 0 auto;">
-                        <div class="occasion-card-new" data-href="{{ route('nouveau.message') }}?categorie={{ $categorie->id }}" onclick="window.location.href=this.dataset.href" style="cursor: pointer; position: relative; width: 350px; height: 200px; border-radius: 12px; overflow: hidden;">
-                            @if($categorie->image_supriz)
-                                <img src="{{ asset('storage/' . $categorie->image_supriz) }}" alt="{{ $categorie->name_sous_categories }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            @else
-                                @php
-                                    $imageName = $defaultImages[$categorie->name_sous_categories] ?? '120_82.jpg';
-                                @endphp
-                                <img src="{{ asset('images/landing/' . $imageName) }}" alt="{{ $categorie->name_sous_categories }}" style="width: 100%; height: 100%; object-fit: cover;">
-                            @endif
-
-                            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);"></div>
-
-                            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
-                                @if($categorie->icone)
-                                    <img src="{{ asset('storage/' . $categorie->icone) }}" alt="" style="width: 40px; height: 40px; filter: brightness(0) invert(1);">
-                                @else
-                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="white">
-                                        <path d="M20 7h-1.209A2.99 2.99 0 0 0 16 5c-.919 0-1.738.416-2.29 1.071l-3.42-3.42A1 1 0 0 0 9 2H3a1 1 0 0 0-1 1v6a1 1 0 0 0 .293.707l3.42 3.42A2.992 2.992 0 0 0 5 16c0 1.654 1.346 3 3 3s3-1.346 3-3c0-.919-.416-1.738-1.071-2.29l3.42-3.42A1 1 0 0 0 14 10h6a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM8 17c-.552 0-1-.449-1-1s.448-1 1-1 1 .449 1 1-.448 1-1 1zm8-10c-.552 0-1-.449-1-1s.448-1 1-1 1 .449 1 1-.448 1-1 1z"/>
-                                    </svg>
-                                @endif
-                            </div>
-
-                            <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;">
-                                <h3 style="color: white; font-size: 22px; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">{{ $categorie->name_sous_categories }}</h3>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-6 col-md-3 mb-4 mb-md-0">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="{{ $stats['satisfaction_rate'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
+                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">%</span>
+                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Satisfaction client</p>
                     </div>
-                    @endforeach
-                @else
-                    <!-- Default categories -->
-                    @php
-                        $defaultCategories = [
-                            ['name' => 'Anniversaire', 'image' => 'couples-celebrating-birthday.jpg'],
-                            ['name' => 'Mariage', 'image' => 'groom-putting-ring-bride-s-finger.jpg'],
-                            ['name' => 'Vœux', 'image' => '7097.jpg'],
-                            ['name' => 'Nouvel an', 'image' => 'new-year-lettering-high-view-decor.jpg'],
-                            ['name' => 'Noël', 'image' => 'champagne-bottle-with-shiny-baubles-table.jpg']
-                        ];
-                    @endphp
-                    @foreach($defaultCategories as $cat)
-                    <div class="occasion-card-wrapper" style="flex: 0 0 auto;">
-                        <div class="occasion-card-new" onclick="window.location.href='{{ route('nouveau.message') }}'" style="cursor: pointer; position: relative; width: 350px; height: 200px; border-radius: 12px; overflow: hidden;">
-                            <img src="{{ asset('images/landing/' . $cat['image']) }}" alt="{{ $cat['name'] }}" style="width: 100%; height: 100%; object-fit: cover;">
-
-                            <!-- Dark overlay gradient -->
-                            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.7) 100%);"></div>
-
-                            <!-- Icon circle -->
-                            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                                <i class="bi bi-gift" style="font-size: 28px; color: #1B7B6A;"></i>
-                            </div>
-
-                            <!-- Title -->
-                            <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center;">
-                                <h3 style="color: white; font-size: 22px; font-weight: 600; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">{{ $cat['name'] }}</h3>
-                            </div>
-                        </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="{{ $stats['categories_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
+                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
+                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Catégories disponibles</p>
                     </div>
-                    @endforeach
-                @endif
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="{{ $stats['avis_count'] }}" style="font-size: 42px; font-weight: 700; color: #1B7B6A; display: block;">0</span>
+                        <span class="stat-plus" style="font-size: 28px; font-weight: 700; color: #1B7B6A;">+</span>
+                        <p style="color: #fff; font-size: 14px; margin-top: 8px; opacity: 0.9;">Avis clients</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Bandeau de confiance -->
+    <section id="trust-badges" style="background: #fff; padding: 25px 0; border-bottom: 1px solid #eee;">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5">
+                <div class="trust-badge d-flex align-items-center gap-2" style="opacity: 0.7;">
+                    <i class="bi bi-gift-fill" style="font-size: 24px; color: #1B7B6A;"></i>
+                    <span style="font-size: 13px; color: #555;">100% Gratuit</span>
+                </div>
+                <div class="trust-badge d-flex align-items-center gap-2" style="opacity: 0.7;">
+                    <i class="bi bi-lightning-charge-fill" style="font-size: 24px; color: #1B7B6A;"></i>
+                    <span style="font-size: 13px; color: #555;">Création en 2 minutes</span>
+                </div>
+                <div class="trust-badge d-flex align-items-center gap-2" style="opacity: 0.7;">
+                    <i class="bi bi-shield-check" style="font-size: 24px; color: #1B7B6A;"></i>
+                    <span style="font-size: 13px; color: #555;">Données sécurisées</span>
+                </div>
+                <div class="trust-badge d-flex align-items-center gap-2" style="opacity: 0.7;">
+                    <i class="bi bi-headset" style="font-size: 24px; color: #1B7B6A;"></i>
+                    <span style="font-size: 13px; color: #555;">Support 7j/7</span>
+                </div>
             </div>
         </div>
     </section>
@@ -2340,6 +2368,162 @@
             }
         }
     </style>
+
+    <!-- 3. Témoignages clients -->
+    <section id="testimonials" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0; overflow: hidden;">
+        <div class="container">
+            <h2 class="text-center mb-2" style="font-size: 42px; font-weight: 700; color: #1A1A1A;">Ce que disent nos utilisateurs</h2>
+            <p class="text-center mb-5" style="color: #666; font-size: 16px;">Des milliers de moments inoubliables créés</p>
+
+            @php
+                // Avis par défaut
+                $defaultAvis = [
+                    ['nom' => 'Aminata M.', 'initiales' => 'AM', 'note' => 5, 'message' => "J'ai créé un message Supriz pour l'anniversaire de ma mère. Elle était tellement émue ! C'est vraiment une façon unique de montrer son amour.", 'gradient' => 'linear-gradient(135deg, #1B7B6A, #2da891)'],
+                    ['nom' => 'Jean-Pierre K.', 'initiales' => 'JK', 'note' => 5, 'message' => "Pour notre mariage, nos invités ont envoyé des messages Supriz. On a gardé ce lien précieusement, c'est notre plus beau souvenir !", 'gradient' => 'linear-gradient(135deg, #005792, #0077b6)'],
+                    ['nom' => 'Sarah F.', 'initiales' => 'SF', 'note' => 4, 'message' => "Simple, rapide et tellement personnel ! J'utilise Supriz pour toutes les occasions maintenant. Mes proches adorent recevoir ces surprises.", 'gradient' => 'linear-gradient(135deg, #e63946, #f4a261)'],
+                ];
+
+                // Couleurs pour les avatars des vrais avis
+                $avatarGradients = [
+                    'linear-gradient(135deg, #1B7B6A, #2da891)',
+                    'linear-gradient(135deg, #005792, #0077b6)',
+                    'linear-gradient(135deg, #e63946, #f4a261)',
+                    'linear-gradient(135deg, #6c757d, #adb5bd)',
+                    'linear-gradient(135deg, #9333ea, #c084fc)',
+                    'linear-gradient(135deg, #ea580c, #fb923c)',
+                ];
+
+                // Combiner avis réels et par défaut
+                $allAvis = collect($defaultAvis);
+                if(isset($avisClients) && $avisClients->count() > 0) {
+                    $avisClientsArray = $avisClients->map(function($avis, $index) use ($avatarGradients) {
+                        return [
+                            'nom' => $avis->nom,
+                            'initiales' => $avis->initiales ?? strtoupper(substr($avis->nom, 0, 2)),
+                            'note' => $avis->note,
+                            'message' => $avis->message ?: 'Super expérience avec Supriz !',
+                            'gradient' => $avatarGradients[$index % count($avatarGradients)],
+                        ];
+                    })->toArray();
+                    $allAvis = collect(array_merge($avisClientsArray, $defaultAvis));
+                }
+
+                $totalAvis = $allAvis->count();
+                $useMarquee = $totalAvis > 3;
+            @endphp
+
+            @if($useMarquee)
+                <!-- Mode Marquee pour plus de 3 avis -->
+                <div class="testimonials-marquee-wrapper" style="position: relative; width: 100vw; left: 50%; transform: translateX(-50%); overflow: hidden;">
+                    <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to right, #f8f9fa, transparent); z-index: 2;"></div>
+                    <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to left, #e9ecef, transparent); z-index: 2;"></div>
+
+                    <div class="testimonials-marquee-track" style="display: flex; gap: 25px; animation: testimonialsScroll {{ $totalAvis * 8 }}s linear infinite; width: max-content; padding: 10px 0;">
+                        @for($i = 0; $i < 2; $i++)
+                            @foreach($allAvis as $avis)
+                                <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: relative; min-width: 320px; max-width: 320px; flex-shrink: 0;">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div style="width: 45px; height: 45px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 16px;">{{ $avis['initiales'] }}</div>
+                                        <div class="ms-3">
+                                            <h5 style="margin: 0; font-size: 15px; font-weight: 600;">{{ $avis['nom'] }}</h5>
+                                            <div style="color: #ffc107; font-size: 14px;">
+                                                @for($j = 1; $j <= 5; $j++)
+                                                    @if($j <= $avis['note'])
+                                                        <i class="bi bi-star-fill"></i>
+                                                    @else
+                                                        <i class="bi bi-star"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p style="color: #555; font-size: 13px; line-height: 1.6; margin: 0; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">"{{ $avis['message'] }}"</p>
+                                    <div style="position: absolute; top: 15px; right: 15px; opacity: 0.1;">
+                                        <i class="bi bi-quote" style="font-size: 30px; color: #1B7B6A;"></i>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endfor
+                    </div>
+                </div>
+            @else
+                <!-- Mode Grille pour 3 avis ou moins -->
+                <div class="row g-4">
+                    @foreach($allAvis->take(3) as $avis)
+                        <div class="col-md-4">
+                            <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); height: 100%; position: relative;">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div style="width: 50px; height: 50px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px;">{{ $avis['initiales'] }}</div>
+                                    <div class="ms-3">
+                                        <h5 style="margin: 0; font-size: 16px; font-weight: 600;">{{ $avis['nom'] }}</h5>
+                                        <div style="color: #ffc107;">
+                                            @for($j = 1; $j <= 5; $j++)
+                                                @if($j <= $avis['note'])
+                                                    <i class="bi bi-star-fill"></i>
+                                                @else
+                                                    <i class="bi bi-star"></i>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                    </div>
+                                </div>
+                                <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0;">"{{ $avis['message'] }}"</p>
+                                <div style="position: absolute; top: 20px; right: 20px; opacity: 0.1;">
+                                    <i class="bi bi-quote" style="font-size: 40px; color: #1B7B6A;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- 4. Section "Ils nous font confiance" -->
+    <section id="social-proof" style="background: #1a1a2e; padding: 60px 0;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h3 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 15px;">Rejoins notre communauté</h3>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 16px; margin-bottom: 25px;">Des milliers de personnes ont déjà choisi Supriz pour marquer leurs moments spéciaux.</p>
+
+                    <div class="d-flex flex-wrap gap-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width: 40px; height: 40px; background: rgba(27, 123, 106, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-people-fill" style="color: #1B7B6A; font-size: 20px;"></i>
+                            </div>
+                            <div>
+                                <span style="color: white; font-weight: 600; font-size: 18px;">+1500</span>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">Utilisateurs actifs</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div style="width: 40px; height: 40px; background: rgba(27, 123, 106, 0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="bi bi-globe-americas" style="color: #1B7B6A; font-size: 20px;"></i>
+                            </div>
+                            <div>
+                                <span style="color: white; font-weight: 600; font-size: 18px;">+50</span>
+                                <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin: 0;">Pays</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="d-flex justify-content-center justify-content-lg-end">
+                        <!-- Avatars superposés -->
+                        <div class="avatars-stack d-flex align-items-center">
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #1B7B6A, #2da891); border: 3px solid #1a1a2e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; margin-right: -15px; z-index: 5;">AM</div>
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #005792, #0077b6); border: 3px solid #1a1a2e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; margin-right: -15px; z-index: 4;">JK</div>
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #e63946, #f4a261); border: 3px solid #1a1a2e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; margin-right: -15px; z-index: 3;">SF</div>
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #6c757d, #adb5bd); border: 3px solid #1a1a2e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 14px; margin-right: -15px; z-index: 2;">MK</div>
+                            <div style="width: 45px; height: 45px; border-radius: 50%; background: #1B7B6A; border: 3px solid #1a1a2e; display: flex; align-items: center; justify-content: center; color: white; font-weight: 500; font-size: 12px; z-index: 1;">+1.5k</div>
+                            <span style="color: rgba(255,255,255,0.8); margin-left: 15px; font-size: 14px;">nous ont rejoint ce mois</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- FAQ Section -->
     <section id="faq" class="section-wrapper" style="background: white; padding: 100px 0;">
@@ -3002,7 +3186,144 @@
         document.querySelectorAll('.hero-btn, .btn').forEach(button => {
             button.classList.add('ripple-effect');
         });
+
+        // ========== ANIMATION COMPTEURS ==========
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            const speed = 200;
+
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const increment = target / speed;
+                let current = 0;
+
+                const updateCount = () => {
+                    current += increment;
+                    if (current < target) {
+                        counter.innerText = Math.ceil(current).toLocaleString();
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+
+                updateCount();
+            });
+        }
+
+        // Observer pour déclencher l'animation quand visible
+        const statsSection = document.getElementById('stats');
+        if (statsSection) {
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        statsObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            statsObserver.observe(statsSection);
+        }
+
+        // ========== NOTIFICATIONS FOMO ==========
+        const fomoNotifications = [
+            { name: 'Marie', location: 'Paris', action: 'vient de créer un message anniversaire', time: 'Il y a 2 min' },
+            { name: 'Kouadio', location: 'Abidjan', action: 'a envoyé un message de mariage', time: 'Il y a 5 min' },
+            { name: 'Fatou', location: 'Dakar', action: 'vient de créer un message Supriz', time: 'Il y a 8 min' },
+            { name: 'Jean', location: 'Douala', action: 'a partagé un message de voeux', time: 'Il y a 12 min' },
+            { name: 'Awa', location: 'Bamako', action: 'vient d\'envoyer un message', time: 'Il y a 15 min' },
+            { name: 'Patrick', location: 'Kinshasa', action: 'a créé un message de naissance', time: 'Il y a 18 min' },
+        ];
+
+        let fomoIndex = 0;
+        const fomoPopup = document.getElementById('fomo-popup');
+
+        function showFomoNotification() {
+            if (!fomoPopup) return;
+
+            const notification = fomoNotifications[fomoIndex];
+            document.getElementById('fomo-name').textContent = notification.name;
+            document.getElementById('fomo-location').textContent = notification.location;
+            document.getElementById('fomo-action').textContent = notification.action;
+            document.getElementById('fomo-time').textContent = notification.time;
+
+            fomoPopup.classList.add('show');
+
+            setTimeout(() => {
+                fomoPopup.classList.remove('show');
+            }, 4000);
+
+            fomoIndex = (fomoIndex + 1) % fomoNotifications.length;
+        }
+
+        // Afficher la première notification après 5 secondes, puis toutes les 15 secondes
+        setTimeout(() => {
+            showFomoNotification();
+            setInterval(showFomoNotification, 15000);
+        }, 5000);
+
+        // Fermer la notification au clic
+        document.getElementById('fomo-close')?.addEventListener('click', () => {
+            fomoPopup.classList.remove('show');
+        });
     </script>
+
+    <!-- 5. Popup FOMO Notification -->
+    <div id="fomo-popup" class="fomo-notification" style="position: fixed; bottom: 20px; left: 20px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); padding: 15px 20px; z-index: 9999; transform: translateX(-120%); transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); max-width: 320px;">
+        <button id="fomo-close" style="position: absolute; top: 8px; right: 10px; background: none; border: none; font-size: 18px; color: #999; cursor: pointer; line-height: 1;">&times;</button>
+        <div class="d-flex align-items-start gap-3">
+            <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #1B7B6A, #2da891); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="bi bi-gift" style="color: white; font-size: 20px;"></i>
+            </div>
+            <div>
+                <p style="margin: 0; font-size: 14px; color: #333; line-height: 1.4;">
+                    <strong id="fomo-name">Marie</strong> de <span id="fomo-location">Paris</span> <span id="fomo-action">vient de créer un message</span>
+                </p>
+                <span id="fomo-time" style="font-size: 12px; color: #999;">Il y a 2 min</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .fomo-notification.show {
+            transform: translateX(0) !important;
+        }
+
+        @media (max-width: 768px) {
+            .fomo-notification {
+                bottom: 10px !important;
+                left: 10px !important;
+                right: 10px !important;
+                max-width: none !important;
+            }
+        }
+
+        /* Hover effect pour les testimonials */
+        .testimonial-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.12) !important;
+        }
+
+        /* Animation pour les stats */
+        .stat-item {
+            transition: transform 0.3s ease;
+        }
+        .stat-item:hover {
+            transform: scale(1.05);
+        }
+
+        /* Trust badges hover */
+        .trust-badge {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .trust-badge:hover {
+            opacity: 1 !important;
+            transform: translateY(-2px);
+        }
+    </style>
 </body>
 </html>
 
