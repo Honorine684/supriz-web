@@ -1440,6 +1440,38 @@
             .marquee-track {
                 gap: 10px !important;
                 animation: marqueeScroll 25s linear infinite !important;
+                max-width: none !important;
+                width: max-content !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .marquee-item {
+                max-width: none !important;
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+            }
+
+            /* Stats sur une ligne mobile */
+            #stats .row {
+                flex-wrap: nowrap !important;
+            }
+
+            #stats .col-6 {
+                flex: 0 0 25% !important;
+                width: 25% !important;
+                padding: 0 5px !important;
+            }
+
+            #stats .stat-number {
+                font-size: 28px !important;
+            }
+
+            #stats .stat-plus {
+                font-size: 18px !important;
+            }
+
+            #stats p {
+                font-size: 11px !important;
             }
 
             /* Categories Cards (legacy) */
@@ -1740,10 +1772,52 @@
                 max-width: 100vw !important;
             }
 
-            /* FORCE: Strict width control on small screens */
-            * {
-                max-width: 100% !important;
+            /* FORCE: Strict width control on small screens - EXCEPT marquee elements */
+            *:not(.marquee-track):not(.marquee-item):not(.marquee-container):not(.testimonials-marquee-track) {
                 box-sizing: border-box !important;
+            }
+
+            /* Marquee categories banner mobile */
+            .marquee-track {
+                max-width: none !important;
+                width: max-content !important;
+                flex-wrap: nowrap !important;
+            }
+
+            .marquee-item {
+                max-width: none !important;
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+            }
+
+            .marquee-container {
+                max-width: 100vw !important;
+                overflow: hidden !important;
+            }
+
+            /* Stats section mobile - 4 colonnes sur une ligne */
+            #stats .row {
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+            }
+
+            #stats .col-6 {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                min-width: 80px !important;
+                padding: 0 8px !important;
+            }
+
+            #stats .stat-number {
+                font-size: 24px !important;
+            }
+
+            #stats .stat-plus {
+                font-size: 16px !important;
+            }
+
+            #stats p {
+                font-size: 10px !important;
             }
 
             .container,
