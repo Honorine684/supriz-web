@@ -47,7 +47,6 @@ class MessageController extends Controller
 
         $stats = [
             'messages_count' => 1500 + $realMessagesCount,
-            'satisfaction_rate' => $realAvisCount > 0 ? $realSatisfactionRate : 98, // Garde 98% si pas d'avis
             'categories_count' => $realCategoriesCount, // Nombre réel de catégories actives
             'avis_count' => 2000 + $realAvisCount,
         ];

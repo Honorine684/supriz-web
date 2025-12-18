@@ -1466,7 +1466,7 @@
 
             .marquee-track {
                 gap: 10px !important;
-                animation: marqueeScroll 25s linear infinite !important;
+                animation: marqueeScroll 9s linear infinite !important;
                 max-width: none !important;
                 width: max-content !important;
                 flex-wrap: nowrap !important;
@@ -1505,15 +1505,15 @@
             }
 
             #stats .stat-number {
-                font-size: 22px !important;
+                font-size: 28px !important;
             }
 
             #stats .stat-plus {
-                font-size: 14px !important;
+                font-size: 18px !important;
             }
 
             #stats .stat-label {
-                font-size: 9px !important;
+                font-size: 12px !important;
                 line-height: 1.2 !important;
                 margin: 5px 0 0 0 !important;
             }
@@ -1897,15 +1897,15 @@
             }
 
             #stats .stat-number {
-                font-size: 18px !important;
+                font-size: 24px !important;
             }
 
             #stats .stat-plus {
-                font-size: 12px !important;
+                font-size: 16px !important;
             }
 
             #stats .stat-label {
-                font-size: 8px !important;
+                font-size: 11px !important;
                 line-height: 1.2 !important;
                 margin: 4px 0 0 0 !important;
             }
@@ -2247,13 +2247,13 @@
     </div>
 
     <!-- Categories Marquee Banner -->
-    <section id="categories" style="background: linear-gradient(135deg, #1B7B6A 0%, #145C50 100%); padding: 10px 0; overflow: hidden; position: relative; z-index: 1001;">
+    <section id="categories" style="background: #1a1a2e; padding: 10px 0; overflow: hidden; position: relative; z-index: 1001;">
         <div class="marquee-container" style="position: relative; width: 100%; overflow: hidden;">
             <!-- Gradient fade edges -->
-            <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to right, #1B7B6A, transparent); z-index: 2;"></div>
-            <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to left, #145C50, transparent); z-index: 2;"></div>
+            <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to right, #1a1a2e, transparent); z-index: 2;"></div>
+            <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 60px; background: linear-gradient(to left, #1a1a2e, transparent); z-index: 2;"></div>
 
-            <div class="marquee-track" style="display: flex; gap: 20px; animation: marqueeScroll 40s linear infinite; width: max-content;">
+            <div class="marquee-track" style="display: flex; gap: 20px; animation: marqueeScroll 10s linear infinite; width: max-content;">
                 @php
                     $defaultCategoriesMarquee = [
                         ['name' => 'Anniversaire', 'icon' => 'bi-gift'],
@@ -2335,10 +2335,10 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="hero-content">
                         <h1 class="hero-title mb-4" style="color: white; font-weight: 700; line-height: 1.1;">
-                            Envoie un message <br>supriz inoubliable
+                            Et si vous envoyiez le message <br>qu'on n'oubliera jamais ?
                         </h1>
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
-                            Pour anniversaires, mariages, fêtes et toutes les occasions. Exprimez vos vœux, sentiments et intentions d'une manière beaucoup plus originale grâce à un lien unique et mémorable.
+                            Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un mot d'amour, un anniversaire, un mariage, Noël ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
                         </p>
                         <a href="{{ route('nouveau.message') }}" class="btn hero-btn mb-4" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
                             Crée un message
@@ -2374,19 +2374,19 @@
             <div class="row text-center">
                 <div class="col-4">
                     <div class="stat-item">
-                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['messages_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['messages_count'] }}">0</span></div>
                         <p class="stat-label">Messages envoyés</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="stat-item">
-                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span></div>
                         <p class="stat-label">Catégories</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="stat-item">
-                        <div class="stat-value"><span class="stat-number" data-target="{{ $stats['avis_count'] }}">0</span><span class="stat-plus">+</span></div>
+                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['avis_count'] }}">0</span></div>
                         <p class="stat-label">Avis clients</p>
                     </div>
                 </div>
@@ -2506,6 +2506,80 @@
         </div>
     </section>
 
+    <!-- 3. Témoignages clients -->
+    <section id="testimonials" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0; width: 100vw; margin-left: calc(-50vw + 50%); overflow: hidden;">
+        <div class="container">
+            <h2 class="text-center mb-2" style="font-size: 42px; font-weight: 700; color: #1A1A1A;">Ce que disent nos utilisateurs</h2>
+            <p class="text-center mb-5" style="color: #666; font-size: 16px;">Des milliers de moments inoubliables créés</p>
+
+            @php
+                // Avis par défaut
+                $defaultAvis = [
+                    ['nom' => 'Sophie R.', 'initiales' => 'SR', 'note' => 5, 'message' => "Je ne savais pas comment lui dire à quel point elle comptait pour moi. J'ai écrit un Supriz pour son anniversaire. Elle m'a répondu avec un vocal en pleurs. C'était magique.", 'gradient' => 'linear-gradient(135deg, #1B7B6A, #2da891)'],
+                    ['nom' => 'Jean-Pierre K.', 'initiales' => 'JK', 'note' => 5, 'message' => "Pour notre mariage, nos invités ont envoyé des messages Supriz. On a gardé ce lien précieusement, c'est notre plus beau souvenir !", 'gradient' => 'linear-gradient(135deg, #005792, #0077b6)'],
+                    ['nom' => 'Sarah F.', 'initiales' => 'SF', 'note' => 4, 'message' => "Simple, rapide et tellement personnel ! J'utilise Supriz pour toutes les occasions maintenant. Mes proches adorent recevoir ces surprises.", 'gradient' => 'linear-gradient(135deg, #e63946, #f4a261)'],
+                ];
+
+                // Couleurs pour les avatars des vrais avis
+                $avatarGradients = [
+                    'linear-gradient(135deg, #1B7B6A, #2da891)',
+                    'linear-gradient(135deg, #005792, #0077b6)',
+                    'linear-gradient(135deg, #e63946, #f4a261)',
+                    'linear-gradient(135deg, #6c757d, #adb5bd)',
+                    'linear-gradient(135deg, #9333ea, #c084fc)',
+                    'linear-gradient(135deg, #ea580c, #fb923c)',
+                ];
+
+                // Combiner avis réels et par défaut
+                $allAvis = collect($defaultAvis);
+                if(isset($avisClients) && $avisClients->count() > 0) {
+                    $avisClientsArray = $avisClients->map(fn($avis, $index) => [
+                        'nom' => $avis->nom,
+                        'initiales' => $avis->initiales ?? strtoupper(substr($avis->nom, 0, 2)),
+                        'note' => $avis->note,
+                        'message' => $avis->message ?: 'Super expérience avec Supriz !',
+                        'gradient' => $avatarGradients[$index % count($avatarGradients)],
+                    ])->toArray();
+                    $allAvis = collect([...$avisClientsArray, ...$defaultAvis]);
+                }
+            @endphp
+
+            <!-- Ligne d'avis scrollable -->
+            <div class="testimonials-scroll-container" style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 10px; margin-left: calc(-50vw + 50%); width: 100vw;">
+                <div class="testimonials-scroll-track" style="display: inline-flex; gap: 20px; min-width: 100%; padding: 10px 20px; justify-content: center;">
+                    @foreach($allAvis->take(6) as $avis)
+                        <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: relative; min-width: 320px; max-width: 350px; flex-shrink: 0;">
+                            <div class="d-flex align-items-center mb-3">
+                                <div style="width: 50px; height: 50px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px;">{{ $avis['initiales'] }}</div>
+                                <div class="ms-3">
+                                    <h5 style="margin: 0; font-size: 16px; font-weight: 600;">{{ $avis['nom'] }}</h5>
+                                    <div style="color: #ffc107;">
+                                        @for($j = 1; $j <= 5; $j++)
+                                            @if($j <= $avis['note'])
+                                                <i class="bi bi-star-fill"></i>
+                                            @else
+                                                <i class="bi bi-star"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0;">"{{ $avis['message'] }}"</p>
+                            <div style="position: absolute; top: 15px; right: 15px; opacity: 0.1;">
+                                <i class="bi bi-quote" style="font-size: 35px; color: #1B7B6A;"></i>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <style>
+                .testimonials-scroll-container::-webkit-scrollbar {
+                    display: none;
+                }
+            </style>
+        </div>
+    </section>
+
     <!-- Screen Preview Section -->
     <section class="section-wrapper" style="background: white; padding: 60px 0;">
         <div class="container" style="max-width: 1200px;">
@@ -2547,76 +2621,26 @@
         }
     </style>
 
-    <!-- 3. Témoignages clients -->
-    <section id="testimonials" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 80px 0;">
-        <div class="container">
-            <h2 class="text-center mb-2" style="font-size: 42px; font-weight: 700; color: #1A1A1A;">Ce que disent nos utilisateurs</h2>
-            <p class="text-center mb-5" style="color: #666; font-size: 16px;">Des milliers de moments inoubliables créés</p>
-
-            @php
-                // Avis par défaut
-                $defaultAvis = [
-                    ['nom' => 'Aminata M.', 'initiales' => 'AM', 'note' => 5, 'message' => "J'ai créé un message Supriz pour l'anniversaire de ma mère. Elle était tellement émue ! C'est vraiment une façon unique de montrer son amour.", 'gradient' => 'linear-gradient(135deg, #1B7B6A, #2da891)'],
-                    ['nom' => 'Jean-Pierre K.', 'initiales' => 'JK', 'note' => 5, 'message' => "Pour notre mariage, nos invités ont envoyé des messages Supriz. On a gardé ce lien précieusement, c'est notre plus beau souvenir !", 'gradient' => 'linear-gradient(135deg, #005792, #0077b6)'],
-                    ['nom' => 'Sarah F.', 'initiales' => 'SF', 'note' => 4, 'message' => "Simple, rapide et tellement personnel ! J'utilise Supriz pour toutes les occasions maintenant. Mes proches adorent recevoir ces surprises.", 'gradient' => 'linear-gradient(135deg, #e63946, #f4a261)'],
-                ];
-
-                // Couleurs pour les avatars des vrais avis
-                $avatarGradients = [
-                    'linear-gradient(135deg, #1B7B6A, #2da891)',
-                    'linear-gradient(135deg, #005792, #0077b6)',
-                    'linear-gradient(135deg, #e63946, #f4a261)',
-                    'linear-gradient(135deg, #6c757d, #adb5bd)',
-                    'linear-gradient(135deg, #9333ea, #c084fc)',
-                    'linear-gradient(135deg, #ea580c, #fb923c)',
-                ];
-
-                // Combiner avis réels et par défaut
-                $allAvis = collect($defaultAvis);
-                if(isset($avisClients) && $avisClients->count() > 0) {
-                    $avisClientsArray = $avisClients->map(fn($avis, $index) => [
-                        'nom' => $avis->nom,
-                        'initiales' => $avis->initiales ?? strtoupper(substr($avis->nom, 0, 2)),
-                        'note' => $avis->note,
-                        'message' => $avis->message ?: 'Super expérience avec Supriz !',
-                        'gradient' => $avatarGradients[$index % count($avatarGradients)],
-                    ])->toArray();
-                    $allAvis = collect([...$avisClientsArray, ...$defaultAvis]);
-                }
-            @endphp
-
-            <!-- Grille d'avis -->
-            <div class="row g-4 justify-content-center">
-                @foreach($allAvis->take(6) as $avis)
-                    <div class="col-lg-4 col-md-6 col-11">
-                        <div class="testimonial-card" style="background: white; border-radius: 20px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); height: 100%; position: relative;">
-                            <div class="d-flex align-items-center mb-3">
-                                <div style="width: 50px; height: 50px; border-radius: 50%; background: {{ $avis['gradient'] }}; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px;">{{ $avis['initiales'] }}</div>
-                                <div class="ms-3">
-                                    <h5 style="margin: 0; font-size: 16px; font-weight: 600;">{{ $avis['nom'] }}</h5>
-                                    <div style="color: #ffc107;">
-                                        @for($j = 1; $j <= 5; $j++)
-                                            @if($j <= $avis['note'])
-                                                <i class="bi bi-star-fill"></i>
-                                            @else
-                                                <i class="bi bi-star"></i>
-                                            @endif
-                                        @endfor
-                                    </div>
-                                </div>
-                            </div>
-                            <p style="color: #555; font-size: 14px; line-height: 1.7; margin: 0;">"{{ $avis['message'] }}"</p>
-                            <div style="position: absolute; top: 15px; right: 15px; opacity: 0.1;">
-                                <i class="bi bi-quote" style="font-size: 35px; color: #1B7B6A;"></i>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-
     <!-- 4. Section "Ils nous font confiance" -->
+    <style>
+        @media (max-width: 768px) {
+            #social-proof h3 {
+                font-size: 26px !important;
+            }
+            #social-proof > .container > .row > .col-lg-6:first-child > p {
+                font-size: 15px !important;
+            }
+            #social-proof .d-flex.align-items-center.gap-2 span {
+                font-size: 20px !important;
+            }
+            #social-proof .d-flex.align-items-center.gap-2 p {
+                font-size: 13px !important;
+            }
+            #social-proof .avatars-stack span {
+                font-size: 13px !important;
+            }
+        }
+    </style>
     <section id="social-proof" style="background: #1a1a2e; padding: 60px 0;">
         <div class="container">
             <div class="row align-items-center">
