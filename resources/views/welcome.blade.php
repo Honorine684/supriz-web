@@ -2576,6 +2576,17 @@
                 .testimonials-scroll-container::-webkit-scrollbar {
                     display: none;
                 }
+                @media (max-width: 768px) {
+                    .testimonial-card {
+                        min-width: 280px !important;
+                        max-width: 300px !important;
+                        padding: 20px !important;
+                    }
+                    .testimonials-scroll-track {
+                        gap: 15px !important;
+                        justify-content: flex-start !important;
+                    }
+                }
             </style>
         </div>
     </section>
