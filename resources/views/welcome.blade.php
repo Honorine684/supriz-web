@@ -2515,7 +2515,7 @@
             @php
                 // Avis par défaut
                 $defaultAvis = [
-                    ['nom' => 'Sophie R.', 'initiales' => 'SR', 'note' => 5, 'message' => "Je ne savais pas comment lui dire à quel point elle comptait pour moi. J'ai écrit un Supriz pour son anniversaire. Elle m'a répondu avec un vocal en pleurs. C'était magique.", 'gradient' => 'linear-gradient(135deg, #1B7B6A, #2da891)'],
+                    ['nom' => 'Ruth', 'initiales' => 'RU', 'note' => 5, 'message' => "Je ne savais pas comment lui dire à quel point elle comptait pour moi. J'ai écrit un Supriz pour son anniversaire. Elle m'a répondu avec un vocal en pleurs. C'était magique.", 'gradient' => 'linear-gradient(135deg, #1B7B6A, #2da891)'],
                     ['nom' => 'Jean-Pierre K.', 'initiales' => 'JK', 'note' => 5, 'message' => "Pour notre mariage, nos invités ont envoyé des messages Supriz. On a gardé ce lien précieusement, c'est notre plus beau souvenir !", 'gradient' => 'linear-gradient(135deg, #005792, #0077b6)'],
                     ['nom' => 'Sarah F.', 'initiales' => 'SF', 'note' => 4, 'message' => "Simple, rapide et tellement personnel ! J'utilise Supriz pour toutes les occasions maintenant. Mes proches adorent recevoir ces surprises.", 'gradient' => 'linear-gradient(135deg, #e63946, #f4a261)'],
                 ];
