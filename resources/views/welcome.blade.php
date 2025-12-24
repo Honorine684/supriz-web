@@ -578,7 +578,7 @@
                 max-width: 100% !important;
                 width: 100% !important;
                 height: auto;
-                margin-top: 15vh;
+                margin-top: 5vh;
             }
 
             .hero-section {
@@ -1519,15 +1519,17 @@
             /* Hero - Mobile Layout: Image top, Text left, Button below */
             .hero-section {
                 padding: 0 !important;
-                min-height: 100vh !important;
+                min-height: auto !important;
                 display: flex !important;
-                align-items: center !important;
+                align-items: flex-start !important;
+                padding-top: 10vh !important;
             }
 
             .hero-section .container {
                 padding: 0 !important;
                 max-width: 100% !important;
                 width: 100% !important;
+                margin-top: 0 !important;
             }
 
             .hero-row {
@@ -1539,7 +1541,7 @@
 
             .hero-row > div:first-child {
                 order: 1 !important;
-                padding: 30px 20px 30px 20px !important;
+                padding: 20px 20px 20px 20px !important;
                 width: 100% !important;
             }
 
@@ -1547,11 +1549,11 @@
                 order: 2 !important;
                 position: relative !important;
                 width: 100% !important;
-                height: 40vh !important;
-                min-height: 280px !important;
-                max-height: 380px !important;
+                height: 35vh !important;
+                min-height: 250px !important;
+                max-height: 320px !important;
                 padding: 0 !important;
-                margin: -50px 0 0 0 !important;
+                margin: 0 !important;
                 overflow: visible !important;
                 display: block !important;
             }
