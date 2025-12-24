@@ -568,7 +568,7 @@
             position: relative;
             width: 100%;
             max-width: 300px;
-            margin: 4vh auto !important;
+            margin: 0 auto !important;
         }
 
         /* Mobile styles */
@@ -577,8 +577,8 @@
                 padding: 0 !important;
                 max-width: 100% !important;
                 width: 100% !important;
-                height: 100vh;
-                margin-top: 32vh;
+                height: auto;
+                margin-top: 15vh;
             }
 
             .hero-section {
@@ -596,7 +596,7 @@
             }
 
             .hero-person-animation-mobile {
-                margin: 6vh auto 0 !important;
+                margin: 2vh auto 0 !important;
             }
 
             .hero-content {
@@ -2574,7 +2574,7 @@
                             Et si vous envoyiez le message qu'on n'oubliera jamais ?
                         </h1>
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
-                            Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un mot d'amour, un anniversaire, un mariage, Noël ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
+                            Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un <strong style="color: #FFD700;">mot d'amour</strong>, un <strong style="color: #FFD700;">anniversaire</strong>, un <strong style="color: #FFD700;">mariage</strong>, <strong style="color: #FFD700;">Noël</strong> ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
                         </p>
                         <a href="{{ route('nouveau.message') }}" class="btn hero-btn mb-4" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
                             Crée un message
@@ -2619,7 +2619,7 @@
                 <div class="col-4 col-md-3">
                     <div class="stat-item-wrapper">
                         <div class="stat-circle-3d">
-                            <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span></div>
+                            <div class="stat-value"><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span></div>
                             <p class="stat-label">Catégories</p>
                         </div>
                     </div>
