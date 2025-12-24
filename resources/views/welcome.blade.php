@@ -271,7 +271,60 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
 
-        /* Stats styles */
+        /* Stats styles - Cercles 3D */
+        .stat-circle-3d {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1B7B6A 0%, #0d5249 50%, #1B7B6A 100%);
+            box-shadow:
+                0 10px 30px rgba(27, 123, 106, 0.4),
+                inset 0 -8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 8px 20px rgba(255, 255, 255, 0.15),
+                0 0 0 4px rgba(27, 123, 106, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .stat-circle-3d::before {
+            content: '';
+            position: absolute;
+            top: 5%;
+            left: 15%;
+            width: 35%;
+            height: 20%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+        }
+
+        .stat-circle-3d::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 15px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .stat-circle-3d:hover {
+            transform: translateY(-8px) rotateX(10deg);
+            box-shadow:
+                0 20px 40px rgba(27, 123, 106, 0.5),
+                inset 0 -8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 8px 20px rgba(255, 255, 255, 0.2),
+                0 0 0 4px rgba(27, 123, 106, 0.3);
+        }
+
         .stat-value {
             display: inline-flex;
             align-items: baseline;
@@ -279,23 +332,32 @@
         }
 
         .stat-number {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 700;
-            color: #1B7B6A;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .stat-plus {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            color: #1B7B6A;
+            color: #fff;
             margin-left: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .stat-label {
             color: #fff;
-            font-size: 14px;
-            margin-top: 8px;
-            opacity: 0.9;
+            font-size: 12px;
+            margin-top: 5px;
+            opacity: 0.95;
+            text-align: center;
+            padding: 0 10px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .stat-item-wrapper {
+            perspective: 1000px;
         }
 
         /* How it works cards */
@@ -851,7 +913,7 @@
             }
         }
 
-        /* Loading screen */
+        /* Loading screen - Charte graphique Supriz */
         .loading-screen {
             position: fixed;
             top: 0;
@@ -863,7 +925,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             transition: opacity 0.5s ease, visibility 0.5s ease;
+            overflow: hidden;
         }
 
         .loading-screen.hidden {
@@ -871,35 +935,194 @@
             visibility: hidden;
         }
 
-        .loader {
-            width: 80px;
-            height: 80px;
+        /* Loader container */
+        .supriz-loader {
             position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .loader::before,
-        .loader::after {
+        /* Enveloppe stylisée */
+        .envelope-wrap {
+            position: relative;
+            width: 100px;
+            height: 70px;
+            perspective: 500px;
+        }
+
+        .envelope-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .envelope-body::before {
             content: '';
             position: absolute;
-            border: 4px solid transparent;
-            border-top-color: white;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(135deg, transparent 50%, #f0f0f0 50%);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+            transform-origin: top center;
+            border-radius: 8px 8px 0 0;
+            clip-path: polygon(0 0, 50% 100%, 100% 0);
+            animation: flapOpen 2s ease-in-out infinite;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .envelope-heart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            animation: heartFloat 2s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        @keyframes flapOpen {
+            0%, 100% {
+                transform: rotateX(0deg);
+            }
+            30%, 70% {
+                transform: rotateX(-160deg);
+            }
+        }
+
+        @keyframes heartFloat {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+            30% {
+                transform: translate(-50%, -80%) scale(1.2);
+                opacity: 1;
+            }
+            70% {
+                transform: translate(-50%, -80%) scale(1.2);
+                opacity: 1;
+            }
+            90% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Cercles de chargement */
+        .loader-ring {
+            position: absolute;
             border-radius: 50%;
+            border: 3px solid transparent;
+        }
+
+        .loader-ring-1 {
+            width: 160px;
+            height: 160px;
+            border-top-color: rgba(255, 255, 255, 0.8);
+            border-right-color: rgba(255, 255, 255, 0.2);
+            animation: spin 1.5s linear infinite;
+        }
+
+        .loader-ring-2 {
+            width: 140px;
+            height: 140px;
+            border-bottom-color: #FFD700;
+            border-left-color: rgba(255, 215, 0, 0.3);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .loader-ring-3 {
+            width: 120px;
+            height: 120px;
+            border-top-color: #1B7B6A;
+            border-right-color: rgba(27, 123, 106, 0.3);
             animation: spin 1s linear infinite;
         }
 
-        .loader::before {
-            width: 80px;
-            height: 80px;
-            top: 0;
-            left: 0;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .loader::after {
-            width: 60px;
-            height: 60px;
-            top: 10px;
-            left: 10px;
-            animation-direction: reverse;
+        /* Petits points décoratifs */
+        .dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        .dot:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+        .dot:nth-child(2) { top: 50%; right: 0; transform: translateY(-50%); animation-delay: 0.3s; }
+        .dot:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); animation-delay: 0.6s; }
+        .dot:nth-child(4) { top: 50%; left: 0; transform: translateY(-50%); animation-delay: 0.9s; }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        /* Texte de chargement */
+        .loading-text {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 40px;
+            letter-spacing: 4px;
+        }
+
+        .loading-dots {
+            display: inline-flex;
+            margin-left: 5px;
+        }
+
+        .loading-dots span {
+            animation: dotBounce 1.4s ease-in-out infinite;
+            opacity: 0;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: 0s; }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBounce {
+            0%, 60%, 100% {
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 300;
         }
 
         @keyframes spin {
@@ -1478,44 +1701,40 @@
                 white-space: nowrap !important;
             }
 
-            /* Stats sur une ligne mobile - sans scroll */
+            /* Stats cercles 3D mobile */
             #stats .row {
                 flex-wrap: nowrap !important;
                 display: flex !important;
                 justify-content: space-between !important;
+                gap: 10px !important;
             }
 
-            #stats .col-6 {
+            #stats .col-4 {
                 flex: 1 1 0 !important;
                 width: auto !important;
                 min-width: 0 !important;
-                padding: 0 4px !important;
+                padding: 0 2px !important;
                 margin: 0 !important;
             }
 
-            #stats .stat-item {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-            }
-
-            #stats .stat-value {
-                display: inline-flex !important;
-                align-items: baseline !important;
+            #stats .stat-circle-3d {
+                width: 100px !important;
+                height: 100px !important;
             }
 
             #stats .stat-number {
-                font-size: 28px !important;
+                font-size: 22px !important;
             }
 
             #stats .stat-plus {
-                font-size: 18px !important;
+                font-size: 14px !important;
             }
 
             #stats .stat-label {
-                font-size: 12px !important;
+                font-size: 9px !important;
                 line-height: 1.2 !important;
-                margin: 5px 0 0 0 !important;
+                margin: 3px 0 0 0 !important;
+                padding: 0 5px !important;
             }
 
             /* Testimonials/Avis section mobile */
@@ -1870,44 +2089,40 @@
                 overflow: hidden !important;
             }
 
-            /* Stats section mobile - 4 colonnes sur une ligne sans scroll */
+            /* Stats cercles 3D petit écran */
             #stats .row {
                 flex-wrap: nowrap !important;
                 display: flex !important;
                 justify-content: space-between !important;
+                gap: 8px !important;
             }
 
-            #stats .col-6 {
+            #stats .col-4 {
                 flex: 1 1 0 !important;
                 width: auto !important;
                 min-width: 0 !important;
-                padding: 0 3px !important;
+                padding: 0 !important;
                 margin: 0 !important;
             }
 
-            #stats .stat-item {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-            }
-
-            #stats .stat-value {
-                display: inline-flex !important;
-                align-items: baseline !important;
+            #stats .stat-circle-3d {
+                width: 85px !important;
+                height: 85px !important;
             }
 
             #stats .stat-number {
-                font-size: 24px !important;
+                font-size: 18px !important;
             }
 
             #stats .stat-plus {
-                font-size: 16px !important;
+                font-size: 12px !important;
             }
 
             #stats .stat-label {
-                font-size: 11px !important;
-                line-height: 1.2 !important;
-                margin: 4px 0 0 0 !important;
+                font-size: 8px !important;
+                line-height: 1.1 !important;
+                margin: 2px 0 0 0 !important;
+                padding: 0 3px !important;
             }
 
             /* Testimonials/Avis section petit écran */
@@ -2243,7 +2458,28 @@
 
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loader"></div>
+        <div class="supriz-loader">
+            <!-- Cercles de chargement -->
+            <div class="loader-ring loader-ring-1"></div>
+            <div class="loader-ring loader-ring-2"></div>
+            <div class="loader-ring loader-ring-3"></div>
+
+            <!-- Points décoratifs -->
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+
+            <!-- Enveloppe centrale -->
+            <div class="envelope-wrap">
+                <div class="envelope-body"></div>
+                <div class="envelope-flap"></div>
+                <div class="envelope-heart">❤️</div>
+            </div>
+        </div>
+
+        <div class="loading-text">Supriz<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+        <div class="loading-subtext">Préparez-vous à surprendre</div>
     </div>
 
     <!-- Categories Marquee Banner -->
@@ -2335,7 +2571,7 @@
                 <div class="col-lg-7 col-md-12">
                     <div class="hero-content">
                         <h1 class="hero-title mb-4" style="color: white; font-weight: 700; line-height: 1.1;">
-                            Et si vous envoyiez le message <br>qu'on n'oubliera jamais ?
+                            Et si vous envoyiez le message qu'on n'oubliera jamais ?
                         </h1>
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
                             Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un mot d'amour, un anniversaire, un mariage, Noël ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
@@ -2368,26 +2604,32 @@
         </div>
     </section>
 
-    <!-- 1. Compteurs animés (Social Proof Stats) -->
-    <section id="stats" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 50px 0;">
+    <!-- 1. Compteurs animés (Social Proof Stats) - Cercles 3D -->
+    <section id="stats" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 60px 0;">
         <div class="container">
-            <div class="row text-center">
-                <div class="col-4">
-                    <div class="stat-item">
-                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['messages_count'] }}">0</span></div>
-                        <p class="stat-label">Messages envoyés</p>
+            <div class="row text-center justify-content-center g-4">
+                <div class="col-4 col-md-3">
+                    <div class="stat-item-wrapper">
+                        <div class="stat-circle-3d">
+                            <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['messages_count'] }}">0</span></div>
+                            <p class="stat-label">Messages envoyés</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="stat-item">
-                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span></div>
-                        <p class="stat-label">Catégories</p>
+                <div class="col-4 col-md-3">
+                    <div class="stat-item-wrapper">
+                        <div class="stat-circle-3d">
+                            <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['categories_count'] }}">0</span></div>
+                            <p class="stat-label">Catégories</p>
+                        </div>
                     </div>
                 </div>
-                <div class="col-4">
-                    <div class="stat-item">
-                        <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['avis_count'] }}">0</span></div>
-                        <p class="stat-label">Avis clients</p>
+                <div class="col-4 col-md-3">
+                    <div class="stat-item-wrapper">
+                        <div class="stat-circle-3d">
+                            <div class="stat-value"><span class="stat-plus">+</span><span class="stat-number" data-target="{{ $stats['avis_count'] }}">0</span></div>
+                            <p class="stat-label">Avis clients</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2468,40 +2710,6 @@
                 <a href="{{ route('nouveau.message') }}" class="btn hero-btn" style="padding: 15px 40px; border-radius: 30px; font-size: 16px; text-decoration: none; display: inline-block;">
                     Commencer
                 </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="apropos" class="section-wrapper" style="background: white; padding: 80px 0;">
-        <div class="container">
-            <div class="row align-items-center">
-                <!-- Left side - Circular illustration -->
-                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
-                    <div class="about-illustration-new" style="position: relative; max-width: 500px; margin: 0 auto;">
-                        <img src="{{ asset('images/landing/cercle avec des mage.svg') }}" alt="Supriz" style="width: 100%; height: auto;">
-                    </div>
-                </div>
-
-                <!-- Right side - Text content -->
-                <div class="col-lg-6 col-md-12">
-                    <div class="about-text-content" style="padding-left: 30px;">
-                        <h2 style="font-size: 48px; font-weight: 700; color: #1A1A1A; margin-bottom: 30px;">À propos</h2>
-
-                        <p style="font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 25px;">
-                            <strong>Supriz, c'est plus qu'un message. C'est une émotion offerte</strong>
-                        </p>
-
-                        <p style="font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 25px;">
-                            Chez Supriz, nous croyons que les mots ont le pouvoir de transformer une journée.
-                        </p>
-
-                        <p style="font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 0;">
-                            Nous avons créé une plateforme simple, élégante et humaine pour que chacun puisse offrir une pensée, un sourire, une émotion au bon moment.
-                            Que ce soit pour un anniversaire, une réussite ou un simple "je pense à toi", Supriz rend chaque vœu personnel et mémorable transmis par un lien unique, au moment parfait.
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -2588,6 +2796,40 @@
                     }
                 }
             </style>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="apropos" class="section-wrapper" style="background: white; padding: 80px 0;">
+        <div class="container">
+            <div class="row align-items-center">
+                <!-- Left side - Circular illustration -->
+                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                    <div class="about-illustration-new" style="position: relative; max-width: 500px; margin: 0 auto;">
+                        <img src="{{ asset('images/landing/cercle avec des mage.svg') }}" alt="Supriz" style="width: 100%; height: auto;">
+                    </div>
+                </div>
+
+                <!-- Right side - Text content -->
+                <div class="col-lg-6 col-md-12">
+                    <div class="about-text-content" style="padding-left: 30px;">
+                        <h2 style="font-size: 48px; font-weight: 700; color: #1A1A1A; margin-bottom: 30px;">À propos</h2>
+
+                        <p style="font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 25px;">
+                            <strong>Supriz, c'est plus qu'un message. C'est une émotion offerte</strong>
+                        </p>
+
+                        <p style="font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 25px;">
+                            Chez Supriz, nous croyons que les mots ont le pouvoir de transformer une journée.
+                        </p>
+
+                        <p style="font-size: 16px; line-height: 1.8; color: #555; margin-bottom: 0;">
+                            Nous avons créé une plateforme simple, élégante et humaine pour que chacun puisse offrir une pensée, un sourire, une émotion au bon moment.
+                            Que ce soit pour un anniversaire, une réussite ou un simple "je pense à toi", Supriz rend chaque vœu personnel et mémorable transmis par un lien unique, au moment parfait.
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -3490,14 +3732,6 @@
         .testimonial-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 50px rgba(0,0,0,0.12) !important;
-        }
-
-        /* Animation pour les stats */
-        .stat-item {
-            transition: transform 0.3s ease;
-        }
-        .stat-item:hover {
-            transform: scale(1.05);
         }
 
         /* Trust badges hover */
