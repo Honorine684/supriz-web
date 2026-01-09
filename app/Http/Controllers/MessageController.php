@@ -76,7 +76,7 @@ class MessageController extends Controller
             END, name_sous_categories ASC")
             ->get();
 
-        $musiques = Musique::where('is_active', true)->get();
+        $musiques = Musique::where('is_active', true)->orderBy('created_at', 'desc')->get();
 
         return view('nouveau-message', compact('categoriesSupriz', 'musiques'));
     }

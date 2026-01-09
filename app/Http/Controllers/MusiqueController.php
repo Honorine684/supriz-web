@@ -22,7 +22,7 @@ class MusiqueController extends Controller
         // Récupérer les musiques groupées par catégorie
         $musiquesGroupees = [];
         foreach ($sousCategories as $sousCategorie) {
-            $musiques = Musique::where('sous_categorie_id', $sousCategorie->id)->get();
+            $musiques = Musique::where('sous_categorie_id', $sousCategorie->id)->orderBy('created_at', 'desc')->get();
             if ($musiques->count() > 0) {
                 $musiquesGroupees[$sousCategorie->name_sous_categories] = $musiques;
             }
@@ -146,6 +146,7 @@ class MusiqueController extends Controller
     {
         $musiques = Musique::where('sous_categorie_id', $categorieId)
             ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return response()->json([

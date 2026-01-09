@@ -2416,6 +2416,8 @@
                         // Add click handlers for music selection
                         document.querySelectorAll('.music-item').forEach(item => {
                             item.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 // Don't select if clicking on buttons
                                 if (!e.target.closest('.btn-play-music') && !e.target.closest('.btn-delete-music')) {
                                     document.querySelectorAll('.music-item').forEach(i => i.classList.remove('selected'));
@@ -3359,6 +3361,7 @@
         let currentAudio = null;
 
         function selectMusic(element, event) {
+            event.preventDefault();
             event.stopPropagation();
 
             // Remove previous selection and show all items
