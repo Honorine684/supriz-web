@@ -29,6 +29,15 @@ class ApiMessageController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($message) {
+                    // Récupérer les réactions groupées par emoji avec une requête SQL
+                    $reactionsGrouped = MessageReaction::where('message_id', $message->id)
+                        ->selectRaw('emoji, count(*) as count')
+                        ->groupBy('emoji')
+                        ->get()
+                        ->mapWithKeys(function ($item) {
+                            return [$item->emoji => $item->count];
+                        });
+
                     return [
                         'id' => $message->id,
                         'titre' => $message->titre,
@@ -50,6 +59,7 @@ class ApiMessageController extends Controller
                         'is_expired' => $message->isExpired(),
                         'is_active' => $message->is_active,
                         'views_count' => $message->views_count,
+                        'reactions' => $reactionsGrouped,
                         'created_at' => $message->created_at->format('d/m/Y H:i'),
                     ];
                 });
@@ -519,9 +529,8 @@ class ApiMessageController extends Controller
             $viewerIp = $request->ip();
             $deviceId = $request->header('X-Device-Id');
 
-            // Vérifier si l'utilisateur a déjà réagi avec cet emoji
+            // Vérifier si l'utilisateur a déjà réagi (avec n'importe quel emoji)
             $existingReaction = MessageReaction::where('message_id', $message->id)
-                ->where('emoji', $request->emoji)
                 ->where(function ($query) use ($viewerIp, $deviceId) {
                     if ($deviceId) {
                         $query->where('device_id', $deviceId);
@@ -532,11 +541,18 @@ class ApiMessageController extends Controller
                 ->first();
 
             if ($existingReaction) {
-                // Supprimer la réaction existante (toggle)
-                $existingReaction->delete();
-                $action = 'removed';
+                if ($existingReaction->emoji === $request->emoji) {
+                    // Même emoji = supprimer la réaction (toggle off)
+                    $existingReaction->delete();
+                    $action = 'removed';
+                } else {
+                    // Emoji différent = changer la réaction
+                    $existingReaction->emoji = $request->emoji;
+                    $existingReaction->save();
+                    $action = 'changed';
+                }
             } else {
-                // Ajouter la réaction
+                // Ajouter la réaction (première fois)
                 MessageReaction::create([
                     'message_id' => $message->id,
                     'emoji' => $request->emoji,

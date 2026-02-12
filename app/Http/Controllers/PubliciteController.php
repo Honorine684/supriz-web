@@ -20,14 +20,16 @@ class PubliciteController extends Controller
     $validatedData = $request->validate([
         'categorie_dhomme' => 'nullable|string', // Catégorie homme, femme, enfant
         'sousCategorieId' => 'nullable|integer', // Sous-catégorie sélectionnée
-        'image' => 'required|image|mimes:jpeg,png,jpg,gif' // Image
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif', // Image
+        'lien' => 'nullable|url' // Lien optionnel
     ]);
-    
+
     try {
         // Créer un nouveau produit (publicité)
         $publicite = new Publicite();
         $publicite->sous_categorie = $validatedData['sousCategorieId'];
-        
+        $publicite->lien = $request->input('lien');
+
         // Gestion de l'image
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');

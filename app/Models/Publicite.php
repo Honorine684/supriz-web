@@ -13,7 +13,8 @@ class Publicite extends Model
     protected $primaryKey = 'id'; // Clé primaire
 
     protected $fillable = [
-        'pathImage', // Nom du produit
+        'pathImage',
+        'lien',
         'sous_categorie',
     ];
 

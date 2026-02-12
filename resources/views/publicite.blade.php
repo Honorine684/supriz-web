@@ -103,6 +103,11 @@
                     </div>
                 </div>
 
+                <div class="mt-3">
+                    <span class="text-gray-400">Lien (optionnel)</span>
+                    <input type="url" name="lien" placeholder="https://exemple.com" class="w-full p-2 mt-1 rounded border border-gray-300">
+                </div>
+
                 <input type="submit" class="w-full p-2 mt-2 text-white rounded cursor-pointer btn-design">
             </form>
 
