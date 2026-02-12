@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ApiNotificationController;
+use App\Http\Controllers\Api\ApiMessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Api\PubliciteController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ApiHistoriqueController;
+use App\Http\Controllers\Api\ApiFriendBirthdayController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -17,6 +19,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('register', [UserController::class, 'createUser']);
 Route::post('login', [UserController::class, 'loginUser']);
+Route::post('social-login', [UserController::class, 'socialLogin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [UserController::class, 'logout']); // Ajout de la route de déconnexion
@@ -50,9 +53,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-name', [UserController::class, 'updateName']);
     Route::post('/update-email', [UserController::class, 'updateEmail']);
     Route::post('/update-number', [UserController::class, 'updateNumber']);
+    Route::post('/update-fcm-token', [UserController::class, 'updateFcmToken']);
     Route::get('/historiques', [ApiHistoriqueController::class, 'index'])->name('historiques.index');
 
     Route::post('/create-transaction', [PanierController::class, 'createTransaction']);
+
+    // Routes Messages (authentifiées)
+    Route::get('/messages', [ApiMessageController::class, 'index']);
+    Route::post('/messages', [ApiMessageController::class, 'store']);
+    Route::get('/messages/{id}', [ApiMessageController::class, 'show']);
+    Route::delete('/messages/{id}', [ApiMessageController::class, 'destroy']);
+    Route::post('/messages/{id}/toggle-status', [ApiMessageController::class, 'toggleStatus']);
+    Route::get('/messages-categories', [ApiMessageController::class, 'getCategories']);
+    Route::get('/messages-musiques', [ApiMessageController::class, 'getMusiques']);
+    Route::get('/messages-musiques/{categorieId}', [ApiMessageController::class, 'getMusiques']);
+
+    // Routes Anniversaires (authentifiées)
+    Route::get('/birthdays', [ApiFriendBirthdayController::class, 'index']);
+    Route::get('/birthdays/upcoming', [ApiFriendBirthdayController::class, 'upcoming']);
+    Route::get('/birthdays/today', [ApiFriendBirthdayController::class, 'today']);
+    Route::post('/birthdays', [ApiFriendBirthdayController::class, 'store']);
+    Route::put('/birthdays/{id}', [ApiFriendBirthdayController::class, 'update']);
+    Route::delete('/birthdays/{id}', [ApiFriendBirthdayController::class, 'destroy']);
 });
 
 // Dans web.php ou api.php selon votre besoin
@@ -61,6 +83,10 @@ Route::get('paiement/success', [PanierController::class, 'successPage'])->name('
 Route::get('/payment-callback', [PanierController::class, 'closePaiement'])->name('payment.callback');
 Route::post('/send-otp', [UserController::class, 'sendOtp']);
 Route::get('/publicites', [PubliciteController::class, 'show']);
+
+// Routes publiques pour les messages
+Route::get('/public/messages/{slug}', [ApiMessageController::class, 'showPublic']);
+Route::post('/public/messages/{slug}/react', [ApiMessageController::class, 'addReaction']);
 Route::post('/send-otp-mdp', [UserController::class, 'sendOtpMdp']);
 Route::post('/verify-otp', [UserController::class, 'verifyOtp']);
 Route::post('/verify-otp-compte', [UserController::class, 'verifyOtpCompte']);

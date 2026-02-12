@@ -401,4 +401,117 @@ class UserController extends Controller
             'message' => 'Password updated successfully'
         ]);
     }
+
+    /**
+     * Social Login (Google/Apple)
+     */
+    public function socialLogin(Request $request)
+    {
+        try {
+            // Vérifier d'abord si l'utilisateur existe déjà
+            $existingUser = User::where('email', $request->email)->first();
+
+            // Si l'utilisateur n'existe pas, le numéro est obligatoire
+            $rules = [
+                'provider' => 'required|string|in:google,apple',
+                'token' => 'required|string',
+                'email' => 'required|email',
+                'name' => 'required|string',
+            ];
+
+            if (!$existingUser) {
+                $rules['numero'] = 'required|string|unique:users,numero';
+            }
+
+            $validateUser = Validator::make($request->all(), $rules);
+
+            if ($validateUser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validateUser->errors()
+                ], 422);
+            }
+
+            // Chercher ou créer l'utilisateur
+            $user = $existingUser;
+
+            if (!$user) {
+                // Créer un nouvel utilisateur
+                $user = User::create([
+                    'nom' => $request->name,
+                    'email' => $request->email,
+                    'numero' => $request->numero,
+                    'password' => Hash::make(\Illuminate\Support\Str::random(16)),
+                    'provider' => $request->provider,
+                    'email_verified_at' => now(),
+                ]);
+            }
+
+            // Mettre à jour le provider si nécessaire
+            if (!$user->provider) {
+                $user->provider = $request->provider;
+                $user->save();
+            }
+
+            // Mettre à jour last_login_at
+            $user->update(['last_login_at' => Carbon::now()]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Social login successful',
+                'token' => $user->createToken("API TOKEN")->plainTextToken,
+                'name' => $user->nom,
+                'email' => $user->email,
+                'numero' => $user->numero ?? '',
+                'image' => $user->profil_image ?? '',
+            ], 200);
+
+        } catch (\Throwable $th) {
+            \Log::error('Social login error: ' . $th->getMessage(), [
+                'email' => $request->email ?? null,
+                'provider' => $request->provider ?? null,
+                'trace' => $th->getTraceAsString()
+            ]);
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Mettre à jour le token FCM de l'utilisateur
+     */
+    public function updateFcmToken(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'fcm_token' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $user = $request->user();
+            $user->fcm_token = $request->fcm_token;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Token FCM mis à jour avec succès'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }

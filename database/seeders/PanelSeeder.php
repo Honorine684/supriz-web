@@ -19,7 +19,8 @@ class PanelSeeder extends Seeder
                 'nom' => 'Admin',
                 'prenom' => 'Supriz',
                 'numero' => '0000000000',
-                'password' => 'admin123', // Le mutateur du modèle User hashera automatiquement
+                'password' => '
+                ', // Le mutateur du modèle User hashera automatiquement
                 'email_verified_at' => now(),
             ]
         );

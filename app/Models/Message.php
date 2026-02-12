@@ -11,21 +11,29 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'titre',
         'contenu',
         'sous_categorie_id',
         'media_path',
         'media_type',
+        'background_path',
+        'images',
         'musique_id',
         'date_expiration',
+        'expiration_type',
         'slug',
         'is_active',
         'views_count',
+        'max_views',
+        'unique_view',
     ];
 
     protected $casts = [
         'date_expiration' => 'datetime',
         'is_active' => 'boolean',
+        'images' => 'array',
+        'unique_view' => 'boolean',
     ];
 
     /**
@@ -40,6 +48,14 @@ class Message extends Model
                 $message->slug = Str::random(10);
             }
         });
+    }
+
+    /**
+     * Relation avec User
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -59,6 +75,22 @@ class Message extends Model
     }
 
     /**
+     * Relation avec les vues
+     */
+    public function views()
+    {
+        return $this->hasMany(MessageView::class);
+    }
+
+    /**
+     * Relation avec les réactions
+     */
+    public function reactions()
+    {
+        return $this->hasMany(MessageReaction::class);
+    }
+
+    /**
      * Vérifier si le message est expiré
      */
     public function isExpired()
@@ -67,10 +99,51 @@ class Message extends Model
     }
 
     /**
+     * Vérifier si le max_views est atteint
+     */
+    public function hasReachedMaxViews()
+    {
+        if ($this->max_views === null) {
+            return false;
+        }
+        return $this->views_count >= $this->max_views;
+    }
+
+    /**
      * Incrémenter le compteur de vues
      */
     public function incrementViews()
     {
         $this->increment('views_count');
+    }
+
+    /**
+     * Vérifier si un viewer a déjà vu ce message (pour vue unique)
+     */
+    public function hasBeenViewedBy($ip = null, $deviceId = null)
+    {
+        $query = $this->views();
+
+        if ($deviceId) {
+            return $query->where('device_id', $deviceId)->exists();
+        }
+
+        if ($ip) {
+            return $query->where('viewer_ip', $ip)->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Enregistrer une vue
+     */
+    public function recordView($ip = null, $deviceId = null, $userId = null)
+    {
+        return $this->views()->create([
+            'viewer_ip' => $ip,
+            'device_id' => $deviceId,
+            'user_id' => $userId,
+        ]);
     }
 }

@@ -21,6 +21,8 @@ yarn-error.log
 /.vscode
 supriz-deploy.tar.gz
 test_auth.php
+firebase-credentials.json
+supriz-*.json
 .DS_Store
 *.swp
 *.swo

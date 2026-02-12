@@ -21,7 +21,9 @@ class User extends Authenticatable
         'profil_image',
         'password',
         'email_verified_at',
-        'last_login_at'
+        'last_login_at',
+        'provider',
+        'fcm_token',
     ];
 
     protected $hidden = [
