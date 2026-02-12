@@ -341,12 +341,15 @@
         /* Images */
         .image-section {
             background: #f8f9fa;
+            display: flex;
+            justify-content: center;
         }
 
         .single-image {
             width: 100%;
-            height: 350px;
-            object-fit: cover;
+            height: auto;
+            max-height: 600px;
+            object-fit: contain;
             display: block;
         }
 
@@ -366,8 +369,9 @@
 
         .carousel-slide img {
             width: 100%;
-            height: 350px;
-            object-fit: cover;
+            height: auto;
+            max-height: 600px;
+            object-fit: contain;
         }
 
         .carousel-btn {
@@ -616,8 +620,8 @@
             .card-header { padding: 18px 20px; }
             .card-title { font-size: 17px; }
 
-            .single-image { height: 280px; }
-            .carousel-slide img { height: 280px; }
+            .single-image { height: auto; max-height: none; object-fit: contain; }
+            .carousel-slide img { height: auto; max-height: none; object-fit: contain; }
             .carousel-btn { width: 36px; height: 36px; }
             .carousel-btn.prev { left: 8px; }
             .carousel-btn.next { right: 8px; }
@@ -694,8 +698,8 @@
             .card-header { padding: 15px 18px; }
             .card-title { font-size: 16px; }
 
-            .single-image { height: 220px; }
-            .carousel-slide img { height: 220px; }
+            .single-image { height: auto; max-height: none; object-fit: contain; }
+            .carousel-slide img { height: auto; max-height: none; object-fit: contain; }
             .carousel-btn { width: 32px; height: 32px; }
             .carousel-btn i { font-size: 16px; }
             .carousel-dots { padding: 10px; }
