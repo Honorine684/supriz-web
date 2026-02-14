@@ -550,6 +550,9 @@ class ApiMessageController extends Controller
                     $existingReaction->emoji = $request->emoji;
                     $existingReaction->save();
                     $action = 'changed';
+
+                    // Envoyer une notification pour la nouvelle réaction
+                    $this->sendReactionNotificationToOwner($message, $request->emoji, true);
                 }
             } else {
                 // Ajouter la réaction (première fois)
@@ -562,7 +565,7 @@ class ApiMessageController extends Controller
                 $action = 'added';
 
                 // Envoyer une notification push au créateur
-                $this->sendReactionNotificationToOwner($message, $request->emoji);
+                $this->sendReactionNotificationToOwner($message, $request->emoji, false);
             }
 
             // Récupérer les réactions mises à jour
@@ -614,15 +617,19 @@ class ApiMessageController extends Controller
     /**
      * Envoyer une notification de réaction au propriétaire du message
      */
-    private function sendReactionNotificationToOwner($message, $emoji)
+    private function sendReactionNotificationToOwner($message, $emoji, $isChange = false)
     {
         try {
             $user = $message->user;
             if (!$user) return;
 
+            $notificationText = $isChange
+                ? "Quelqu'un a changé sa réaction en {$emoji} sur votre message \"{$message->titre}\""
+                : "Quelqu'un a réagi {$emoji} à votre message \"{$message->titre}\"";
+
             // Créer une notification dans la base de données
             Notification::create([
-                'contenus' => "Quelqu'un a réagi {$emoji} à votre message \"{$message->titre}\"",
+                'contenus' => $notificationText,
             ]);
 
             // Envoyer la notification push via Firebase
