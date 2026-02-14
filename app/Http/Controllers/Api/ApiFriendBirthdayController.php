@@ -27,12 +27,11 @@ class ApiFriendBirthdayController extends Controller
                         'friend_name' => $birthday->friend_name,
                         'friend_phone' => $birthday->friend_phone,
                         'birthday_date' => $birthday->birthday_date->format('Y-m-d'),
-                        'birthday_display' => $birthday->birthday_date->format('d/m'),
+                        'birthday_display' => $birthday->birthday_date->format('d M'),
                         'reminder_time' => $birthday->reminder_time,
                         'reminder_minutes_before' => $birthday->reminder_minutes_before,
                         'is_active' => $birthday->is_active,
                         'notes' => $birthday->notes,
-                        'age' => $birthday->age,
                         'days_until' => $birthday->days_until_birthday,
                         'is_today' => $birthday->isBirthdayToday(),
                         'next_birthday' => $birthday->next_birthday->format('Y-m-d'),
@@ -75,10 +74,9 @@ class ApiFriendBirthdayController extends Controller
                         'id' => $birthday->id,
                         'friend_name' => $birthday->friend_name,
                         'friend_phone' => $birthday->friend_phone,
-                        'birthday_display' => $birthday->birthday_date->format('d/m'),
+                        'birthday_display' => $birthday->birthday_date->format('d M'),
                         'days_until' => $birthday->days_until_birthday,
                         'is_today' => $birthday->isBirthdayToday(),
-                        'age' => $birthday->age + 1, // Prochain âge
                     ];
                 });
 
@@ -115,7 +113,6 @@ class ApiFriendBirthdayController extends Controller
                         'id' => $birthday->id,
                         'friend_name' => $birthday->friend_name,
                         'friend_phone' => $birthday->friend_phone,
-                        'age' => $birthday->age,
                     ];
                 });
 
@@ -143,7 +140,7 @@ class ApiFriendBirthdayController extends Controller
                 'friend_phone' => 'nullable|string|max:20',
                 'birthday_date' => 'required|date',
                 'reminder_time' => 'nullable|date_format:H:i',
-                'reminder_minutes_before' => 'nullable|integer|min:0|max:1440',
+                'reminder_minutes_before' => 'nullable|integer|min:0|max:180',
                 'notes' => 'nullable|string|max:500',
             ]);
 
@@ -211,7 +208,7 @@ class ApiFriendBirthdayController extends Controller
                 'friend_phone' => 'nullable|string|max:20',
                 'birthday_date' => 'sometimes|date',
                 'reminder_time' => 'nullable|date_format:H:i',
-                'reminder_minutes_before' => 'nullable|integer|min:0|max:1440',
+                'reminder_minutes_before' => 'nullable|integer|min:0|max:180',
                 'is_active' => 'sometimes|boolean',
                 'notes' => 'nullable|string|max:500',
             ]);

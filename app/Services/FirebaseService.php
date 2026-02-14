@@ -192,8 +192,8 @@ class FirebaseService
 
         return $this->sendNotification(
             $user->fcm_token,
-            'Nouvelle réaction',
-            "Quelqu'un a réagi {$emoji} à votre message \"{$message->titre}\"",
+            'Nouvelle réaction ' . $emoji,
+            "Une réaction {$emoji} vient d'arriver… ton message a fait son effet !",
             [
                 'type' => 'message_reaction',
                 'message_id' => $message->id,

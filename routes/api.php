@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/messages-categories', [ApiMessageController::class, 'getCategories']);
     Route::get('/messages-musiques', [ApiMessageController::class, 'getMusiques']);
     Route::get('/messages-musiques/{categorieId}', [ApiMessageController::class, 'getMusiques']);
+    Route::get('/messages-arriere-plans', [ApiMessageController::class, 'getArrierePlans']);
+    Route::get('/messages-arriere-plans/{categorieId}', [ApiMessageController::class, 'getArrierePlans']);
 
     // Routes Anniversaires (authentifiées)
     Route::get('/birthdays', [ApiFriendBirthdayController::class, 'index']);

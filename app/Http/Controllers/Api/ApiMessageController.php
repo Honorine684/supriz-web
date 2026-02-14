@@ -7,6 +7,7 @@ use App\Models\Message;
 use App\Models\MessageReaction;
 use App\Models\SousCategorie;
 use App\Models\Musique;
+use App\Models\ArrierePlan;
 use App\Models\Notification;
 use App\Services\FirebaseService;
 use Illuminate\Http\Request;
@@ -368,6 +369,9 @@ class ApiMessageController extends Controller
                 $query->where('sous_categorie_id', $categorieId);
             }
 
+            // Debug: log les IDs des catégories
+            \Log::info('Musiques request - categorieId: ' . ($categorieId ?? 'all'));
+
             $musiques = $query->orderBy('created_at', 'desc')->get()->map(function ($musique) {
                 return [
                     'id' => $musique->id,
@@ -381,6 +385,40 @@ class ApiMessageController extends Controller
             return response()->json([
                 'status' => true,
                 'musiques' => $musiques
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Récupérer les arrière-plans par catégorie
+     */
+    public function getArrierePlans($categorieId = null)
+    {
+        try {
+            $query = ArrierePlan::where('is_active', true);
+
+            if ($categorieId) {
+                $query->where('sous_categorie_id', $categorieId);
+            }
+
+            $arrierePlans = $query->orderBy('ordre')->get()->map(function ($ap) {
+                return [
+                    'id' => $ap->id,
+                    'nom' => $ap->nom,
+                    'image_url' => $ap->image ? asset('storage/' . $ap->image) : null,
+                    'ordre' => $ap->ordre,
+                ];
+            });
+
+            return response()->json([
+                'status' => true,
+                'arriere_plans' => $arrierePlans
             ], 200);
 
         } catch (\Throwable $th) {
@@ -626,9 +664,7 @@ class ApiMessageController extends Controller
             $user = $message->user;
             if (!$user) return;
 
-            $notificationText = $isChange
-                ? "Quelqu'un a changé sa réaction en {$emoji} sur votre message \"{$message->titre}\""
-                : "Quelqu'un a réagi {$emoji} à votre message \"{$message->titre}\"";
+            $notificationText = "Une réaction {$emoji} vient d'arriver… ton message a fait son effet !";
 
             // Créer une notification dans la base de données
             Notification::create([

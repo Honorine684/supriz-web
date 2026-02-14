@@ -44,6 +44,14 @@
             </a>
         </li>
 
+        <li class="mb-1 group @if ($active_link == 'arriere-plan') active @endif">
+            <a href="{{ route('admin.arriere-plan') }}"
+                class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
+                <i class="mr-3 text-lg ri-image-line"></i>
+                <span class="text-sm">Arrière-plans</span>
+            </a>
+        </li>
+
         <li class="mb-1 group @if ($active_link == 'r') active @endif">
             <a href="{{ route('admin.rapportJournalier') }}"
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">

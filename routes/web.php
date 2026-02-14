@@ -21,6 +21,7 @@
     use App\Http\Controllers\SitemapController;
     use App\Http\Controllers\PasswordResetController;
     use App\Http\Controllers\AvisController;
+    use App\Http\Controllers\ArrierePlanController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -156,6 +157,13 @@
         Route::put('/musique/{id}', [MusiqueController::class, 'update'])->name('musique.update');
         Route::post('/musique/{id}/toggle-status', [MusiqueController::class, 'toggleStatus'])->name('musique.toggleStatus');
         Route::delete('/musique/{id}', [MusiqueController::class, 'destroy'])->name('musique.destroy');
+
+        // Arrière-plans
+        Route::get('/arriere-plan', [ArrierePlanController::class, 'index'])->name('arriere-plan');
+        Route::post('/arriere-plan/store', [ArrierePlanController::class, 'store'])->name('arriere-plan.store');
+        Route::put('/arriere-plan/{id}', [ArrierePlanController::class, 'update'])->name('arriere-plan.update');
+        Route::post('/arriere-plan/{id}/toggle-status', [ArrierePlanController::class, 'toggleStatus'])->name('arriere-plan.toggleStatus');
+        Route::delete('/arriere-plan/{id}', [ArrierePlanController::class, 'destroy'])->name('arriere-plan.destroy');
 
         // Avis clients
         Route::get('/avis', [AvisController::class, 'index'])->name('avis');
