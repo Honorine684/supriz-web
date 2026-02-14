@@ -404,26 +404,32 @@
         .carousel-btn.prev { left: 12px; }
         .carousel-btn.next { right: 12px; }
 
-        .carousel-dots {
+        .carousel-bars {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
             display: flex;
-            justify-content: center;
-            gap: 8px;
-            padding: 15px;
-            background: white;
+            gap: 4px;
+            z-index: 15;
         }
 
-        .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ddd;
+        .carousel-bar {
+            flex: 1;
+            height: 3px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.4);
             cursor: pointer;
             transition: all 0.3s ease;
+            overflow: hidden;
         }
 
-        .carousel-dot.active {
-            background: #005792;
-            transform: scale(1.3);
+        .carousel-bar.active {
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .carousel-bar.viewed {
+            background: rgba(255, 255, 255, 0.95);
         }
 
         /* Message body */
@@ -626,8 +632,8 @@
             .carousel-btn.prev { left: 8px; }
             .carousel-btn.next { right: 8px; }
             .carousel-btn i { font-size: 18px; }
-            .carousel-dots { padding: 12px; gap: 6px; }
-            .carousel-dot { width: 7px; height: 7px; }
+            .carousel-bars { top: 6px; left: 6px; right: 6px; gap: 3px; }
+            .carousel-bar { height: 2px; }
 
             .message-body { padding: 18px 20px; }
             .message-text { font-size: 14px; line-height: 1.7; }
@@ -702,7 +708,7 @@
             .carousel-slide img { height: auto; max-height: none; object-fit: contain; }
             .carousel-btn { width: 32px; height: 32px; }
             .carousel-btn i { font-size: 16px; }
-            .carousel-dots { padding: 10px; }
+            .carousel-bars { top: 5px; left: 5px; right: 5px; }
 
             .message-body { padding: 15px 18px; }
             .message-text { font-size: 13px; }
@@ -825,6 +831,12 @@
                             <img src="{{ $message->images[0] }}" alt="{{ $message->titre }}" class="single-image">
                         @else
                             <div class="carousel-wrapper">
+                                <!-- Barres style Stories en haut -->
+                                <div class="carousel-bars">
+                                    @foreach($message->images as $index => $imageUrl)
+                                        <span class="carousel-bar {{ $index == 0 ? 'active' : '' }}" onclick="goToSlide({{ $index }})"></span>
+                                    @endforeach
+                                </div>
                                 <div style="overflow: hidden;">
                                     <div class="carousel-track" id="carouselTrack">
                                         @foreach($message->images as $index => $imageUrl)
@@ -840,11 +852,6 @@
                                 <button class="carousel-btn next" onclick="nextSlide()">
                                     <i class="ri-arrow-right-s-line"></i>
                                 </button>
-                            </div>
-                            <div class="carousel-dots">
-                                @foreach($message->images as $index => $imageUrl)
-                                    <span class="carousel-dot {{ $index == 0 ? 'active' : '' }}" onclick="goToSlide({{ $index }})"></span>
-                                @endforeach
                             </div>
                         @endif
                     </div>
@@ -982,8 +989,13 @@
             const track = document.getElementById('carouselTrack');
             if (track) {
                 track.style.transform = `translateX(-${currentSlide * 100}%)`;
-                document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
-                    dot.classList.toggle('active', i === currentSlide);
+                document.querySelectorAll('.carousel-bar').forEach((bar, i) => {
+                    bar.classList.remove('active', 'viewed');
+                    if (i < currentSlide) {
+                        bar.classList.add('viewed');
+                    } else if (i === currentSlide) {
+                        bar.classList.add('active');
+                    }
                 });
             }
         }

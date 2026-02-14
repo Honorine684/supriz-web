@@ -92,7 +92,7 @@ class ApiMessageController extends Controller
                 'images.*' => 'file|mimes:jpg,jpeg,png,gif|max:10240',
                 'background_path' => 'nullable|string',
                 'musique_id' => 'nullable|exists:musiques,id',
-                'expiration' => 'nullable|string|in:24h,48h,7d,30d',
+                'expiration' => 'nullable|string|in:24h,48h,72h,7d,30d',
                 'max_views' => 'nullable|integer|min:1',
                 'unique_view' => 'nullable|boolean',
             ]);
@@ -132,6 +132,9 @@ class ApiMessageController extends Controller
             switch ($expiration) {
                 case '48h':
                     $dateExpiration->addHours(48);
+                    break;
+                case '72h':
+                    $dateExpiration->addHours(72);
                     break;
                 case '7d':
                     $dateExpiration->addDays(7);
