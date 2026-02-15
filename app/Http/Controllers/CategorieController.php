@@ -237,4 +237,31 @@ public function updateSuprizIcone(Request $request, $id)
     return redirect()->route('admin.categorie')->with('success', 'Icône mise à jour avec succès');
 }
 
+public function updateSuprizGiftImage(Request $request, $id)
+{
+    $request->validate([
+        'gift_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+    ]);
+
+    $sousCategorie = SousCategorie::find($id);
+
+    if (!$sousCategorie) {
+        return redirect()->back()->with('error', 'Sous-catégorie non trouvée');
+    }
+
+    // Supprimer l'ancienne image cadeau si elle existe
+    if ($sousCategorie->gift_image && Storage::exists('public/' . $sousCategorie->gift_image)) {
+        Storage::delete('public/' . $sousCategorie->gift_image);
+    }
+
+    // Uploader la nouvelle image cadeau
+    if ($request->hasFile('gift_image')) {
+        $giftImagePath = $request->file('gift_image')->store('gift-images', 'public');
+        $sousCategorie->gift_image = $giftImagePath;
+        $sousCategorie->save();
+    }
+
+    return redirect()->route('admin.categorie')->with('success', 'Image cadeau mise à jour avec succès');
+}
+
 }

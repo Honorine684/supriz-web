@@ -19,8 +19,20 @@ class SousCategorie extends Model
         'prix',
         'image',
         'icone',
+        'gift_image',
         'is_active',
     ];
+
+    /**
+     * URL complète de l'image gift
+     */
+    public function getGiftImageUrlAttribute()
+    {
+        if ($this->gift_image) {
+            return asset('storage/' . $this->gift_image);
+        }
+        return null;
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

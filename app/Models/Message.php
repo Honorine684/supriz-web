@@ -136,10 +136,15 @@ class Message extends Model
     }
 
     /**
-     * Enregistrer une vue
+     * Enregistrer une vue (uniquement si pas déjà vue par ce device/ip)
      */
     public function recordView($ip = null, $deviceId = null, $userId = null)
     {
+        // Vérifier si cette vue existe déjà
+        if ($this->hasBeenViewedBy($ip, $deviceId)) {
+            return null; // Vue déjà enregistrée
+        }
+
         return $this->views()->create([
             'viewer_ip' => $ip,
             'device_id' => $deviceId,

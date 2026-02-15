@@ -284,6 +284,35 @@
                             </label>
                         </form>
                     </div>
+
+                    <!-- Image cadeau (Gift) -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #fff7ed; border-radius: 10px; border: 1px solid #fed7aa;">
+                        <p style="font-size: 12px; font-weight: 600; color: #c2410c; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">🎁 Image cadeau (Gift)</p>
+
+                        @if($supriz->gift_image)
+                        <div style="position: relative; margin-bottom: 12px; text-align: center;">
+                            <img src="{{ asset('storage/' . $supriz->gift_image) }}"
+                                 alt="Gift {{ $supriz->name_sous_categories }}"
+                                 style="width: 120px; height: 120px; object-fit: contain; border-radius: 10px; border: 2px solid #ea580c; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);">
+                        </div>
+                        @else
+                        <div style="margin-bottom: 12px; text-align: center; padding: 2rem 1rem; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-radius: 10px; border: 2px dashed #ea580c;">
+                            <div style="width: 50px; height: 50px; margin: 0 auto 10px; border-radius: 50%; background-color: #ea580c; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 24px;">🎁</span>
+                            </div>
+                            <p style="font-size: 13px; font-weight: 500; color: #ea580c;">Aucune image cadeau</p>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('admin.categorie.updateSuprizGiftImage', $supriz->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #ea580c; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                <input type="file" name="gift_image" accept="image/*,.gif" onchange="this.form.submit()" style="display: none;">
+                                {{ $supriz->gift_image ? 'Changer l\'image cadeau' : 'Ajouter une image cadeau' }}
+                            </label>
+                        </form>
+                        <p style="font-size: 11px; color: #9a3412; margin-top: 8px; text-align: center;">Cette image sera affichée comme cadeau dans l'application</p>
+                    </div>
                 </div>
                 @endforeach
             </div>

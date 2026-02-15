@@ -131,6 +131,7 @@
         Route::post('/categorie/{id}/toggle-status', [CategorieController::class, 'toggleStatus'])->name('categorie.toggleStatus');
         Route::post('/categorie/{id}/update-image', [CategorieController::class, 'updateSuprizImage'])->name('categorie.updateSuprizImage');
         Route::post('/categorie/{id}/update-icone', [CategorieController::class, 'updateSuprizIcone'])->name('categorie.updateSuprizIcone');
+        Route::post('/categorie/{id}/update-gift-image', [CategorieController::class, 'updateSuprizGiftImage'])->name('categorie.updateSuprizGiftImage');
 
         // Paramètres
         Route::get('/parametre', [ParametreController::class, 'parametre'])->name('parametre');

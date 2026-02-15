@@ -333,7 +333,7 @@ class ApiMessageController extends Controller
                     WHEN name_sous_categories = 'Noël' THEN 5
                     ELSE 6
                 END, name_sous_categories ASC")
-                ->get(['id', 'name_sous_categories', 'icone', 'image', 'placeholder_texte'])
+                ->get(['id', 'name_sous_categories', 'icone', 'image', 'placeholder_texte', 'gift_image'])
                 ->map(function ($category) {
                     return [
                         'id' => $category->id,
@@ -341,6 +341,7 @@ class ApiMessageController extends Controller
                         'icone' => $category->icone ? asset('storage/' . $category->icone) : null,
                         'image' => $category->image ? asset('storage/' . $category->image) : null,
                         'placeholder_texte' => $category->placeholder_texte,
+                        'gift_image' => $category->gift_image ? asset('storage/' . $category->gift_image) : null,
                     ];
                 });
 
@@ -478,21 +479,25 @@ class ApiMessageController extends Controller
 
             // Vérifier si la vue unique est activée
             if ($message->unique_view) {
-                if ($message->hasBeenViewedBy($viewerIp, $deviceId)) {
+                // Une seule personne peut voir ce message
+                if ($message->views()->exists()) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Vous avez déjà vu ce message',
+                        'message' => 'Ce message a déjà été vu',
                         'already_viewed' => true
                     ], 410);
                 }
             }
 
-            // Enregistrer la vue
-            $message->recordView($viewerIp, $deviceId);
-            $message->incrementViews();
+            // Enregistrer la vue (retourne null si déjà vue)
+            $viewRecorded = $message->recordView($viewerIp, $deviceId);
 
-            // Envoyer une notification push au créateur
-            $this->sendViewNotificationToOwner($message);
+            // Incrémenter et notifier seulement si c'est une nouvelle vue
+            if ($viewRecorded) {
+                $message->incrementViews();
+                // Envoyer une notification push au créateur
+                $this->sendViewNotificationToOwner($message);
+            }
 
             // Récupérer les réactions groupées par emoji
             $reactionsGrouped = $message->reactions()
