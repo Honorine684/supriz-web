@@ -3087,21 +3087,55 @@
 
                 <!-- Coordonnées -->
                 <div class="col-lg-6 col-md-12">
-                    <div style="border: 2px dashed #005792; border-radius: 15px; padding: 40px; background: #F8FBFD; min-height: 100%;">
-                        <h3 style="font-size: 24px; font-weight: 600; color: #1A1A1A; margin-bottom: 30px;">Nos coordonnées</h3>
+                    <div style="background: linear-gradient(135deg, #005792 0%, #003d66 100%); border-radius: 20px; padding: 45px; min-height: 100%; position: relative; overflow: hidden;">
+                        <!-- Décoration background -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.03); border-radius: 50%;"></div>
 
-                        <div class="mb-4">
-                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Email</p>
-                            <p style="color: #666; margin: 0; font-size: 15px;">contact@suprizs.com</p>
-                        </div>
+                        <h3 style="font-size: 26px; font-weight: 700; color: white; margin-bottom: 35px; position: relative;">
+                            <span style="display: inline-block; padding-bottom: 10px; border-bottom: 3px solid rgba(255,255,255,0.3);">Nos coordonnées</span>
+                        </h3>
 
-                        <div class="mb-4">
-                            <p style="font-weight: 600; color: #333; margin-bottom: 5px; font-size: 15px;">Téléphone</p>
-                            <p style="color: #666; margin: 0; font-size: 15px;">+229 01 61 55 66 80</p>
-                        </div>
+                        <!-- Email -->
+                        <a href="mailto:contact@suprizs.com" style="display: flex; align-items: center; gap: 18px; padding: 18px 20px; background: rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 18px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateX(5px)';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateX(0)';">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="bi bi-envelope-fill" style="font-size: 22px; color: white;"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Email professionnel</p>
+                                <p style="color: white; margin: 0; font-size: 16px; font-weight: 500;">contact@suprizs.com</p>
+                            </div>
+                        </a>
 
-                        <div style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #ddd;">
-                            <p style="color: #666; margin: 0; font-size: 14px; line-height: 1.6;">Une question ? Un besoin d'assistance ? Une suggestion ?<br>Notre équipe est à votre écoute.</p>
+                        <!-- Téléphone -->
+                        <a href="tel:+22961556680" style="display: flex; align-items: center; gap: 18px; padding: 18px 20px; background: rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 18px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateX(5px)';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateX(0)';">
+                            <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="bi bi-telephone-fill" style="font-size: 22px; color: white;"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Téléphone</p>
+                                <p style="color: white; margin: 0; font-size: 16px; font-weight: 500;">+229 01 61 55 66 80</p>
+                            </div>
+                        </a>
+
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/22961556680" target="_blank" style="display: flex; align-items: center; gap: 18px; padding: 18px 20px; background: rgba(255,255,255,0.1); border-radius: 12px; margin-bottom: 25px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.1);" onmouseover="this.style.background='rgba(255,255,255,0.15)'; this.style.transform='translateX(5px)';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateX(0)';">
+                            <div style="width: 50px; height: 50px; background: rgba(37,211,102,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                <i class="bi bi-whatsapp" style="font-size: 22px; color: #25D366;"></i>
+                            </div>
+                            <div>
+                                <p style="font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">WhatsApp</p>
+                                <p style="color: white; margin: 0; font-size: 16px; font-weight: 500;">Discutez avec nous</p>
+                            </div>
+                        </a>
+
+                        <!-- Message de support -->
+                        <div style="padding: 20px; background: rgba(255,255,255,0.08); border-radius: 12px; border-left: 4px solid rgba(255,255,255,0.4);">
+                            <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 14px; line-height: 1.7;">
+                                <i class="bi bi-headset" style="margin-right: 8px;"></i>
+                                Une question ? Un besoin d'assistance ?<br>
+                                <strong>Notre équipe est disponible 7j/7</strong> pour vous accompagner.
+                            </p>
                         </div>
                     </div>
                 </div>

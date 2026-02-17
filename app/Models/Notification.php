@@ -14,6 +14,7 @@ class Notification extends Model
     protected $primaryKey = 'id'; // Nom de la clé primaire, par défaut c'est 'id'
 
     protected $fillable = [
+        'titre',
         'contenus'
     ];
 

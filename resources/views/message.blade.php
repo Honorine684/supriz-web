@@ -59,7 +59,12 @@
                         <img class="relative mr-2 profil-photo top-4"
                             src="{{ asset('images/profil/no-profile.png') }}" alt="">
                     @endif
-                    <p class="p-2 font-light bg-gray-primary rounded-20">{{ $notif->contenus }}</p>
+                    <div class="p-2 font-light bg-gray-primary rounded-20">
+                        @if($notif->titre)
+                            <p class="font-semibold">{{ $notif->titre }}</p>
+                        @endif
+                        <p>{{ $notif->contenus }}</p>
+                    </div>
                 </div>
             @endforeach
         @else
@@ -68,12 +73,16 @@
 
         <form action="{{route('admin.notification.store')}}" method="POST">
             @csrf
-            <div class="fixed flex w-200 p-5 m-0 pr-8 cursor-pointer bg-gray-50 bottom-10">
-                <textarea name="contenus" placeholder="Tapez votre message ici.."
-                    class="w-input-200 border-none rounded-20 resize-none bg-gray-primary pt-3 pb-3 pl-3 pr-10"></textarea>
-                <button type="submit" name="submit">
-                    <img class="absolute w-10 h-10 top-8 right-10" src="{{ asset('images/svg/send_message.svg') }}" alt="">
-                </button>
+            <div class="fixed flex flex-col w-200 p-5 m-0 pr-8 cursor-pointer bg-gray-50 bottom-10 gap-2">
+                <input type="text" name="titre" placeholder="Titre de la notification"
+                    class="w-input-200 border-none rounded-20 bg-gray-primary pt-3 pb-3 pl-3 pr-3" required>
+                <div class="flex">
+                    <textarea name="contenus" placeholder="Description de la notification.."
+                        class="w-input-200 border-none rounded-20 resize-none bg-gray-primary pt-3 pb-3 pl-3 pr-10" required></textarea>
+                    <button type="submit" name="submit">
+                        <img class="absolute w-10 h-10 bottom-3 right-10" src="{{ asset('images/svg/send_message.svg') }}" alt="">
+                    </button>
+                </div>
             </div>
         </form>
     </div>

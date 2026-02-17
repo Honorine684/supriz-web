@@ -46,6 +46,21 @@
             object-fit: cover;
             border-radius: 12px;
         }
+        /* Scrollbar personnalisée */
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 8px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #005792;
+            border-radius: 10px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #003d66;
+        }
     </style>
 </head>
 
@@ -211,56 +226,58 @@
                     </div>
                 </div>
 
-                <!-- Arrière-plans de cette catégorie -->
-                <div class="grid grid-cols-2 gap-4 mb-8 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    @foreach($arrierePlans as $arrierePlan)
-                        <div class="bg-card">
-                            <!-- Image preview -->
-                            <div class="mb-3">
-                                @if($arrierePlan->image)
-                                    <img src="{{ asset('storage/' . $arrierePlan->image) }}"
-                                         alt="{{ $arrierePlan->nom }}"
-                                         class="bg-preview w-full">
-                                @else
-                                    <div class="bg-preview w-full bg-gray-200 flex items-center justify-center">
-                                        <i class="text-4xl text-gray-400 ri-image-line"></i>
-                                    </div>
-                                @endif
+                <!-- Arrière-plans de cette catégorie - Défilement horizontal -->
+                <div class="mb-8 overflow-x-auto pb-4" style="scrollbar-width: thin;">
+                    <div class="flex gap-4" style="min-width: max-content;">
+                        @foreach($arrierePlans as $arrierePlan)
+                            <div class="bg-card flex-shrink-0" style="width: 160px;">
+                                <!-- Image preview -->
+                                <div class="mb-3">
+                                    @if($arrierePlan->image)
+                                        <img src="{{ asset('storage/' . $arrierePlan->image) }}"
+                                             alt="{{ $arrierePlan->nom }}"
+                                             class="bg-preview w-full">
+                                    @else
+                                        <div class="bg-preview w-full bg-gray-200 flex items-center justify-center">
+                                            <i class="text-4xl text-gray-400 ri-image-line"></i>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <!-- Info -->
+                                <p class="mb-2 font-bold text-gray-800 text-sm truncate" title="{{ $arrierePlan->nom }}">
+                                    {{ $arrierePlan->nom }}
+                                </p>
+
+                                <!-- Actions -->
+                                <div class="flex gap-2">
+                                    <!-- Toggle Status -->
+                                    <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <button type="submit" class="w-full px-2 py-1 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90"
+                                                style="background-color: {{ $arrierePlan->is_active ? '#10B981' : '#EF4444' }};">
+                                            @if($arrierePlan->is_active)
+                                                <i class="ri-check-line"></i> Actif
+                                            @else
+                                                <i class="ri-close-line"></i> Inactif
+                                            @endif
+                                        </button>
+                                    </form>
+
+                                    <!-- Delete -->
+                                    <form action="{{ route('admin.arriere-plan.destroy', $arrierePlan->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="px-2 py-1 text-xs font-semibold text-white transition-all bg-red-500 rounded-lg hover:bg-red-600"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet arrière-plan ?')">
+                                            <i class="ri-delete-bin-line"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-
-                            <!-- Info -->
-                            <p class="mb-2 font-bold text-gray-800 text-sm truncate" title="{{ $arrierePlan->nom }}">
-                                {{ $arrierePlan->nom }}
-                            </p>
-
-                            <!-- Actions -->
-                            <div class="flex gap-2">
-                                <!-- Toggle Status -->
-                                <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST" class="flex-1">
-                                    @csrf
-                                    <button type="submit" class="w-full px-2 py-1 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90"
-                                            style="background-color: {{ $arrierePlan->is_active ? '#10B981' : '#EF4444' }};">
-                                        @if($arrierePlan->is_active)
-                                            <i class="ri-check-line"></i> Actif
-                                        @else
-                                            <i class="ri-close-line"></i> Inactif
-                                        @endif
-                                    </button>
-                                </form>
-
-                                <!-- Delete -->
-                                <form action="{{ route('admin.arriere-plan.destroy', $arrierePlan->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="px-2 py-1 text-xs font-semibold text-white transition-all bg-red-500 rounded-lg hover:bg-red-600"
-                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet arrière-plan ?')">
-                                        <i class="ri-delete-bin-line"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @endforeach
+                        @endforeach
+                    </div>
                 </div>
             @empty
                 <div class="py-12 text-center">

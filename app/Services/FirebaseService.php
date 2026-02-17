@@ -123,6 +123,8 @@ class FirebaseService
                         'notification' => [
                             'sound' => 'default',
                             'channel_id' => 'supriz_notifications',
+                            'notification_priority' => 'PRIORITY_HIGH',
+                            'visibility' => 'PUBLIC',
                         ],
                     ],
                     'apns' => [
