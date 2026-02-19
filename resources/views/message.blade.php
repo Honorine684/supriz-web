@@ -48,7 +48,7 @@
     </div>
     <hr>
 
-    <div class="pb-40 overflow-y-auto contener h-120">
+    <div class="pb-48 overflow-y-auto contener" style="min-height: calc(100vh - 200px);">
         @if ($notifs)
             @foreach ($notifs as $notif)
                 <div class="flex mt-4">
@@ -73,7 +73,7 @@
 
         <form action="{{route('admin.notification.store')}}" method="POST">
             @csrf
-            <div class="fixed left-0 right-0 md:left-64 bottom-0 p-4 bg-gray-50 border-t border-gray-200">
+            <div class="fixed left-0 right-0 md:left-64 bottom-0 p-4 bg-gray-50 border-t border-gray-200 z-50">
                 <div class="flex flex-col gap-3 max-w-4xl mx-auto">
                     <input type="text" name="titre" placeholder="Titre de la notification"
                         class="w-full border-none rounded-xl bg-gray-200 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
