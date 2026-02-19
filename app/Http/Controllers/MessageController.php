@@ -163,7 +163,7 @@ class MessageController extends Controller
     /**
      * Afficher un message via son slug (page publique)
      */
-    public function show($slug)
+    public function show($slug, Request $request)
     {
         $message = Message::where('slug', $slug)->firstOrFail();
 
@@ -177,8 +177,31 @@ class MessageController extends Controller
             return view('message-inactive', compact('message'));
         }
 
-        // Incrémenter le compteur de vues
-        $message->incrementViews();
+        // Vérifier si le max_views est atteint
+        if ($message->hasReachedMaxViews()) {
+            return view('message-expired', [
+                'message' => $message,
+                'reason' => 'max_views'
+            ]);
+        }
+
+        // Vérifier si c'est une vue unique et déjà vue par quelqu'un
+        if ($message->unique_view && $message->views_count >= 1) {
+            return view('message-expired', [
+                'message' => $message,
+                'reason' => 'unique_view'
+            ]);
+        }
+
+        // Enregistrer la vue unique (par IP/session)
+        $viewerIp = $request->ip();
+        $sessionId = session()->getId();
+
+        // Vérifier si pas déjà vue par ce visiteur
+        if (!$message->hasBeenViewedBy($viewerIp, $sessionId)) {
+            $message->recordView($viewerIp, $sessionId);
+            $message->incrementViews();
+        }
 
         return view('message-view', compact('message'));
     }
