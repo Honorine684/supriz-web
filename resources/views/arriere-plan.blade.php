@@ -250,16 +250,16 @@
                                 </p>
 
                                 <!-- Actions -->
-                                <div class="flex gap-2">
+                                <div class="flex flex-col gap-2">
                                     <!-- Toggle Status -->
-                                    <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST" class="flex-1">
+                                    <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="w-full px-2 py-1 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90"
+                                        <button type="submit" class="w-full px-3 py-2 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-1"
                                                 style="background-color: {{ $arrierePlan->is_active ? '#10B981' : '#EF4444' }};">
                                             @if($arrierePlan->is_active)
-                                                <i class="ri-check-line"></i> Actif
+                                                <i class="ri-check-line"></i> <span>Actif</span>
                                             @else
-                                                <i class="ri-close-line"></i> Inactif
+                                                <i class="ri-close-line"></i> <span>Inactif</span>
                                             @endif
                                         </button>
                                     </form>
@@ -269,9 +269,9 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="px-2 py-1 text-xs font-semibold text-white transition-all bg-red-500 rounded-lg hover:bg-red-600"
+                                                class="w-full px-3 py-2 text-xs font-semibold text-white transition-all bg-red-500 rounded-lg hover:bg-red-600 flex items-center justify-center gap-1"
                                                 onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet arrière-plan ?')">
-                                            <i class="ri-delete-bin-line"></i>
+                                            <i class="ri-delete-bin-line"></i> <span>Supprimer</span>
                                         </button>
                                     </form>
                                 </div>
