@@ -250,12 +250,11 @@
                                 </p>
 
                                 <!-- Actions -->
-                                <div class="flex flex-col gap-2">
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
                                     <!-- Toggle Status -->
-                                    <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST">
+                                    <form action="{{ route('admin.arriere-plan.toggleStatus', $arrierePlan->id) }}" method="POST" style="margin: 0;">
                                         @csrf
-                                        <button type="submit" class="w-full px-3 py-2 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-1"
-                                                style="background-color: {{ $arrierePlan->is_active ? '#10B981' : '#EF4444' }};">
+                                        <button type="submit" style="width: 100%; padding: 8px 12px; font-size: 12px; font-weight: 600; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background-color: {{ $arrierePlan->is_active ? '#10B981' : '#EF4444' }};">
                                             @if($arrierePlan->is_active)
                                                 <i class="ri-check-line"></i> <span>Actif</span>
                                             @else
@@ -265,11 +264,10 @@
                                     </form>
 
                                     <!-- Delete -->
-                                    <form action="{{ route('admin.arriere-plan.destroy', $arrierePlan->id) }}" method="POST">
+                                    <form action="{{ route('admin.arriere-plan.destroy', $arrierePlan->id) }}" method="POST" style="margin: 0;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                                class="w-full px-3 py-2 text-xs font-semibold text-white transition-all bg-red-500 rounded-lg hover:bg-red-600 flex items-center justify-center gap-1"
+                                        <button type="submit" style="width: 100%; padding: 8px 12px; font-size: 12px; font-weight: 600; color: white; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; background-color: #EF4444;"
                                                 onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet arrière-plan ?')">
                                             <i class="ri-delete-bin-line"></i> <span>Supprimer</span>
                                         </button>
