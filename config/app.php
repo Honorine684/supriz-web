@@ -65,8 +65,8 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'UTC'),
-    'schedule_timezone' => env('APP_TIMEZONE', 'UTC'),
+    'timezone' => env('APP_TIMEZONE', 'Africa/Porto-Novo'),
+    'schedule_timezone' => env('APP_TIMEZONE', 'Africa/Porto-Novo'),
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
