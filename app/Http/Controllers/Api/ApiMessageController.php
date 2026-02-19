@@ -162,7 +162,7 @@ class ApiMessageController extends Controller
                 'expiration_type' => $expiration,
                 'is_active' => true,
                 'max_views' => $request->max_views,
-                'unique_view' => $request->unique_view ?? false,
+                'unique_view' => filter_var($request->unique_view, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
             ]);
 
             return response()->json([
