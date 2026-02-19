@@ -48,7 +48,7 @@
     </div>
     <hr>
 
-    <div class="pb-10 overflow-y-auto contener h-120">
+    <div class="pb-40 overflow-y-auto contener h-120">
         @if ($notifs)
             @foreach ($notifs as $notif)
                 <div class="flex mt-4">
@@ -73,15 +73,19 @@
 
         <form action="{{route('admin.notification.store')}}" method="POST">
             @csrf
-            <div class="fixed flex flex-col w-200 p-5 m-0 pr-8 cursor-pointer bg-gray-50 bottom-10 gap-2">
-                <input type="text" name="titre" placeholder="Titre de la notification"
-                    class="w-input-200 border-none rounded-20 bg-gray-primary pt-3 pb-3 pl-3 pr-3" required>
-                <div class="flex">
-                    <textarea name="contenus" placeholder="Description de la notification.."
-                        class="w-input-200 border-none rounded-20 resize-none bg-gray-primary pt-3 pb-3 pl-3 pr-10" required></textarea>
-                    <button type="submit" name="submit">
-                        <img class="absolute w-10 h-10 bottom-3 right-10" src="{{ asset('images/svg/send_message.svg') }}" alt="">
-                    </button>
+            <div class="fixed left-0 right-0 md:left-64 bottom-0 p-4 bg-gray-50 border-t border-gray-200">
+                <div class="flex flex-col gap-3 max-w-4xl mx-auto">
+                    <input type="text" name="titre" placeholder="Titre de la notification"
+                        class="w-full border-none rounded-xl bg-gray-200 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <div class="flex gap-3 items-end">
+                        <textarea name="contenus" placeholder="Description de la notification.." rows="2"
+                            class="flex-1 border-none rounded-xl resize-none bg-gray-200 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        <button type="submit" name="submit" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>

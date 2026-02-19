@@ -474,20 +474,18 @@ class ApiMessageController extends Controller
                 ], 410);
             }
 
+            // Vérifier si c'est une vue unique et déjà vue par quelqu'un
+            // Vue unique = une seule personne peut voir, puis le lien expire pour tout le monde
+            if ($message->unique_view && $message->views_count >= 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ce message a déjà été consulté',
+                    'unique_view_expired' => true
+                ], 410);
+            }
+
             $viewerIp = $request->ip();
             $deviceId = $request->header('X-Device-Id');
-
-            // Vérifier si la vue unique est activée
-            if ($message->unique_view) {
-                // Une seule personne peut voir ce message
-                if ($message->views()->exists()) {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Ce message a déjà été vu',
-                        'already_viewed' => true
-                    ], 410);
-                }
-            }
 
             // Enregistrer la vue (retourne null si déjà vue)
             $viewRecorded = $message->recordView($viewerIp, $deviceId);
