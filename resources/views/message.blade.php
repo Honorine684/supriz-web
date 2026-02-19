@@ -74,67 +74,63 @@
 
 </main>
 
-<!-- Bouton flottant pour ouvrir la popup -->
+<!-- Bouton flottant pour ouvrir la popup - Couleur Supriz -->
 <button onclick="openNotificationModal()" id="openModalBtn"
-    style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; background-color: #2563eb; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+    style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; background-color: #005792; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 87, 146, 0.4); display: flex; align-items: center; justify-content: center;">
     <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path>
     </svg>
 </button>
 
 <!-- Modal/Popup pour le formulaire de notification -->
-<div id="notificationModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999;">
+<div id="notificationModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999;">
     <!-- Overlay sombre -->
-    <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeNotificationModal()"></div>
+    <div onclick="closeNotificationModal()" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);"></div>
 
     <!-- Contenu de la modal -->
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg mx-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-6">
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-800">Nouvelle notification</h3>
-                <button onclick="closeNotificationModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Formulaire -->
-            <form action="{{route('admin.notification.store')}}" method="POST">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Titre</label>
-                        <input type="text" name="titre" placeholder="Titre de la notification"
-                            class="w-full border border-gray-300 rounded-xl bg-gray-50 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea name="contenus" placeholder="Description de la notification..." rows="4"
-                            class="w-full border border-gray-300 rounded-xl resize-none bg-gray-50 py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required></textarea>
-                    </div>
-                    <button type="submit" name="submit"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl py-3 px-4 transition-colors flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
-                        Envoyer la notification
-                    </button>
-                </div>
-            </form>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; background: white; border-radius: 16px; padding: 24px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="font-size: 20px; font-weight: bold; color: #005792; margin: 0;">Nouvelle notification</h3>
+            <button onclick="closeNotificationModal()" style="background: none; border: none; cursor: pointer; padding: 5px;">
+                <svg style="width: 24px; height: 24px; color: #6b7280;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
+
+        <!-- Formulaire -->
+        <form action="{{route('admin.notification.store')}}" method="POST">
+            @csrf
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 6px;">Titre</label>
+                <input type="text" name="titre" placeholder="Titre de la notification"
+                    style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 14px; outline: none; box-sizing: border-box;" required>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 6px;">Description</label>
+                <textarea name="contenus" placeholder="Description de la notification..." rows="4"
+                    style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 12px; font-size: 14px; outline: none; resize: none; box-sizing: border-box;" required></textarea>
+            </div>
+            <button type="submit" name="submit"
+                style="width: 100%; padding: 14px; background-color: #005792; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg style="width: 20px; height: 20px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                Envoyer la notification
+            </button>
+        </form>
     </div>
 </div>
 
 <script>
     function openNotificationModal() {
-        document.getElementById('notificationModal').classList.remove('hidden');
+        document.getElementById('notificationModal').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
     function closeNotificationModal() {
-        document.getElementById('notificationModal').classList.add('hidden');
+        document.getElementById('notificationModal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
