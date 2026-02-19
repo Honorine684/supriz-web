@@ -75,15 +75,15 @@
 </main>
 
 <!-- Bouton flottant pour ouvrir la popup -->
-<button onclick="openNotificationModal()"
-    class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg z-50 transition-all hover:scale-110">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<button onclick="openNotificationModal()" id="openModalBtn"
+    style="position: fixed; bottom: 30px; right: 30px; z-index: 9999; background-color: #2563eb; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+    <svg style="width: 28px; height: 28px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
     </svg>
 </button>
 
 <!-- Modal/Popup pour le formulaire de notification -->
-<div id="notificationModal" class="fixed inset-0 z-50 hidden">
+<div id="notificationModal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 99999;">
     <!-- Overlay sombre -->
     <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeNotificationModal()"></div>
 
