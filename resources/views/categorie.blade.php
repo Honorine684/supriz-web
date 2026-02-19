@@ -318,6 +318,114 @@
             </div>
         </div>
 
+        <!-- Section Catégories Supriz Personnalisées (ajoutées manuellement) -->
+        @if(isset($suprizPersonnalisees) && $suprizPersonnalisees->count() > 0)
+        <div style="margin-top: 2rem; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Catégories Supriz Personnalisées</h2>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Catégories ajoutées manuellement - Gérez leurs images et icônes ci-dessous</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                @foreach($suprizPersonnalisees as $suprizCustom)
+                <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #d1fae5;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.125rem; font-weight: bold; color: #059669;">{{ $suprizCustom->name_sous_categories }}</h3>
+                        <form action="{{ route('admin.categorie.toggleStatus', $suprizCustom->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit"
+                                    style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $suprizCustom->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $suprizCustom->is_active ? '#166534' : '#991b1b' }};">
+                                {{ $suprizCustom->is_active ? '✓ Actif' : '✗ Inactif' }}
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Icône -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+                        <p style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Icône</p>
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            @if($suprizCustom->icone)
+                                <img src="{{ asset('storage/' . $suprizCustom->icone) }}"
+                                     alt="Icône {{ $suprizCustom->name_sous_categories }}"
+                                     style="width: 56px; height: 56px; object-fit: cover; border-radius: 50%; border: 3px solid #059669; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);">
+                            @else
+                                <div style="width: 56px; height: 56px; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px dashed #059669;">
+                                    <svg style="width: 24px; height: 24px; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            @endif
+                            <form action="{{ route('admin.categorie.updateSuprizIcone', $suprizCustom->id) }}" method="POST" enctype="multipart/form-data" style="flex: 1;">
+                                @csrf
+                                <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #059669; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                    <input type="file" name="icone" accept="image/*" onchange="this.form.submit()" style="display: none;">
+                                    Choisir une icône
+                                </label>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Image principale -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+                        <p style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Image principale</p>
+
+                        @if($suprizCustom->image)
+                        <div style="position: relative; margin-bottom: 12px;">
+                            <img src="{{ asset('storage/' . $suprizCustom->image) }}"
+                                 alt="{{ $suprizCustom->name_sous_categories }}"
+                                 style="width: 100%; height: 180px; object-fit: cover; border-radius: 10px; border: 2px solid #059669; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.15);">
+                        </div>
+                        @else
+                        <div style="margin-bottom: 12px; text-align: center; padding: 3rem 1rem; background: linear-gradient(135deg, #fafbfc 0%, #d1fae5 100%); border-radius: 10px; border: 2px dashed #059669;">
+                            <div style="width: 60px; height: 60px; margin: 0 auto 12px; border-radius: 50%; background-color: #059669; display: flex; align-items: center; justify-content: center;">
+                                <svg style="width: 30px; height: 30px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <p style="font-size: 14px; font-weight: 500; color: #059669;">Aucune image</p>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('admin.categorie.updateSuprizImage', $suprizCustom->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #059669; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                <input type="file" name="image" accept="image/*,.gif" onchange="this.form.submit()" style="display: none;">
+                                {{ $suprizCustom->image ? 'Changer l\'image' : 'Ajouter une image' }}
+                            </label>
+                        </form>
+                    </div>
+
+                    <!-- Image cadeau (Gift) -->
+                    <div style="margin-bottom: 1rem; padding: 1rem; background-color: #fff7ed; border-radius: 10px; border: 1px solid #fed7aa;">
+                        <p style="font-size: 12px; font-weight: 600; color: #c2410c; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">🎁 Image cadeau (Gift)</p>
+
+                        @if($suprizCustom->gift_image)
+                        <div style="position: relative; margin-bottom: 12px; text-align: center;">
+                            <img src="{{ asset('storage/' . $suprizCustom->gift_image) }}"
+                                 alt="Gift {{ $suprizCustom->name_sous_categories }}"
+                                 style="width: 120px; height: 120px; object-fit: contain; border-radius: 10px; border: 2px solid #ea580c; box-shadow: 0 2px 8px rgba(234, 88, 12, 0.15);">
+                        </div>
+                        @else
+                        <div style="margin-bottom: 12px; text-align: center; padding: 2rem 1rem; background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%); border-radius: 10px; border: 2px dashed #ea580c;">
+                            <div style="width: 50px; height: 50px; margin: 0 auto 10px; border-radius: 50%; background-color: #ea580c; display: flex; align-items: center; justify-content: center;">
+                                <span style="font-size: 24px;">🎁</span>
+                            </div>
+                            <p style="font-size: 13px; font-weight: 500; color: #ea580c;">Aucune image cadeau</p>
+                        </div>
+                        @endif
+
+                        <form action="{{ route('admin.categorie.updateSuprizGiftImage', $suprizCustom->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <label style="display: block; width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 500; color: white; background-color: #ea580c; border-radius: 8px; cursor: pointer; text-align: center; transition: all 0.2s;">
+                                <input type="file" name="gift_image" accept="image/*,.gif" onchange="this.form.submit()" style="display: none;">
+                                {{ $suprizCustom->gift_image ? 'Changer l\'image cadeau' : 'Ajouter une image cadeau' }}
+                            </label>
+                        </form>
+                        <p style="font-size: 11px; color: #9a3412; margin-top: 8px; text-align: center;">Cette image sera affichée comme cadeau dans l'application</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         <div style="margin-top: 2rem;">
             <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Liste des sous-catégories</h2>

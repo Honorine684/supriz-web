@@ -21,8 +21,13 @@ class CategorieController extends Controller
             ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
             ->get();
 
+        // Récupérer les catégories Supriz personnalisées (ajoutées manuellement)
+        $suprizPersonnalisees = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->whereNotIn('name_sous_categories', $categoriesSuprizPredefinies)
+            ->get();
+
         $active_link = "ca";
-        return view('categorie', compact("active_link","sousCategories", "suprizPredefinies"));
+        return view('categorie', compact("active_link","sousCategories", "suprizPredefinies", "suprizPersonnalisees"));
     }
 
     /**
@@ -111,9 +116,14 @@ public function edit($id)
         ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
         ->get();
 
+    // Récupérer les catégories Supriz personnalisées (ajoutées manuellement)
+    $suprizPersonnalisees = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
+        ->whereNotIn('name_sous_categories', $categoriesSuprizPredefinies)
+        ->get();
+
     $active_link = "ca";
 
-    return view('categorie', compact('sousCategorie', 'sousCategories', 'suprizPredefinies', 'active_link'));
+    return view('categorie', compact('sousCategorie', 'sousCategories', 'suprizPredefinies', 'suprizPersonnalisees', 'active_link'));
 }
 
 public function update(Request $request, $id)
