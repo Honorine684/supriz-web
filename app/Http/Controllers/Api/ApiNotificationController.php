@@ -34,8 +34,14 @@ class ApiNotificationController extends Controller
             ->orderBy('created_at', 'desc') // Tri par la date de création
             ->get()
             ->map(function ($notification) use ($readNotificationIds) {
-                $notification->isRead = in_array($notification->id, $readNotificationIds);
-                return $notification;
+                return [
+                    'id' => $notification->id,
+                    'titre' => $notification->titre,
+                    'contenus' => $notification->contenus,
+                    'isRead' => in_array($notification->id, $readNotificationIds),
+                    'created_at' => $notification->created_at->timezone('Africa/Porto-Novo')->format('d/m/Y H:i'),
+                    'created_at_relative' => $notification->created_at->timezone('Africa/Porto-Novo')->diffForHumans(),
+                ];
             });
 
         // Ajout de débogage
