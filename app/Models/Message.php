@@ -91,11 +91,26 @@ class Message extends Model
     }
 
     /**
-     * Vérifier si le message est expiré
+     * Vérifier si le message est expiré (date, vue unique, ou max vues)
      */
     public function isExpired()
     {
-        return $this->date_expiration->isPast();
+        // Expiré par date
+        if ($this->date_expiration && $this->date_expiration->isPast()) {
+            return true;
+        }
+
+        // Expiré par vue unique (déjà vu par quelqu'un)
+        if ($this->unique_view && $this->views_count >= 1) {
+            return true;
+        }
+
+        // Expiré par max vues atteint
+        if ($this->hasReachedMaxViews()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
