@@ -161,14 +161,56 @@ class MessageController extends Controller
     }
 
     /**
+     * Vérifier si le visiteur est un bot de prévisualisation (WhatsApp, Telegram, etc.)
+     */
+    private function isPreviewBot(Request $request): bool
+    {
+        $userAgent = strtolower($request->userAgent() ?? '');
+
+        // Liste des bots de prévisualisation connus
+        $previewBots = [
+            'whatsapp',
+            'telegrambot',
+            'facebookexternalhit',
+            'facebot',
+            'twitterbot',
+            'linkedinbot',
+            'slackbot',
+            'discordbot',
+            'skypeuripreview',
+            'viberbot',
+            'snapchat',
+            'pinterest',
+            'redditbot',
+            'embedly',
+            'quora link preview',
+            'showyoubot',
+            'outbrain',
+            'bingpreview',
+            'googlebot',
+        ];
+
+        foreach ($previewBots as $bot) {
+            if (str_contains($userAgent, $bot)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Afficher un message via son slug (page publique)
      */
     public function show($slug, Request $request)
     {
         $message = Message::where('slug', $slug)->firstOrFail();
 
-        // Vérifier si le message est expiré
-        if ($message->isExpired()) {
+        // Si c'est un bot de prévisualisation, afficher le message sans compter la vue
+        $isBot = $this->isPreviewBot($request);
+
+        // Vérifier si le message est expiré (seulement pour les vrais visiteurs)
+        if (!$isBot && $message->isExpired()) {
             return view('message-expired', compact('message'));
         }
 
@@ -177,30 +219,32 @@ class MessageController extends Controller
             return view('message-inactive', compact('message'));
         }
 
-        // Vérifier si le max_views est atteint
-        if ($message->hasReachedMaxViews()) {
+        // Vérifier si le max_views est atteint (seulement pour les vrais visiteurs)
+        if (!$isBot && $message->hasReachedMaxViews()) {
             return view('message-expired', [
                 'message' => $message,
                 'reason' => 'max_views'
             ]);
         }
 
-        // Vérifier si c'est une vue unique et déjà vue par quelqu'un
-        if ($message->unique_view && $message->views_count >= 1) {
+        // Vérifier si c'est une vue unique et déjà vue 2 fois (seulement pour les vrais visiteurs)
+        if (!$isBot && $message->unique_view && $message->views_count >= 2) {
             return view('message-expired', [
                 'message' => $message,
                 'reason' => 'unique_view'
             ]);
         }
 
-        // Enregistrer la vue unique (par IP/session)
-        $viewerIp = $request->ip();
-        $sessionId = session()->getId();
+        // Enregistrer la vue unique (par IP/session) - seulement si ce n'est PAS un bot
+        if (!$isBot) {
+            $viewerIp = $request->ip();
+            $sessionId = session()->getId();
 
-        // Vérifier si pas déjà vue par ce visiteur
-        if (!$message->hasBeenViewedBy($viewerIp, $sessionId)) {
-            $message->recordView($viewerIp, $sessionId);
-            $message->incrementViews();
+            // Vérifier si pas déjà vue par ce visiteur
+            if (!$message->hasBeenViewedBy($viewerIp, $sessionId)) {
+                $message->recordView($viewerIp, $sessionId);
+                $message->incrementViews();
+            }
         }
 
         return view('message-view', compact('message'));

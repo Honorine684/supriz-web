@@ -562,8 +562,12 @@ class ApiMessageController extends Controller
                 ], 404);
             }
 
-            // Vérifier si le message est expiré ou inactif
-            if ($message->isExpired() || !$message->is_active) {
+            // Vérifier si le message est inactif ou expiré par date (pas par vue unique)
+            // On permet les réactions même sur les messages "vue unique" déjà vus
+            $isExpiredByDate = $message->date_expiration && $message->date_expiration->isPast();
+            $isExpiredByMaxViews = $message->max_views !== null && $message->views_count >= $message->max_views;
+
+            if (!$message->is_active || $isExpiredByDate || $isExpiredByMaxViews) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Ce message n\'est plus disponible'
