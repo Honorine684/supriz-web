@@ -235,15 +235,23 @@ class MessageController extends Controller
             ]);
         }
 
-        // Enregistrer la vue unique (par IP/session) - seulement si ce n'est PAS un bot
+        // Enregistrer la vue - seulement si ce n'est PAS un bot
         if (!$isBot) {
             $viewerIp = $request->ip();
             $sessionId = session()->getId();
 
-            // Vérifier si pas déjà vue par ce visiteur
-            if (!$message->hasBeenViewedBy($viewerIp, $sessionId)) {
-                $message->recordView($viewerIp, $sessionId);
+            // Pour les messages "vue unique": chaque chargement = 1 vue
+            // Pour les autres: une vue par visiteur unique
+            if ($message->unique_view) {
+                // Vue unique: incrémenter à chaque chargement de page
                 $message->incrementViews();
+                $message->recordView($viewerIp, $sessionId);
+            } else {
+                // Normal: une vue par visiteur unique
+                if (!$message->hasBeenViewedBy($viewerIp, $sessionId)) {
+                    $message->recordView($viewerIp, $sessionId);
+                    $message->incrementViews();
+                }
             }
         }
 

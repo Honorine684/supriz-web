@@ -487,14 +487,21 @@ class ApiMessageController extends Controller
             $viewerIp = $request->ip();
             $deviceId = $request->header('X-Device-Id');
 
-            // Enregistrer la vue (retourne null si déjà vue)
-            $viewRecorded = $message->recordView($viewerIp, $deviceId);
-
-            // Incrémenter et notifier seulement si c'est une nouvelle vue
-            if ($viewRecorded) {
+            // Pour les messages "vue unique": chaque chargement = 1 vue
+            // Pour les autres: une vue par visiteur unique
+            if ($message->unique_view) {
+                // Vue unique: incrémenter à chaque chargement de page
                 $message->incrementViews();
-                // Envoyer une notification push au créateur
                 $this->sendViewNotificationToOwner($message);
+                // Enregistrer quand même pour le tracking
+                $message->recordView($viewerIp, $deviceId);
+            } else {
+                // Normal: une vue par visiteur unique
+                $viewRecorded = $message->recordView($viewerIp, $deviceId);
+                if ($viewRecorded) {
+                    $message->incrementViews();
+                    $this->sendViewNotificationToOwner($message);
+                }
             }
 
             // Récupérer les réactions groupées par emoji
