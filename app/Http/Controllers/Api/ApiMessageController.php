@@ -476,7 +476,7 @@ class ApiMessageController extends Controller
 
             // Vérifier si c'est une vue unique et déjà vue 2 fois
             // Vue unique = expire après 2 vues (pour contourner les prévisualisations WhatsApp, etc.)
-            if ($message->unique_view && $message->views_count >= 2) {
+            if ($message->unique_view && $message->views_count >= 1) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Ce message a déjà été consulté',

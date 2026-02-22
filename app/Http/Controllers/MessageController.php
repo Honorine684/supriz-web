@@ -228,7 +228,7 @@ class MessageController extends Controller
         }
 
         // Vérifier si c'est une vue unique et déjà vue 2 fois (seulement pour les vrais visiteurs)
-        if (!$isBot && $message->unique_view && $message->views_count >= 2) {
+        if (!$isBot && $message->unique_view && $message->views_count >= 1) {
             return view('message-expired', [
                 'message' => $message,
                 'reason' => 'unique_view'

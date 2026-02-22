@@ -101,7 +101,7 @@ class Message extends Model
         }
 
         // Expiré par vue unique (déjà vu 2 fois)
-        if ($this->unique_view && $this->views_count >= 2) {
+        if ($this->unique_view && $this->views_count >= 1) {
             return true;
         }
 
