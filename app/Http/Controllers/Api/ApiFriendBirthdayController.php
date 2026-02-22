@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FriendBirthday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Services\FirebaseService;
 use Carbon\Carbon;
 
 class ApiFriendBirthdayController extends Controller
@@ -269,6 +270,115 @@ class ApiFriendBirthdayController extends Controller
                 'status' => true,
                 'message' => 'Anniversaire supprimé avec succès'
             ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Tester l'envoi de notification pour un anniversaire spécifique
+     */
+    public function testNotification(Request $request, $id)
+    {
+        try {
+            $user = $request->user();
+
+            $birthday = FriendBirthday::where('id', $id)
+                ->where('user_id', $user->id)
+                ->first();
+
+            if (!$birthday) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anniversaire non trouvé'
+                ], 404);
+            }
+
+            if (!$user->fcm_token) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Pas de token FCM configuré. Reconnectez-vous à l\'application.'
+                ], 400);
+            }
+
+            $firebaseService = new FirebaseService();
+
+            $title = "🎂 Anniversaire de {$birthday->friend_name} !";
+            $body = "C'est aujourd'hui ! Prépare un message Supriz pour {$birthday->friend_name} 🎁";
+
+            $result = $firebaseService->sendNotification(
+                $user->fcm_token,
+                $title,
+                $body,
+                [
+                    'type' => 'birthday_reminder',
+                    'birthday_id' => $birthday->id,
+                    'friend_name' => $birthday->friend_name,
+                    'friend_phone' => $birthday->friend_phone ?? '',
+                ]
+            );
+
+            if ($result) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Notification de test envoyée avec succès'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Échec de l\'envoi de la notification'
+                ], 500);
+            }
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Tester une notification immédiate (sans anniversaire spécifique)
+     */
+    public function testImmediateNotification(Request $request)
+    {
+        try {
+            $user = $request->user();
+
+            if (!$user->fcm_token) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Pas de token FCM configuré. Reconnectez-vous à l\'application.'
+                ], 400);
+            }
+
+            $firebaseService = new FirebaseService();
+
+            $result = $firebaseService->sendNotification(
+                $user->fcm_token,
+                '🎂 Test de notification anniversaire',
+                'Si vous voyez ce message, les notifications d\'anniversaire fonctionnent !',
+                [
+                    'type' => 'birthday_test',
+                ]
+            );
+
+            if ($result) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Notification de test envoyée avec succès'
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Échec de l\'envoi de la notification'
+                ], 500);
+            }
 
         } catch (\Throwable $th) {
             return response()->json([

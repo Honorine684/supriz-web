@@ -100,3 +100,15 @@ Schedule::call(function () {
     }
 // })->timezone('Africa/Porto-Novo')->at('01:48');
 })->timezone('Africa/Porto-Novo')->daily();
+
+// Envoyer les notifications d'anniversaire toutes les 5 minutes
+Schedule::command('birthdays:send-notifications')
+    ->everyFiveMinutes()
+    ->timezone('Africa/Porto-Novo')
+    ->withoutOverlapping()
+    ->runInBackground();
+
+// Réinitialiser les flags de notification le 1er janvier à minuit
+Schedule::command('birthdays:reset-notifications')
+    ->yearlyOn(1, 1, '00:00')
+    ->timezone('Africa/Porto-Novo');
