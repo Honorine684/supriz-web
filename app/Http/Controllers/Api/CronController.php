@@ -1,0 +1,166 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\FriendBirthday;
+use App\Models\Notification;
+use App\Services\FirebaseService;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
+class CronController extends Controller
+{
+    // Clé secrète pour protéger l'endpoint
+    private const CRON_SECRET_KEY = 'supriz_cron_2024_secret';
+
+    /**
+     * Endpoint pour cron-job.org - Envoyer les notifications d'anniversaire
+     */
+    public function sendBirthdayNotifications(Request $request)
+    {
+        // Vérifier la clé secrète
+        if ($request->query('key') !== self::CRON_SECRET_KEY) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $firebaseService = new FirebaseService();
+        $now = Carbon::now();
+        $today = $now->format('m-d');
+
+        $results = [
+            'time' => $now->toDateTimeString(),
+            'birthdays_checked' => 0,
+            'notifications_sent' => 0,
+            'tests_sent' => 0,
+        ];
+
+        // 1. Envoyer les notifications d'anniversaire
+        $birthdays = FriendBirthday::where('is_active', true)
+            ->where('notification_sent_this_year', false)
+            ->whereRaw("DATE_FORMAT(birthday_date, '%m-%d') = ?", [$today])
+            ->with('user')
+            ->get();
+
+        $results['birthdays_checked'] = $birthdays->count();
+
+        foreach ($birthdays as $birthday) {
+            // Vérifier l'heure de notification
+            $reminderTime = $birthday->reminder_time ?? '09:00';
+            $reminderMinutesBefore = $birthday->reminder_minutes_before ?? 0;
+
+            $notificationTime = Carbon::createFromFormat('H:i', $reminderTime);
+            $notificationTime->subMinutes($reminderMinutesBefore);
+            $scheduledTime = $notificationTime->format('H:i');
+
+            $scheduledCarbon = Carbon::createFromFormat('H:i', $scheduledTime);
+            $diffMinutes = abs($now->diffInMinutes($scheduledCarbon, false));
+
+            if ($diffMinutes > 5) {
+                continue; // Pas encore l'heure
+            }
+
+            $user = $birthday->user;
+            if (!$user || !$user->fcm_token) {
+                continue;
+            }
+
+            $title = "🎂 Anniversaire de {$birthday->friend_name} !";
+            $body = "{$birthday->friend_name} soufflera une bougie de plus dans quelques instants. Sois prêt 😎";
+
+            $result = $firebaseService->sendNotification(
+                $user->fcm_token,
+                $title,
+                $body,
+                [
+                    'type' => 'birthday_reminder',
+                    'birthday_id' => $birthday->id,
+                    'friend_name' => $birthday->friend_name,
+                ]
+            );
+
+            if ($result) {
+                $birthday->notification_sent_this_year = true;
+                $birthday->save();
+
+                // Créer la notification dans l'app
+                Notification::create([
+                    'user_id' => $user->id,
+                    'titre' => $title,
+                    'contenus' => $body,
+                    'type' => 'birthday',
+                ]);
+
+                $results['notifications_sent']++;
+
+                Log::info("Birthday notification sent via cron", [
+                    'birthday_id' => $birthday->id,
+                    'friend_name' => $birthday->friend_name,
+                    'user_id' => $user->id,
+                ]);
+            }
+        }
+
+        // 2. Envoyer les tests programmés
+        $pendingTests = Cache::get('pending_birthday_tests', []);
+        $remainingTests = [];
+
+        foreach ($pendingTests as $cacheKey) {
+            $testData = Cache::get($cacheKey);
+
+            if (!$testData) {
+                continue;
+            }
+
+            $scheduledAt = Carbon::parse($testData['scheduled_at']);
+
+            if ($now->greaterThanOrEqualTo($scheduledAt)) {
+                $result = $firebaseService->sendNotification(
+                    $testData['fcm_token'],
+                    '🎂 Anniversaire de Test Ami !',
+                    'Test Ami soufflera une bougie de plus dans quelques instants. Sois prêt 😎',
+                    ['type' => 'birthday_scheduled_test']
+                );
+
+                if ($result) {
+                    // Créer la notification dans l'app
+                    Notification::create([
+                        'user_id' => $testData['user_id'],
+                        'titre' => '🎂 Anniversaire de Test Ami !',
+                        'contenus' => 'Test Ami soufflera une bougie de plus dans quelques instants. Sois prêt 😎',
+                        'type' => 'birthday_test',
+                    ]);
+
+                    $results['tests_sent']++;
+
+                    Log::info("Scheduled test sent via cron", [
+                        'user_id' => $testData['user_id'],
+                    ]);
+                }
+
+                Cache::forget($cacheKey);
+            } else {
+                $remainingTests[] = $cacheKey;
+            }
+        }
+
+        Cache::put('pending_birthday_tests', $remainingTests, 86400);
+
+        // 3. Réinitialiser les flags le 1er janvier
+        if ($now->month === 1 && $now->day === 1 && $now->hour === 0) {
+            FriendBirthday::query()->update(['notification_sent_this_year' => false]);
+            $results['reset_flags'] = true;
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Cron executed successfully',
+            'results' => $results,
+        ]);
+    }
+}

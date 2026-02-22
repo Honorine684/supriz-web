@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ApiHistoriqueController;
 use App\Http\Controllers\Api\ApiFriendBirthdayController;
+use App\Http\Controllers\Api\CronController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -96,3 +97,6 @@ Route::post('/send-otp-mdp', [UserController::class, 'sendOtpMdp']);
 Route::post('/verify-otp', [UserController::class, 'verifyOtp']);
 Route::post('/verify-otp-compte', [UserController::class, 'verifyOtpCompte']);
 Route::post('/update-password-mdp', [UserController::class, 'updatePasswordMdp']);
+
+// Endpoint pour cron-job.org (notifications anniversaire)
+Route::get('/cron/birthday-notifications', [CronController::class, 'sendBirthdayNotifications']);
