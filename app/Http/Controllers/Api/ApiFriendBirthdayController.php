@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\FriendBirthday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 use App\Services\FirebaseService;
+use App\Models\Notification;
 use Carbon\Carbon;
 
 class ApiFriendBirthdayController extends Controller
@@ -308,7 +310,7 @@ class ApiFriendBirthdayController extends Controller
             $firebaseService = new FirebaseService();
 
             $title = "🎂 Anniversaire de {$birthday->friend_name} !";
-            $body = "C'est aujourd'hui ! Prépare un message Supriz pour {$birthday->friend_name} 🎁";
+            $body = "{$birthday->friend_name} soufflera une bougie de plus dans quelques instants. Sois prêt 😎";
 
             $result = $firebaseService->sendNotification(
                 $user->fcm_token,
@@ -323,6 +325,14 @@ class ApiFriendBirthdayController extends Controller
             );
 
             if ($result) {
+                // Créer la notification dans l'app
+                Notification::create([
+                    'user_id' => $user->id,
+                    'titre' => $title,
+                    'contenus' => $body,
+                    'type' => 'birthday_test',
+                ]);
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Notification de test envoyée avec succès'
@@ -361,14 +371,22 @@ class ApiFriendBirthdayController extends Controller
 
             $result = $firebaseService->sendNotification(
                 $user->fcm_token,
-                '🎂 Test de notification anniversaire',
-                'Si vous voyez ce message, les notifications d\'anniversaire fonctionnent !',
+                '🎂 Anniversaire de Test Ami !',
+                'Test Ami soufflera une bougie de plus dans quelques instants. Sois prêt 😎',
                 [
                     'type' => 'birthday_test',
                 ]
             );
 
             if ($result) {
+                // Créer la notification dans l'app
+                Notification::create([
+                    'user_id' => $user->id,
+                    'titre' => '🎂 Anniversaire de Test Ami !',
+                    'contenus' => 'Test Ami soufflera une bougie de plus dans quelques instants. Sois prêt 😎',
+                    'type' => 'birthday_test',
+                ]);
+
                 return response()->json([
                     'status' => true,
                     'message' => 'Notification de test envoyée avec succès'
@@ -379,6 +397,52 @@ class ApiFriendBirthdayController extends Controller
                     'message' => 'Échec de l\'envoi de la notification'
                 ], 500);
             }
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Programmer une notification de test dans X minutes
+     */
+    public function scheduleTestNotification(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $minutes = $request->input('minutes', 5);
+
+            if (!$user->fcm_token) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Pas de token FCM configuré. Reconnectez-vous à l\'application.'
+                ], 400);
+            }
+
+            // Stocker le test programmé dans le cache
+            $scheduledTime = Carbon::now()->addMinutes($minutes);
+            $cacheKey = 'birthday_test_' . $user->id . '_' . time();
+
+            Cache::put($cacheKey, [
+                'user_id' => $user->id,
+                'fcm_token' => $user->fcm_token,
+                'scheduled_at' => $scheduledTime->toDateTimeString(),
+                'user_name' => $user->nom,
+            ], $minutes * 60 + 300); // Expire 5 min après l'heure prévue
+
+            // Ajouter à la liste des tests en attente
+            $pendingTests = Cache::get('pending_birthday_tests', []);
+            $pendingTests[] = $cacheKey;
+            Cache::put('pending_birthday_tests', $pendingTests, 86400); // 24h
+
+            return response()->json([
+                'status' => true,
+                'message' => "Notification programmée dans {$minutes} minute(s)",
+                'scheduled_at' => $scheduledTime->format('H:i'),
+            ], 200);
 
         } catch (\Throwable $th) {
             return response()->json([

@@ -30,7 +30,12 @@ class ApiNotificationController extends Controller
             ->toArray();
 
         // Fetch notifications excluding deleted and marking read status
+        // Inclure les notifications globales (user_id = null) et personnelles (user_id = userId)
         $notifications = Notification::whereNotIn('id', $deletedNotificationIds)
+            ->where(function ($query) use ($userId) {
+                $query->whereNull('user_id')
+                      ->orWhere('user_id', $userId);
+            })
             ->orderBy('created_at', 'desc') // Tri par la date de création
             ->get()
             ->map(function ($notification) use ($readNotificationIds) {

@@ -14,9 +14,19 @@ class Notification extends Model
     protected $primaryKey = 'id'; // Nom de la clé primaire, par défaut c'est 'id'
 
     protected $fillable = [
+        'user_id',
         'titre',
-        'contenus'
+        'contenus',
+        'type',
     ];
+
+    /**
+     * Relation avec User
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public $timestamps = true; // Cette ligne est optionnelle; par défaut, Laravel gère les timestamps
 

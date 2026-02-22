@@ -79,6 +79,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/birthdays/{id}', [ApiFriendBirthdayController::class, 'destroy']);
     Route::post('/birthdays/{id}/test-notification', [ApiFriendBirthdayController::class, 'testNotification']);
     Route::post('/birthdays/test-notification', [ApiFriendBirthdayController::class, 'testImmediateNotification']);
+    Route::post('/birthdays/schedule-test', [ApiFriendBirthdayController::class, 'scheduleTestNotification']);
 });
 
 // Dans web.php ou api.php selon votre besoin
