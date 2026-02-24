@@ -231,7 +231,14 @@ class CronController extends Controller
 
         return response()->json([
             'status' => false,
-            'message' => 'Échec de l\'envoi de la notification'
+            'message' => 'Échec de l\'envoi de la notification',
+            'debug' => [
+                'birthday_id' => $birthday->id,
+                'friend_name' => $birthday->friend_name,
+                'user_id' => $user->id,
+                'user_name' => $user->nom,
+                'fcm_token_length' => strlen($user->fcm_token ?? ''),
+            ]
         ], 500);
     }
 }
