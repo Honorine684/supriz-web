@@ -162,8 +162,8 @@ class ApiFriendBirthdayController extends Controller
                 'friend_name' => $request->friend_name,
                 'friend_phone' => $request->friend_phone,
                 'birthday_date' => $request->birthday_date,
-                'reminder_time' => $request->reminder_time ?? '09:00',
-                'reminder_minutes_before' => $request->reminder_minutes_before ?? 30,
+                'reminder_time' => $request->reminder_time, // Plus utilisé mais gardé pour compatibilité
+                'reminder_minutes_before' => $request->reminder_minutes_before ?? 60, // 1h avant minuit par défaut
                 'notes' => $request->notes,
                 'is_active' => true,
             ]);

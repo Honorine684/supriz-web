@@ -18,6 +18,10 @@ class CronController extends Controller
 
     /**
      * Endpoint pour cron-job.org - Envoyer les notifications d'anniversaire
+     *
+     * LOGIQUE: reminder_minutes_before = minutes AVANT 00h00 du jour de l'anniversaire
+     * Exemple: anniversaire le 24 février, reminder_minutes_before = 180 (3h)
+     *          → notification envoyée le 23 février à 21h00
      */
     public function sendBirthdayNotifications(Request $request)
     {
@@ -31,7 +35,7 @@ class CronController extends Controller
 
         $firebaseService = new FirebaseService();
         $now = Carbon::now();
-        $today = $now->format('m-d');
+        $tomorrow = $now->copy()->addDay()->format('m-d');
 
         $results = [
             'time' => $now->toDateTimeString(),
@@ -40,26 +44,27 @@ class CronController extends Controller
             'tests_sent' => 0,
         ];
 
-        // 1. Envoyer les notifications d'anniversaire
+        // 1. Récupérer les anniversaires de DEMAIN (pour envoyer rappel AVANT minuit)
         $birthdays = FriendBirthday::where('is_active', true)
             ->where('notification_sent_this_year', false)
-            ->whereRaw("DATE_FORMAT(birthday_date, '%m-%d') = ?", [$today])
+            ->whereRaw("DATE_FORMAT(birthday_date, '%m-%d') = ?", [$tomorrow])
             ->with('user')
             ->get();
 
         $results['birthdays_checked'] = $birthdays->count();
 
         foreach ($birthdays as $birthday) {
-            // Vérifier l'heure de notification
-            $reminderTime = $birthday->reminder_time ?? '09:00';
-            $reminderMinutesBefore = $birthday->reminder_minutes_before ?? 0;
+            // Calculer l'heure de notification: 00h00 du jour anniversaire MOINS reminder_minutes_before
+            $reminderMinutesBefore = $birthday->reminder_minutes_before ?? 60; // 1h par défaut
 
-            $notificationTime = Carbon::createFromFormat('H:i', $reminderTime);
-            $notificationTime->subMinutes($reminderMinutesBefore);
-            $scheduledTime = $notificationTime->format('H:i');
+            // Minuit du jour de l'anniversaire (demain)
+            $birthdayMidnight = $now->copy()->addDay()->startOfDay();
 
-            $scheduledCarbon = Carbon::createFromFormat('H:i', $scheduledTime);
-            $diffMinutes = abs($now->diffInMinutes($scheduledCarbon, false));
+            // Heure de notification = minuit - X minutes
+            $notificationTime = $birthdayMidnight->copy()->subMinutes($reminderMinutesBefore);
+
+            // Vérifier si c'est l'heure d'envoyer (tolérance de 5 minutes)
+            $diffMinutes = abs($now->diffInMinutes($notificationTime, false));
 
             if ($diffMinutes > 5) {
                 continue; // Pas encore l'heure
@@ -70,8 +75,21 @@ class CronController extends Controller
                 continue;
             }
 
-            $title = "🎂 Anniversaire de {$birthday->friend_name} !";
-            $body = "{$birthday->friend_name} soufflera une bougie de plus dans quelques instants. Sois prêt 😎";
+            // Message adapté selon le temps restant
+            $hoursUntil = floor($reminderMinutesBefore / 60);
+            $minutesRemaining = $reminderMinutesBefore % 60;
+
+            $timeText = '';
+            if ($hoursUntil > 0 && $minutesRemaining > 0) {
+                $timeText = "dans {$hoursUntil}h{$minutesRemaining}";
+            } elseif ($hoursUntil > 0) {
+                $timeText = "dans {$hoursUntil} heure" . ($hoursUntil > 1 ? 's' : '');
+            } else {
+                $timeText = "dans {$minutesRemaining} minute" . ($minutesRemaining > 1 ? 's' : '');
+            }
+
+            $title = "🎂 Anniversaire de {$birthday->friend_name} {$timeText} !";
+            $body = "{$birthday->friend_name} soufflera une bougie de plus {$timeText}. Sois prêt 😎";
 
             $result = $firebaseService->sendNotification(
                 $user->fcm_token,
@@ -102,6 +120,7 @@ class CronController extends Controller
                     'birthday_id' => $birthday->id,
                     'friend_name' => $birthday->friend_name,
                     'user_id' => $user->id,
+                    'notification_time' => $notificationTime->toDateTimeString(),
                 ]);
             }
         }
