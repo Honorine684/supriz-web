@@ -163,4 +163,75 @@ class CronController extends Controller
             'results' => $results,
         ]);
     }
+
+    /**
+     * Forcer l'envoi d'une notification pour le premier anniversaire actif (test)
+     */
+    public function testRealBirthday(Request $request)
+    {
+        // Vérifier la clé secrète
+        if ($request->query('key') !== self::CRON_SECRET_KEY) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $firebaseService = new FirebaseService();
+
+        // Trouver le premier anniversaire actif avec un utilisateur qui a un token FCM
+        $birthday = FriendBirthday::where('is_active', true)
+            ->whereHas('user', function ($query) {
+                $query->whereNotNull('fcm_token');
+            })
+            ->with('user')
+            ->first();
+
+        if (!$birthday) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Aucun anniversaire actif trouvé avec un utilisateur ayant un token FCM'
+            ], 404);
+        }
+
+        $user = $birthday->user;
+        $title = "🎂 Anniversaire de {$birthday->friend_name} !";
+        $body = "{$birthday->friend_name} soufflera une bougie de plus dans quelques instants. Sois prêt 😎";
+
+        $result = $firebaseService->sendNotification(
+            $user->fcm_token,
+            $title,
+            $body,
+            [
+                'type' => 'birthday_reminder',
+                'birthday_id' => $birthday->id,
+                'friend_name' => $birthday->friend_name,
+            ]
+        );
+
+        if ($result) {
+            // Créer la notification dans l'app
+            Notification::create([
+                'user_id' => $user->id,
+                'titre' => $title,
+                'contenus' => $body,
+                'type' => 'birthday',
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Notification envoyée avec succès',
+                'birthday' => [
+                    'id' => $birthday->id,
+                    'friend_name' => $birthday->friend_name,
+                    'user' => $user->nom,
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Échec de l\'envoi de la notification'
+        ], 500);
+    }
 }
