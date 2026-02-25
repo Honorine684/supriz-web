@@ -140,17 +140,19 @@ class UserController extends Controller
     public function dropUserInTable(Request $request)
     {
         try {
-            $id = $request->id;
-            $user = User::find($id);
+            // Supprimer l'utilisateur authentifié directement
+            $user = auth()->user();
 
             if ($user) {
-                // Utilisateur connecté effectue la suppression
-                $deletedBy = auth()->user();
-                $user->delete(); // Soft delete
+                // Révoquer tous les tokens de l'utilisateur
+                $user->tokens()->delete();
+
+                // Supprimer l'utilisateur (soft delete)
+                $user->delete();
 
                 return response()->json([
                     'status' => true,
-                    'message' => "Suppression effectuée par " . $deletedBy->nom
+                    'message' => "Compte supprimé avec succès"
                 ], 200);
             } else {
                 return response()->json([
