@@ -9,31 +9,32 @@
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f7f7f7;">
         <tr>
             <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 8px;">
-                    <!-- Header avec logo -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 12px; overflow: hidden;">
+                    <!-- Header avec couleur Supriz -->
                     <tr>
-                        <td style="padding: 32px 40px 24px; text-align: center;">
-                            <img src="https://suprizs.com/storage/images/logo.png" alt="Supriz" width="60" height="60" style="display: block; margin: 0 auto;">
+                        <td style="background: linear-gradient(135deg, #005792, #2C5F2D); padding: 32px 40px; text-align: center;">
+                            <img src="https://suprizs.com/storage/images/logo.png" alt="Supriz" width="60" height="60" style="display: block; margin: 0 auto 12px;">
+                            <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff;">SUPRIZ</h1>
                         </td>
                     </tr>
 
                     <!-- Contenu principal -->
                     <tr>
-                        <td style="padding: 0 40px 32px;">
-                            <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #000000; text-align: center;">
+                        <td style="padding: 32px 40px;">
+                            <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #000000; text-align: center;">
                                 Votre code de vérification
-                            </h1>
-                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #545454; text-align: center;">
-                                Utilisez ce code pour vérifier votre compte Supriz
+                            </h2>
+                            <p style="margin: 0 0 24px; font-size: 15px; line-height: 24px; color: #545454; text-align: center;">
+                                Utilisez ce code pour vérifier votre compte
                             </p>
 
                             <!-- Code OTP -->
-                            <div style="background-color: #f7f7f7; border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px;">
-                                <span style="font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #000000;">{{ $otp }}</span>
+                            <div style="background-color: #E4D1B9; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+                                <span style="font-size: 40px; font-weight: 700; letter-spacing: 10px; color: #005792;">{{ $otp }}</span>
                             </div>
 
                             <p style="margin: 0; font-size: 14px; line-height: 22px; color: #545454; text-align: center;">
-                                Ce code expire dans <strong>10 minutes</strong>
+                                Ce code expire dans <strong style="color: #005792;">10 minutes</strong>
                             </p>
                         </td>
                     </tr>

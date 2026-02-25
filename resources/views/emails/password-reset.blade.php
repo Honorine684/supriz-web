@@ -9,36 +9,37 @@
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f7f7f7;">
         <tr>
             <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 8px;">
-                    <!-- Header avec logo -->
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 480px; background-color: #ffffff; border-radius: 12px; overflow: hidden;">
+                    <!-- Header avec couleur Supriz -->
                     <tr>
-                        <td style="padding: 32px 40px 24px; text-align: center;">
-                            <img src="https://suprizs.com/storage/images/logo.png" alt="Supriz" width="60" height="60" style="display: block; margin: 0 auto;">
+                        <td style="background: linear-gradient(135deg, #005792, #2C5F2D); padding: 32px 40px; text-align: center;">
+                            <img src="https://suprizs.com/storage/images/logo.png" alt="Supriz" width="60" height="60" style="display: block; margin: 0 auto 12px;">
+                            <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff;">SUPRIZ</h1>
                         </td>
                     </tr>
 
                     <!-- Contenu principal -->
                     <tr>
-                        <td style="padding: 0 40px 32px;">
-                            <h1 style="margin: 0 0 16px; font-size: 24px; font-weight: 600; color: #000000; text-align: center;">
+                        <td style="padding: 32px 40px;">
+                            <h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #000000; text-align: center;">
                                 Réinitialiser votre mot de passe
-                            </h1>
-                            <p style="margin: 0 0 8px; font-size: 16px; line-height: 24px; color: #545454; text-align: center;">
-                                Bonjour {{ $userName }},
+                            </h2>
+                            <p style="margin: 0 0 8px; font-size: 15px; line-height: 24px; color: #545454; text-align: center;">
+                                Bonjour <strong>{{ $userName }}</strong>,
                             </p>
-                            <p style="margin: 0 0 24px; font-size: 16px; line-height: 24px; color: #545454; text-align: center;">
+                            <p style="margin: 0 0 24px; font-size: 15px; line-height: 24px; color: #545454; text-align: center;">
                                 Cliquez sur le bouton ci-dessous pour créer un nouveau mot de passe.
                             </p>
 
                             <!-- Bouton -->
                             <div style="text-align: center; margin-bottom: 24px;">
-                                <a href="{{ $resetUrl }}" style="display: inline-block; background-color: #000000; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
+                                <a href="{{ $resetUrl }}" style="display: inline-block; background: linear-gradient(135deg, #005792, #2C5F2D); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600;">
                                     Réinitialiser le mot de passe
                                 </a>
                             </div>
 
                             <p style="margin: 0; font-size: 14px; line-height: 22px; color: #545454; text-align: center;">
-                                Ce lien expire dans <strong>60 minutes</strong>
+                                Ce lien expire dans <strong style="color: #005792;">60 minutes</strong>
                             </p>
                         </td>
                     </tr>
@@ -56,7 +57,7 @@
                             <p style="margin: 0 0 8px; font-size: 13px; line-height: 20px; color: #8c8c8c; text-align: center;">
                                 Si le bouton ne fonctionne pas, copiez ce lien :
                             </p>
-                            <p style="margin: 0; font-size: 12px; line-height: 18px; color: #545454; text-align: center; word-break: break-all;">
+                            <p style="margin: 0; font-size: 11px; line-height: 18px; color: #005792; text-align: center; word-break: break-all; background-color: #f7f7f7; padding: 12px; border-radius: 8px;">
                                 {{ $resetUrl }}
                             </p>
                         </td>
