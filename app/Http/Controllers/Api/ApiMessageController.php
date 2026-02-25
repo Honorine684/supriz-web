@@ -658,6 +658,7 @@ class ApiMessageController extends Controller
 
             // Créer une notification dans la base de données
             Notification::create([
+                'user_id' => $user->id,
                 'contenus' => "Quelqu'un a vu votre message \"{$message->titre}\"",
             ]);
 
@@ -682,6 +683,7 @@ class ApiMessageController extends Controller
 
             // Créer une notification dans la base de données
             Notification::create([
+                'user_id' => $user->id,
                 'contenus' => $notificationText,
             ]);
 
