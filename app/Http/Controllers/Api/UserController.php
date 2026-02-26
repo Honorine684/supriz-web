@@ -79,6 +79,14 @@ class UserController extends Controller
                 ], 422);
             }
 
+            // Vérifier si l'utilisateur existe (inclure soft-deleted)
+            $existingUser = User::withTrashed()->where('email', $request->email)->first();
+
+            // Restaurer si soft-deleted
+            if ($existingUser && $existingUser->trashed()) {
+                $existingUser->restore();
+            }
+
             // Attempt to authenticate the user
             if (!Auth::attempt($request->only('email', 'password'))) {
                 return response()->json([
@@ -140,13 +148,21 @@ class UserController extends Controller
     public function dropUserInTable(Request $request)
     {
         try {
-            // Supprimer l'utilisateur authentifié directement
-            $user = auth()->user();
+            // Utiliser auth('sanctum') pour s'assurer d'utiliser le bon guard
+            $user = auth('sanctum')->user();
+
+            // Log pour déboguer
+            \Log::info('Delete account attempt', [
+                'user_found' => $user ? true : false,
+                'user_id' => $user ? $user->id : null,
+                'auth_header' => $request->header('Authorization') ? 'Present' : 'Missing',
+            ]);
 
             if ($user) {
                 // Révoquer tous les tokens de l'utilisateur
                 $user->tokens()->delete();
 
+                // Déconnecter Google si connecté via social
                 // Supprimer l'utilisateur (soft delete)
                 $user->delete();
 
@@ -157,10 +173,11 @@ class UserController extends Controller
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => "Utilisateur non trouvé."
+                    'message' => "Utilisateur non trouvé. Veuillez vous reconnecter."
                 ], 404);
             }
         } catch (\Throwable $th) {
+            \Log::error('Delete account error: ' . $th->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
@@ -410,8 +427,14 @@ class UserController extends Controller
     public function socialLogin(Request $request)
     {
         try {
-            // Vérifier d'abord si l'utilisateur existe déjà
-            $existingUser = User::where('email', $request->email)->first();
+            // Vérifier d'abord si l'utilisateur existe déjà (inclure les soft-deleted)
+            $existingUser = User::withTrashed()->where('email', $request->email)->first();
+
+            // Si l'utilisateur était soft-deleted, le restaurer
+            if ($existingUser && $existingUser->trashed()) {
+                $existingUser->restore();
+                \Log::info('User restored from soft delete', ['email' => $request->email]);
+            }
 
             // Si l'utilisateur n'existe pas, le numéro est obligatoire
             $rules = [
