@@ -13,7 +13,6 @@
                     <!-- Header avec couleur Supriz -->
                     <tr>
                         <td style="background: linear-gradient(135deg, #005792, #2C5F2D); padding: 32px 40px; text-align: center;">
-                            <img src="https://suprizs.com/storage/images/logo.png" alt="Supriz" width="60" height="60" style="display: block; margin: 0 auto 12px;">
                             <h1 style="margin: 0; font-size: 22px; font-weight: 700; color: #ffffff;">SUPRIZ</h1>
                         </td>
                     </tr>
