@@ -486,12 +486,37 @@
             font-size: 13px;
         }
 
+        .emoji-buttons-wrapper {
+            position: relative;
+        }
+
+        .emoji-buttons-wrapper::before,
+        .emoji-buttons-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 35px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .emoji-buttons-wrapper::before {
+            left: 0;
+            background: linear-gradient(to right, #f8f9fa 0%, transparent 100%);
+        }
+
+        .emoji-buttons-wrapper::after {
+            right: 0;
+            background: linear-gradient(to left, #f8f9fa 0%, transparent 100%);
+        }
+
         .emoji-buttons {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             overflow-y: hidden;
-            padding: 8px 4px;
+            padding: 8px 20px;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -502,13 +527,13 @@
         }
 
         .emoji-btn {
-            width: 58px;
-            height: 58px;
-            min-width: 58px;
+            width: 62px;
+            height: 62px;
+            min-width: 62px;
             border-radius: 50%;
             border: 2px solid #e5e5e5;
             background: white;
-            font-size: 28px;
+            font-size: 32px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -655,8 +680,10 @@
             .reaction-badge span { font-size: 16px; }
             .reaction-badge strong { font-size: 12px; }
 
-            .emoji-buttons { gap: 10px; }
-            .emoji-btn { width: 50px; height: 50px; min-width: 50px; font-size: 24px; }
+            .emoji-buttons { gap: 10px; padding: 8px 15px; }
+            .emoji-btn { width: 54px; height: 54px; min-width: 54px; font-size: 28px; }
+            .emoji-buttons-wrapper::before,
+            .emoji-buttons-wrapper::after { width: 25px; }
 
             .mute-btn {
                 bottom: 15px;
@@ -724,8 +751,10 @@
             .message-text { font-size: 13px; }
 
             .reactions-section { padding: 15px 18px; }
-            .emoji-buttons { gap: 8px; }
-            .emoji-btn { width: 46px; height: 46px; min-width: 46px; font-size: 22px; }
+            .emoji-buttons { gap: 8px; padding: 8px 12px; }
+            .emoji-btn { width: 50px; height: 50px; min-width: 50px; font-size: 26px; }
+            .emoji-buttons-wrapper::before,
+            .emoji-buttons-wrapper::after { width: 20px; }
 
             .mute-btn {
                 bottom: 12px;
@@ -743,7 +772,9 @@
             .gift-title { font-size: 16px; }
             .gift-animation img { max-width: 100px; }
             .card-title { font-size: 15px; }
-            .emoji-btn { width: 42px; height: 42px; min-width: 42px; font-size: 20px; }
+            .emoji-btn { width: 46px; height: 46px; min-width: 46px; font-size: 24px; }
+            .emoji-buttons-wrapper::before,
+            .emoji-buttons-wrapper::after { width: 15px; }
         }
 
         /* Fix for iOS Safari */
@@ -902,11 +933,13 @@
                         @endforeach
                     </div>
                     <p class="reactions-title">Exprime ton ressenti !</p>
-                    <div class="emoji-buttons">
-                        @php $emojis = ['🥰', '😎', '😢', '😍', '🤩', '😇', '❤️', '💕', '💗', '💙', '🥳', '💐', '🎉']; @endphp
-                        @foreach($emojis as $emoji)
-                            <button class="emoji-btn" onclick="addReaction('{{ $emoji }}')">{{ $emoji }}</button>
-                        @endforeach
+                    <div class="emoji-buttons-wrapper">
+                        <div class="emoji-buttons">
+                            @php $emojis = ['🥰', '😎', '😢', '😍', '🤩', '😇', '❤️', '💕', '💗', '💙', '🥳', '💐', '🎉']; @endphp
+                            @foreach($emojis as $emoji)
+                                <button class="emoji-btn" onclick="addReaction('{{ $emoji }}')">{{ $emoji }}</button>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
                 @endif
