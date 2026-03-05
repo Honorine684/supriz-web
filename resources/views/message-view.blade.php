@@ -488,23 +488,33 @@
 
         .emoji-buttons {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 8px 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .emoji-buttons::-webkit-scrollbar {
+            display: none;
         }
 
         .emoji-btn {
-            width: 52px;
-            height: 52px;
+            width: 58px;
+            height: 58px;
+            min-width: 58px;
             border-radius: 50%;
             border: 2px solid #e5e5e5;
             background: white;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0;
         }
 
         .emoji-btn:hover {
@@ -645,8 +655,8 @@
             .reaction-badge span { font-size: 16px; }
             .reaction-badge strong { font-size: 12px; }
 
-            .emoji-buttons { gap: 8px; }
-            .emoji-btn { width: 44px; height: 44px; font-size: 20px; }
+            .emoji-buttons { gap: 10px; }
+            .emoji-btn { width: 50px; height: 50px; min-width: 50px; font-size: 24px; }
 
             .mute-btn {
                 bottom: 15px;
@@ -714,8 +724,8 @@
             .message-text { font-size: 13px; }
 
             .reactions-section { padding: 15px 18px; }
-            .emoji-buttons { gap: 6px; }
-            .emoji-btn { width: 40px; height: 40px; font-size: 18px; }
+            .emoji-buttons { gap: 8px; }
+            .emoji-btn { width: 46px; height: 46px; min-width: 46px; font-size: 22px; }
 
             .mute-btn {
                 bottom: 12px;
@@ -733,7 +743,7 @@
             .gift-title { font-size: 16px; }
             .gift-animation img { max-width: 100px; }
             .card-title { font-size: 15px; }
-            .emoji-btn { width: 36px; height: 36px; font-size: 16px; }
+            .emoji-btn { width: 42px; height: 42px; min-width: 42px; font-size: 20px; }
         }
 
         /* Fix for iOS Safari */
@@ -893,7 +903,7 @@
                     </div>
                     <p class="reactions-title">Exprime ton ressenti !</p>
                     <div class="emoji-buttons">
-                        @php $emojis = ['❤️', '😍', '🎉', '👏', '🙏', '😢']; @endphp
+                        @php $emojis = ['🥰', '😎', '😢', '😍', '🤩', '😇', '❤️', '💕', '💗', '💙', '🥳', '💐', '🎉']; @endphp
                         @foreach($emojis as $emoji)
                             <button class="emoji-btn" onclick="addReaction('{{ $emoji }}')">{{ $emoji }}</button>
                         @endforeach
