@@ -47,6 +47,10 @@
         return view('conditions-utilisation');
     })->name('conditions.utilisation');
 
+    Route::get('/suppression-compte', function () {
+        return view('suppression-compte');
+    })->name('suppression.compte');
+
     // Formulaire de contact
     Route::post('/contact/send', [ContactController::class, 'send'])->name('contact.send');
 
