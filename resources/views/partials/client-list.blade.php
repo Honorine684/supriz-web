@@ -22,10 +22,13 @@
             <td class="px-4 py-2 w-40 border-b border-b-gray-50">
                 <span class="text-[13px] font-medium text-gray-400">{{$user->email}}</span>
             </td>
+            <td class="px-4 py-2 w-40 border-b border-b-gray-50">
+                <span class="text-[13px] font-medium text-gray-400">{{$user->created_at->format('d/m/Y H:i')}}</span>
+            </td>
         </tr>
     @endforeach
 @else
     <tr>
-        <td colspan="5" class="text-center text-gray-500 py-4">Aucun client trouvé</td>
+        <td colspan="6" class="text-center text-gray-500 py-4">Aucun client trouvé</td>
     </tr>
 @endif

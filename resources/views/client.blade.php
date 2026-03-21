@@ -63,6 +63,10 @@
                                 <span
                                     class="text-[13px] font-medium text-white relative -left-25 text-left">Email</span>
                             </td>
+                            <td class="px-4 py-2">
+                                <span
+                                    class="text-[13px] font-medium text-white relative -left-25 text-left">Date et heure</span>
+                            </td>
                         </tr>
                     </thead>
                 </table>
@@ -98,7 +102,7 @@ document.getElementById('search-client').addEventListener('input', function () {
             if (html.trim() === '') {
                 document.getElementById('client-list').innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center text-gray-500 py-4">Aucun client trouvé</td>
+                        <td colspan="6" class="text-center text-gray-500 py-4">Aucun client trouvé</td>
                     </tr>`;
             }
         })

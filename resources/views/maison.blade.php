@@ -443,7 +443,7 @@
                 <!-- Colonne des métriques -->
                 <div class="metrics-column">
                     <div class="metric-card">
-                        <div class="metric-title">Nombres d'abonnés</div>
+                        <div class="metric-title">Nombre d'utilisateurs</div>
                         <div class="metric-bottom">
                             <span class="metric-value">{{ $nombresAbonnes }}</span>
                             <div class="metric-icon" style="background-color: #d1fae5;">
@@ -497,6 +497,13 @@
 
                 <div class="overflow-x-auto">
                     <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-500 text-sm border-b border-gray-200">
+                                <th class="px-4 py-3 font-medium">Utilisateur</th>
+                                <th class="px-4 py-3 font-medium text-center">Catégorie</th>
+                                <th class="px-4 py-3 font-medium text-right">Date et heure (partie client)</th>
+                            </tr>
+                        </thead>
                         <tbody class="divide-y divide-gray-100">
                             @foreach($utilisateursRecents as $user)
                             <tr class="hover:bg-gray-50">
