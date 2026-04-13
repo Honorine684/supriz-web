@@ -54,7 +54,7 @@
                 <p>{{ session('success') }}</p>
             </div>
         @endif
-        <form action="{{ isset($article) ? route('article.update', $article->id) : route('article.store') }}"
+        <form action="{{ isset($article) ? route('admin.article.update', $article->id) : route('admin.article.store') }}"
             method="POST" enctype="multipart/form-data">
             @csrf
             @if (isset($article))
