@@ -2578,19 +2578,20 @@
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
                             Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un <strong style="color: #FFD700;">mot d'amour</strong>, un <strong style="color: #FFD700;">anniversaire</strong>, un <strong style="color: #FFD700;">mariage</strong>, <strong style="color: #FFD700;">Noël</strong> ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
                         </p>
-                        <a href="{{ route('nouveau.message') }}" class="btn hero-btn mb-4" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
-                            Crée un message
-                        </a>
-                        <!-- Bouton Play Store -->
-                        <div class="mt-3">
+                        <!-- Boutons sur la même ligne sur desktop -->
+                        <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3 mb-4">
+                            <a href="{{ route('nouveau.message') }}" class="btn hero-btn" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
+                                Crée un message
+                            </a>
+                            <!-- Bouton Play Store -->
                             <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="display: inline-block;">
                                 <img src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" alt="Disponible sur Google Play" style="height: 50px; width: auto;">
                             </a>
                         </div>
                     </div>
 
-                    <!-- Image on mobile - below button -->
-                    <div class="hero-image-mobile">
+                    <!-- Image on mobile - below button (hidden on mobile, shown on tablet) -->
+                    <div class="hero-image-mobile d-none d-md-block">
                         <div class="hero-person-animation-mobile">
                             <img src="{{ asset('images/landing/Property 1=Default.svg') }}" alt="Person 1" class="person-image-mobile person-1-mobile" style="position: relative; width: 1200px !important; height: auto; display: block;">
                             <img src="{{ asset('images/landing/Property 1=Variant2.svg') }}" alt="Person 2" class="person-image-mobile person-2-mobile" style="position: absolute; top: 0; left: 0; width: 1200px !important; height: auto; display: none;">
