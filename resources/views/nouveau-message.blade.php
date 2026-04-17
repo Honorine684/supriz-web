@@ -3793,6 +3793,14 @@
                     <button type="button" class="avis-btn-skip" onclick="closeAvisPopup()">Plus tard</button>
                     <button type="button" id="avisSubmitBtn" class="avis-btn-submit" onclick="submitAvis()">Envoyer mon avis</button>
                 </div>
+
+                <!-- Bouton Play Store -->
+                <div class="avis-playstore">
+                    <p style="text-align: center; margin: 15px 0 10px; font-size: 13px; color: #666;">Ou téléchargez notre application</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="display: flex; justify-content: center;">
+                        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" alt="Disponible sur Google Play" style="height: 45px; width: auto;">
+                    </a>
+                </div>
             </div>
         </div>
     </div>

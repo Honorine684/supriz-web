@@ -10,12 +10,24 @@ class CategorieController extends Controller
 {
     public function categorie()
     {
-         // Récupérer toutes les sous-catégories avec leur catégorie associée
-        $sousCategories = SousCategorie::with('categorie')->get();
+        // Récupérer la catégorie Supriz
+        $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+
+        // Récupérer les sous-catégories Supriz (avec pagination)
+        $sousCategoriesSupriz = SousCategorie::with('categorie')
+            ->where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->paginate(10, ['*'], 'supriz_page');
+
+        // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
+        $sousCategoriesAutres = SousCategorie::with('categorie')
+            ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
+            ->paginate(10, ['*'], 'autres_page');
+
+        // Pour compatibilité avec l'ancien code (toutes les sous-catégories)
+        $sousCategories = SousCategorie::with('categorie')->paginate(10);
 
         // Récupérer les catégories Supriz prédéfinies
         $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
-        $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
 
         $suprizPredefinies = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
             ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
@@ -27,7 +39,7 @@ class CategorieController extends Controller
             ->get();
 
         $active_link = "ca";
-        return view('categorie', compact("active_link","sousCategories", "suprizPredefinies", "suprizPersonnalisees"));
+        return view('categorie', compact("active_link", "sousCategories", "sousCategoriesSupriz", "sousCategoriesAutres", "suprizPredefinies", "suprizPersonnalisees"));
     }
 
     /**
@@ -106,11 +118,25 @@ class CategorieController extends Controller
 public function edit($id)
 {
     $sousCategorie = SousCategorie::find($id);
-    $sousCategories = SousCategorie::with('categorie')->get(); // Pour la liste des catégories existantes
+
+    // Récupérer la catégorie Supriz
+    $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
+
+    // Récupérer les sous-catégories Supriz (avec pagination)
+    $sousCategoriesSupriz = SousCategorie::with('categorie')
+        ->where('type_categorie_id', $suprizCategorie->id ?? null)
+        ->paginate(10, ['*'], 'supriz_page');
+
+    // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
+    $sousCategoriesAutres = SousCategorie::with('categorie')
+        ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
+        ->paginate(10, ['*'], 'autres_page');
+
+    // Pour compatibilité avec l'ancien code
+    $sousCategories = SousCategorie::with('categorie')->paginate(10);
 
     // Récupérer les catégories Supriz prédéfinies
     $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
-    $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
 
     $suprizPredefinies = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)
         ->whereIn('name_sous_categories', $categoriesSuprizPredefinies)
@@ -123,7 +149,7 @@ public function edit($id)
 
     $active_link = "ca";
 
-    return view('categorie', compact('sousCategorie', 'sousCategories', 'suprizPredefinies', 'suprizPersonnalisees', 'active_link'));
+    return view('categorie', compact('sousCategorie', 'sousCategories', 'sousCategoriesSupriz', 'sousCategoriesAutres', 'suprizPredefinies', 'suprizPersonnalisees', 'active_link'));
 }
 
 public function update(Request $request, $id)

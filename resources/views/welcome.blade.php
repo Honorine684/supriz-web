@@ -2581,6 +2581,12 @@
                         <a href="{{ route('nouveau.message') }}" class="btn hero-btn mb-4" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
                             Crée un message
                         </a>
+                        <!-- Bouton Play Store -->
+                        <div class="mt-3">
+                            <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="display: inline-block;">
+                                <img src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" alt="Disponible sur Google Play" style="height: 50px; width: auto;">
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Image on mobile - below button -->

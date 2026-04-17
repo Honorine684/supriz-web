@@ -353,7 +353,7 @@
         // Fonction pour charger les sous-catégories via AJAX
         function loadSousCategories(categorie) {
             $.ajax({
-                url: '/get-sous-categories', // L'URL de ta route Laravel
+                url: '/admin/get-sous-categories', // L'URL de ta route Laravel
                 type: 'POST',
                 data: {
                     categorie: categorie,

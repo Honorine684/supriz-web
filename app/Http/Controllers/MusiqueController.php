@@ -19,12 +19,20 @@ class MusiqueController extends Controller
         $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
         $sousCategories = SousCategorie::where('type_categorie_id', $suprizCategorie->id ?? null)->get();
 
-        // Récupérer les musiques groupées par catégorie
+        // Récupérer les musiques groupées par catégorie avec pagination (max 10 par catégorie)
         $musiquesGroupees = [];
         foreach ($sousCategories as $sousCategorie) {
-            $musiques = Musique::where('sous_categorie_id', $sousCategorie->id)->orderBy('created_at', 'desc')->get();
-            if ($musiques->count() > 0) {
-                $musiquesGroupees[$sousCategorie->name_sous_categories] = $musiques;
+            // Créer un nom de page unique pour chaque catégorie
+            $pageParam = 'page_' . $sousCategorie->id;
+            $musiques = Musique::where('sous_categorie_id', $sousCategorie->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(10, ['*'], $pageParam);
+
+            if ($musiques->total() > 0) {
+                $musiquesGroupees[$sousCategorie->name_sous_categories] = [
+                    'musiques' => $musiques,
+                    'id' => $sousCategorie->id
+                ];
             }
         }
 

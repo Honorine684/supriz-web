@@ -201,7 +201,11 @@
                 </div>
             </div>
 
-            @forelse($musiquesGroupees as $categorie => $musiques)
+            @forelse($musiquesGroupees as $categorie => $data)
+                @php
+                    $musiques = $data['musiques'];
+                    $categorieId = $data['id'];
+                @endphp
                 <!-- En-tête de catégorie -->
                 <div class="p-4 mb-4 rounded-lg" style="background: linear-gradient(135deg, #005792 0%, #0077b6 100%);">
                     <div class="flex items-center justify-between">
@@ -210,13 +214,13 @@
                             <h3 class="text-xl font-bold text-white">{{ $categorie }}</h3>
                         </div>
                         <span class="px-3 py-1 text-sm font-semibold text-black bg-white bg-opacity-20 rounded-full">
-                            {{ $musiques->count() }} musique(s)
+                            {{ $musiques->total() }} musique(s)
                         </span>
                     </div>
                 </div>
 
                 <!-- Musiques de cette catégorie -->
-                <div class="mb-8">
+                <div class="mb-4">
                     @foreach($musiques as $musique)
                         <div class="music-card">
                             <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
@@ -283,6 +287,15 @@
                         </div>
                     @endforeach
                 </div>
+
+                <!-- Pagination pour cette catégorie -->
+                @if($musiques->hasPages())
+                <div class="mb-8 px-4">
+                    {{ $musiques->links() }}
+                </div>
+                @else
+                <div class="mb-8"></div>
+                @endif
             @empty
                 <div class="py-12 text-center">
                     <i class="mb-4 text-6xl text-gray-300 ri-music-2-line"></i>

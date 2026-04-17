@@ -65,8 +65,8 @@ public function store(Request $request)
         'entreprise_product' => 'required|string|max:255',
         'info' => 'required|string|max:255',
         'description' => 'required|string',
-        'prix_promotion' => 'required|numeric',
-        'prix_livraison' => 'required|numeric',
+        'prix_promotion' => 'nullable|numeric',
+        'prix_livraison' => 'nullable|numeric',
         'personnalisation' => 'nullable|string',
         'categorie_dhomme' => 'required|string|in:h,f,e',
         'evaluation' => 'nullable|integer|min:1|max:5',
@@ -83,8 +83,8 @@ public function store(Request $request)
         $article->description = $validatedData['description'];
         $article->entreprise = $validatedData['entreprise_product'];
         $article->evaluation = $validatedData['evaluation'] ?? null;
-        $article->prix_promo = $validatedData['prix_promotion'];
-        $article->prix_livraison = $validatedData['prix_livraison'];
+        $article->prix_promo = $validatedData['prix_promotion'] ?? null;
+        $article->prix_livraison = $validatedData['prix_livraison'] ?? null;
         $article->info = $validatedData['info'];
         $article->statut = 'in_stock';
 
@@ -159,8 +159,8 @@ public function update(Request $request, $id)
         'entreprise_product' => 'required|string|max:255',
         'info' => 'required|string|max:255',
         'description' => 'required|string',
-        'prix_promotion' => 'required|numeric',
-        'prix_livraison' => 'required|numeric',
+        'prix_promotion' => 'nullable|numeric',
+        'prix_livraison' => 'nullable|numeric',
         'personnalisation' => 'nullable|string',
         'categorie_dhomme' => 'required|string|in:h,f,e',
         'evaluation' => 'nullable|integer|min:1|max:5',
@@ -179,8 +179,8 @@ public function update(Request $request, $id)
         $article->description = $validatedData['description'];
         $article->entreprise = $validatedData['entreprise_product'];
         $article->evaluation = $validatedData['evaluation'] ?? $article->evaluation;
-        $article->prix_promo = $validatedData['prix_promotion'];
-        $article->prix_livraison = $validatedData['prix_livraison'];
+        $article->prix_promo = $validatedData['prix_promotion'] ?? $article->prix_promo;
+        $article->prix_livraison = $validatedData['prix_livraison'] ?? $article->prix_livraison;
         $article->info = $validatedData['info'];
 
 

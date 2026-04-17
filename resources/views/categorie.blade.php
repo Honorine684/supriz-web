@@ -427,15 +427,15 @@
         </div>
         @endif
 
+        <!-- Table des sous-catégories Supriz -->
         <div style="margin-top: 2rem;">
-            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Liste des sous-catégories</h2>
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #005792;">Sous-catégories Supriz</h2>
 
-            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; border: 2px solid #E5F2FF;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #005792;">
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Nom</th>
-                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Catégorie</th>
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Prix</th>
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Icône</th>
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Image</th>
@@ -444,42 +444,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($sousCategories && count($sousCategories) > 0)
-                            @foreach ($sousCategories as $sousCategorie)
+                        @if ($sousCategoriesSupriz && count($sousCategoriesSupriz) > 0)
+                            @foreach ($sousCategoriesSupriz as $sousCat)
                                 <tr style="border-bottom: 1px solid #e5e7eb;">
                                     <td style="padding: 1rem 1.5rem;">
                                         <span style="font-size: 0.875rem; font-weight: 600; color: #1f2937;">
-                                            {{ $sousCategorie->name_sous_categories }}
-                                        </span>
-                                    </td>
-                                    <td style="padding: 1rem 1.5rem;">
-                                        @php
-                                            $bgColor = '#E5F2FF';
-                                            $textColor = '#005792';
-                                            if($sousCategorie->categorie->name_id_categories == 'f') {
-                                                $bgColor = '#fce7f3';
-                                                $textColor = '#9f1239';
-                                            } elseif($sousCategorie->categorie->name_id_categories == 'e') {
-                                                $bgColor = '#dcfce7';
-                                                $textColor = '#166534';
-                                            } elseif($sousCategorie->categorie->name_id_categories == 's') {
-                                                $bgColor = '#E5F2FF';
-                                                $textColor = '#005792';
-                                            }
-                                        @endphp
-                                        <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; background-color: {{ $bgColor }}; color: {{ $textColor }};">
-                                            {{ $sousCategorie->categorie->libelle_homme_categories }}
+                                            {{ $sousCat->name_sous_categories }}
                                         </span>
                                     </td>
                                     <td style="padding: 1rem 1.5rem;">
                                         <span style="font-size: 0.875rem; font-weight: 500; color: #374151;">
-                                            {{ $sousCategorie->prix ? number_format($sousCategorie->prix, 0, ',', ' ') . ' FCFA' : 'N/A' }}
+                                            {{ $sousCat->prix ? number_format($sousCat->prix, 0, ',', ' ') . ' FCFA' : 'N/A' }}
                                         </span>
                                     </td>
                                     <td style="padding: 1rem 1.5rem;">
                                         <div style="display: flex; align-items: center; justify-content: center;">
-                                            @if($sousCategorie->icone)
-                                                <img src="{{ asset('storage/' . $sousCategorie->icone) }}"
+                                            @if($sousCat->icone)
+                                                <img src="{{ asset('storage/' . $sousCat->icone) }}"
                                                      alt="Icône"
                                                      style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 3px solid #005792; box-shadow: 0 2px 6px rgba(0, 87, 146, 0.2);">
                                             @else
@@ -492,10 +473,10 @@
                                         </div>
                                     </td>
                                     <td style="padding: 1rem 1.5rem;">
-                                        @if($sousCategorie->image)
+                                        @if($sousCat->image)
                                             <div style="display: flex; align-items: center; justify-content: flex-start;">
-                                                <img src="{{ asset('storage/' . $sousCategorie->image) }}"
-                                                     alt="{{ $sousCategorie->name_sous_categories }}"
+                                                <img src="{{ asset('storage/' . $sousCat->image) }}"
+                                                     alt="{{ $sousCat->name_sous_categories }}"
                                                      style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid #d1d5db; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                             </div>
                                         @else
@@ -503,33 +484,33 @@
                                         @endif
                                     </td>
                                     <td style="padding: 1rem 1.5rem; text-align: center;">
-                                        <form action="{{ route('admin.categorie.toggleStatus', $sousCategorie->id) }}" method="POST" style="display: inline;">
+                                        <form action="{{ route('admin.categorie.toggleStatus', $sousCat->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             <button type="submit"
-                                                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; background-color: {{ $sousCategorie->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $sousCategorie->is_active ? '#166534' : '#991b1b' }};"
+                                                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; background-color: {{ $sousCat->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $sousCat->is_active ? '#166534' : '#991b1b' }};"
                                                     onmouseover="this.style.opacity='0.8'"
                                                     onmouseout="this.style.opacity='1'">
-                                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ $sousCategorie->is_active ? '#22c55e' : '#ef4444' }};"></span>
-                                                {{ $sousCategorie->is_active ? 'Activé' : 'Désactivé' }}
+                                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ $sousCat->is_active ? '#22c55e' : '#ef4444' }};"></span>
+                                                {{ $sousCat->is_active ? 'Activé' : 'Désactivé' }}
                                             </button>
                                         </form>
                                     </td>
                                     <td style="padding: 1rem 1.5rem;">
                                         @php
                                             $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
-                                            $isPredefined = in_array($sousCategorie->name_sous_categories, $categoriesSuprizPredefinies) && $sousCategorie->categorie->name_id_categories == 's';
+                                            $isPredefined = in_array($sousCat->name_sous_categories, $categoriesSuprizPredefinies);
                                         @endphp
 
                                         <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                                             @if(!$isPredefined)
-                                                <a href="{{ route('admin.categorie.edit', $sousCategorie->id) }}"
+                                                <a href="{{ route('admin.categorie.edit', $sousCat->id) }}"
                                                    style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #A4A9B7BF; transition: background-color 0.2s;"
                                                    onmouseover="this.style.backgroundColor='#8e94a3'"
                                                    onmouseout="this.style.backgroundColor='#A4A9B7BF'"
                                                    title="Modifier">
                                                     <img src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Modifier" style="width: 20px; height: 20px;">
                                                 </a>
-                                                <form action="{{ route('admin.categorie.destroy', $sousCategorie->id) }}"
+                                                <form action="{{ route('admin.categorie.destroy', $sousCat->id) }}"
                                                       method="POST"
                                                       onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ?')"
                                                       style="display: inline-block;">
@@ -552,14 +533,132 @@
                             @endforeach
                         @else
                             <tr>
-                                <td colspan="7" style="padding: 3rem 1.5rem; text-align: center;">
-                                    <p style="color: #6b7280; font-weight: 500; margin-bottom: 0.5rem;">Aucune sous-catégorie disponible</p>
-                                    <p style="color: #9ca3af; font-size: 0.875rem;">Ajoutez votre première sous-catégorie ci-dessus</p>
+                                <td colspan="6" style="padding: 3rem 1.5rem; text-align: center;">
+                                    <p style="color: #6b7280; font-weight: 500; margin-bottom: 0.5rem;">Aucune sous-catégorie Supriz disponible</p>
                                 </td>
                             </tr>
                         @endif
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Pagination Supriz -->
+            <div style="margin-top: 1rem; padding: 1rem;">
+                {{ $sousCategoriesSupriz->links() }}
+            </div>
+        </div>
+
+        <!-- Table des sous-catégories Homme/Femme/Enfant -->
+        <div style="margin-top: 2rem;">
+            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #374151;">Sous-catégories Homme / Femme / Enfant</h2>
+
+            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #374151;">
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Nom</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Catégorie</th>
+                            <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Icône</th>
+                            <th style="padding: 1rem 1.5rem; text-align: center; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Statut</th>
+                            <th style="padding: 1rem 1.5rem; text-align: center; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if ($sousCategoriesAutres && count($sousCategoriesAutres) > 0)
+                            @foreach ($sousCategoriesAutres as $sousCat)
+                                <tr style="border-bottom: 1px solid #e5e7eb;">
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <span style="font-size: 0.875rem; font-weight: 600; color: #1f2937;">
+                                            {{ $sousCat->name_sous_categories }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        @php
+                                            $bgColor = '#E5F2FF';
+                                            $textColor = '#005792';
+                                            if($sousCat->categorie->name_id_categories == 'f') {
+                                                $bgColor = '#fce7f3';
+                                                $textColor = '#9f1239';
+                                            } elseif($sousCat->categorie->name_id_categories == 'e') {
+                                                $bgColor = '#dcfce7';
+                                                $textColor = '#166534';
+                                            } elseif($sousCat->categorie->name_id_categories == 'h') {
+                                                $bgColor = '#dbeafe';
+                                                $textColor = '#1e40af';
+                                            }
+                                        @endphp
+                                        <span style="display: inline-block; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; background-color: {{ $bgColor }}; color: {{ $textColor }};">
+                                            {{ $sousCat->categorie->libelle_homme_categories }}
+                                        </span>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            @if($sousCat->icone)
+                                                <img src="{{ asset('storage/' . $sousCat->icone) }}"
+                                                     alt="Icône"
+                                                     style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 3px solid #374151; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);">
+                                            @else
+                                                <div style="width: 50px; height: 50px; background-color: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px dashed #d1d5db;">
+                                                    <svg style="width: 20px; height: 20px; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                    </svg>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem; text-align: center;">
+                                        <form action="{{ route('admin.categorie.toggleStatus', $sousCat->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit"
+                                                    style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.75rem; font-weight: 700; transition: all 0.2s; background-color: {{ $sousCat->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $sousCat->is_active ? '#166534' : '#991b1b' }};"
+                                                    onmouseover="this.style.opacity='0.8'"
+                                                    onmouseout="this.style.opacity='1'">
+                                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: {{ $sousCat->is_active ? '#22c55e' : '#ef4444' }};"></span>
+                                                {{ $sousCat->is_active ? 'Activé' : 'Désactivé' }}
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td style="padding: 1rem 1.5rem;">
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                            <a href="{{ route('admin.categorie.edit', $sousCat->id) }}"
+                                               style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #A4A9B7BF; transition: background-color 0.2s;"
+                                               onmouseover="this.style.backgroundColor='#8e94a3'"
+                                               onmouseout="this.style.backgroundColor='#A4A9B7BF'"
+                                               title="Modifier">
+                                                <img src="{{ asset('/images/svg/edit-3_svgrepo.com.svg') }}" alt="Modifier" style="width: 20px; height: 20px;">
+                                            </a>
+                                            <form action="{{ route('admin.categorie.destroy', $sousCat->id) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ?')"
+                                                  style="display: inline-block;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        style="display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background-color: #fee2e2; border: none; cursor: pointer; transition: background-color 0.2s;"
+                                                        onmouseover="this.style.backgroundColor='#fecaca'"
+                                                        onmouseout="this.style.backgroundColor='#fee2e2'"
+                                                        title="Supprimer">
+                                                    <img src="{{ asset('/images/svg/delete-left_svgrepo.com.svg') }}" alt="Supprimer" style="width: 20px; height: 20px;">
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="5" style="padding: 3rem 1.5rem; text-align: center;">
+                                    <p style="color: #6b7280; font-weight: 500; margin-bottom: 0.5rem;">Aucune sous-catégorie Homme/Femme/Enfant disponible</p>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Autres -->
+            <div style="margin-top: 1rem; padding: 1rem;">
+                {{ $sousCategoriesAutres->links() }}
             </div>
         </div>
 
