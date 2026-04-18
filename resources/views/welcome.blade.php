@@ -2055,6 +2055,23 @@
         }
 
         @media (max-width: 480px) {
+            /* Hero buttons - same line on mobile */
+            .hero-buttons {
+                flex-wrap: nowrap !important;
+            }
+            .hero-buttons .hero-btn-main {
+                padding: 10px 16px !important;
+                font-size: 12px !important;
+            }
+            .hero-buttons .hero-btn-outline {
+                padding: 10px 14px !important;
+                font-size: 12px !important;
+            }
+            .hero-buttons .hero-btn-outline svg {
+                width: 14px !important;
+                height: 14px !important;
+            }
+
             /* Ensure scrolling works and no overflow */
             html {
                 overflow-y: scroll !important;
@@ -2578,17 +2595,17 @@
                         <p class="hero-description mb-5" style="color: white; line-height: 1.5; font-weight: 300;">
                             Exprimez ce que vous ressentez avec un message unique, livré comme une véritable Surprise. Que ce soit pour un <strong style="color: #FFD700;">mot d'amour</strong>, un <strong style="color: #FFD700;">anniversaire</strong>, un <strong style="color: #FFD700;">mariage</strong>, <strong style="color: #FFD700;">Noël</strong> ou simplement parce que vous y tenez.<br>Envoyez un lien, déclenchez une émotion.
                         </p>
-                        <!-- Boutons sur la même ligne sur desktop -->
-                        <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center gap-3 mb-4">
-                            <a href="{{ route('nouveau.message') }}" class="btn hero-btn" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-block; white-space: nowrap;">
+                        <!-- Boutons sur la même ligne -->
+                        <div class="d-flex flex-row align-items-center gap-2 gap-lg-3 mb-4 hero-buttons">
+                            <a href="{{ route('nouveau.message') }}" class="btn hero-btn hero-btn-main" style="padding: 12px 24px; border-radius: 25px; font-size: 14px; text-decoration: none; display: inline-block; white-space: nowrap;">
                                 Crée un message
                             </a>
                             <!-- Bouton Play Store -->
-                            <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" class="btn" style="padding: 12px 40px; border-radius: 25px; font-size: 17px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; background: transparent; border: 2px solid white; color: white; transition: all 0.3s ease;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" class="btn hero-btn-outline" style="padding: 12px 24px; border-radius: 25px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; background: transparent; border: 2px solid white; color: white; transition: all 0.3s ease;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
                                 </svg>
-                                Télécharger l'app
+                                Télécharger
                             </a>
                         </div>
                     </div>
