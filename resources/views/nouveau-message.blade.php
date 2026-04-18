@@ -3797,8 +3797,11 @@
                 <!-- Bouton Play Store -->
                 <div class="avis-playstore">
                     <p style="text-align: center; margin: 15px 0 10px; font-size: 13px; color: #666;">Ou téléchargez notre application</p>
-                    <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="display: flex; justify-content: center;">
-                        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/fr_badge_web_generic.png" alt="Disponible sur Google Play" style="height: 45px; width: auto;">
+                    <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #1B7B6A 0%, #2da891 100%); border-radius: 12px; color: white; text-decoration: none; font-size: 15px; font-weight: 600; transition: all 0.2s ease;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 0 1-.61-.92V2.734a1 1 0 0 1 .609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 0 1 0 1.73l-2.808 1.626L15.206 12l2.492-2.491zM5.864 2.658L16.8 8.99l-2.302 2.302-8.634-8.634z"/>
+                        </svg>
+                        Télécharger l'app
                     </a>
                 </div>
             </div>
