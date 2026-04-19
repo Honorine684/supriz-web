@@ -16,15 +16,15 @@ class CategorieController extends Controller
         // Récupérer les sous-catégories Supriz (avec pagination)
         $sousCategoriesSupriz = SousCategorie::with('categorie')
             ->where('type_categorie_id', $suprizCategorie->id ?? null)
-            ->paginate(10, ['*'], 'supriz_page');
+            ->paginate(5, ['*'], 'supriz_page');
 
         // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
         $sousCategoriesAutres = SousCategorie::with('categorie')
             ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
-            ->paginate(10, ['*'], 'autres_page');
+            ->paginate(5, ['*'], 'autres_page');
 
         // Pour compatibilité avec l'ancien code (toutes les sous-catégories)
-        $sousCategories = SousCategorie::with('categorie')->paginate(10);
+        $sousCategories = SousCategorie::with('categorie')->paginate(5);
 
         // Récupérer les catégories Supriz prédéfinies
         $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
@@ -125,15 +125,15 @@ public function edit($id)
     // Récupérer les sous-catégories Supriz (avec pagination)
     $sousCategoriesSupriz = SousCategorie::with('categorie')
         ->where('type_categorie_id', $suprizCategorie->id ?? null)
-        ->paginate(10, ['*'], 'supriz_page');
+        ->paginate(5, ['*'], 'supriz_page');
 
     // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
     $sousCategoriesAutres = SousCategorie::with('categorie')
         ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
-        ->paginate(10, ['*'], 'autres_page');
+        ->paginate(5, ['*'], 'autres_page');
 
     // Pour compatibilité avec l'ancien code
-    $sousCategories = SousCategorie::with('categorie')->paginate(10);
+    $sousCategories = SousCategorie::with('categorie')->paginate(5);
 
     // Récupérer les catégories Supriz prédéfinies
     $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];

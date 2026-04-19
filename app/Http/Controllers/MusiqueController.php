@@ -26,7 +26,7 @@ class MusiqueController extends Controller
             $pageParam = 'page_' . $sousCategorie->id;
             $musiques = Musique::where('sous_categorie_id', $sousCategorie->id)
                 ->orderBy('created_at', 'desc')
-                ->paginate(10, ['*'], $pageParam);
+                ->paginate(5, ['*'], $pageParam);
 
             if ($musiques->total() > 0) {
                 $musiquesGroupees[$sousCategorie->name_sous_categories] = [
