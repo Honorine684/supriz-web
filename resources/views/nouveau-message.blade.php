@@ -3788,13 +3788,8 @@
                     <textarea id="avisMessage" placeholder="Partagez votre expérience..." maxlength="500" rows="3"></textarea>
                 </div>
 
-                <!-- Bouton Envoyer -->
-                <div style="margin-top: 20px;">
-                    <button type="button" id="avisSubmitBtn" class="avis-btn-submit" onclick="submitAvis()" style="width: 100%;">Envoyer mon avis</button>
-                </div>
-
                 <!-- Boutons Plus tard + Télécharger l'app -->
-                <div class="avis-actions" style="display: flex; gap: 12px; margin-top: 12px;">
+                <div class="avis-actions" style="display: flex; gap: 12px; margin-top: 20px;">
                     <button type="button" class="avis-btn-skip" onclick="closeAvisPopup()" style="flex: 1;">Plus tard</button>
                     <a href="https://play.google.com/store/apps/details?id=com.supriz.app&hl=fr" target="_blank" rel="noopener noreferrer" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 16px; background: linear-gradient(135deg, #1B7B6A 0%, #2da891 100%); border-radius: 12px; color: white; text-decoration: none; font-size: 14px; font-weight: 600; transition: all 0.2s ease;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -3802,6 +3797,11 @@
                         </svg>
                         Télécharger
                     </a>
+                </div>
+
+                <!-- Bouton Envoyer -->
+                <div style="margin-top: 12px;">
+                    <button type="button" id="avisSubmitBtn" class="avis-btn-submit" onclick="submitAvis()" style="width: 100%;">Envoyer mon avis</button>
                 </div>
             </div>
         </div>
