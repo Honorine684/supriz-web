@@ -833,8 +833,15 @@
                 <h2 class="gift-title">{{ $message->titre }}</h2>
                 <div class="gift-animation">
                     @php
-                        // Utiliser gift_image si disponible, sinon image, sinon GIF par défaut
-                        $giftImage = $message->sousCategorie->gift_image ?? $message->sousCategorie->image ?? null;
+                        // Si message créé depuis l'app (user_id existe) -> gift_image
+                        // Si message créé depuis le web (pas de user_id) -> image
+                        if ($message->user_id) {
+                            // Message depuis l'app : utiliser gift_image, sinon image comme fallback
+                            $giftImage = $message->sousCategorie->gift_image ?? $message->sousCategorie->image ?? null;
+                        } else {
+                            // Message depuis le web : utiliser image
+                            $giftImage = $message->sousCategorie->image ?? null;
+                        }
                         $giftImageUrl = $giftImage ? asset('storage/' . $giftImage) : asset('images/clientIamges/Wrapped_Gift.gif');
                         $isGif = $giftImage ? strtolower(pathinfo($giftImage, PATHINFO_EXTENSION)) === 'gif' : true;
                     @endphp
