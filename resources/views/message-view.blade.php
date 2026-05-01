@@ -833,7 +833,8 @@
                 <h2 class="gift-title">{{ $message->titre }}</h2>
                 <div class="gift-animation">
                     @php
-                        $giftImage = $message->sousCategorie->gift_image ?? null;
+                        // Utiliser gift_image si disponible, sinon image, sinon GIF par défaut
+                        $giftImage = $message->sousCategorie->gift_image ?? $message->sousCategorie->image ?? null;
                         $giftImageUrl = $giftImage ? asset('storage/' . $giftImage) : asset('images/clientIamges/Wrapped_Gift.gif');
                         $isGif = $giftImage ? strtolower(pathinfo($giftImage, PATHINFO_EXTENSION)) === 'gif' : true;
                     @endphp
