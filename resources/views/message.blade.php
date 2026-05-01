@@ -49,23 +49,36 @@
     <hr>
 
     <div class="pb-48 overflow-y-auto contener" style="min-height: calc(100vh - 200px);">
-        @if ($notifs)
+        @if ($notifs && count($notifs) > 0)
             @foreach ($notifs as $notif)
-                <div class="flex mt-4">
-                    @if ($user->profil_image)
-                        <img class="relative mr-2 profil-photo top-4"
-                            src="{{ asset('storage/' . $user->profil_image) }}" alt="">
-                    @else
-                        <img class="relative mr-2 profil-photo top-4"
-                            src="{{ asset('images/profil/no-profile.png') }}" alt="">
-                    @endif
-                    <div class="p-2 font-light bg-gray-primary rounded-20">
-                        @if($notif->titre)
+                @if ($notif->titre && !$notif->user_id)
+                    {{-- Notification admin : à droite, en bleu --}}
+                    <div class="flex mt-4 justify-end">
+                        <div class="p-3 font-light rounded-20" style="background-color: #005792; color: white; max-width: 80%;">
                             <p class="font-semibold">{{ $notif->titre }}</p>
+                            <p>{{ $notif->contenus }}</p>
+                            <p class="text-xs mt-1" style="opacity: 0.7;">{{ $notif->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                        @if ($user->profil_image)
+                            <img class="relative ml-2 profil-photo top-4"
+                                src="{{ asset('storage/' . $user->profil_image) }}" alt="">
+                        @else
+                            <img class="relative ml-2 profil-photo top-4"
+                                src="{{ asset('images/profil/no-profile.png') }}" alt="">
                         @endif
-                        <p>{{ $notif->contenus }}</p>
                     </div>
-                </div>
+                @else
+                    {{-- Notification de réaction/vue : à gauche --}}
+                    <div class="flex mt-4">
+                        <div class="profil-photo top-4 mr-2" style="width: 40px; height: 40px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <span style="font-size: 18px;">{{ preg_match('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', $notif->contenus, $matches) ? $matches[0] : '👤' }}</span>
+                        </div>
+                        <div class="p-3 font-light bg-gray-primary rounded-20" style="max-width: 80%;">
+                            <p>{{ $notif->contenus }}</p>
+                            <p class="text-xs mt-1 text-gray-500">{{ $notif->created_at->format('d/m/Y H:i') }}</p>
+                        </div>
+                    </div>
+                @endif
             @endforeach
         @else
             <p class="text-center">Aucune données disponible</p>
