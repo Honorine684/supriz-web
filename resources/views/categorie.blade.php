@@ -221,13 +221,31 @@
                 <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5F2FF;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3 style="font-size: 1.125rem; font-weight: bold; color: #005792;">{{ $supriz->name_sous_categories }}</h3>
-                        <form action="{{ route('admin.categorie.toggleStatus', $supriz->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit"
-                                    style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $supriz->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $supriz->is_active ? '#166534' : '#991b1b' }};">
-                                {{ $supriz->is_active ? '✓ Actif' : '✗ Inactif' }}
-                            </button>
-                        </form>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <form action="{{ route('admin.categorie.toggleStatus', $supriz->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit"
+                                        style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $supriz->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $supriz->is_active ? '#166534' : '#991b1b' }};">
+                                    {{ $supriz->is_active ? '✓ Actif' : '✗ Inactif' }}
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.categorie.destroy', $supriz->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ? Cette action est irréversible.')"
+                                  style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; background-color: #fee2e2; border: none; cursor: pointer; transition: background-color 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#fecaca'"
+                                        onmouseout="this.style.backgroundColor='#fee2e2'"
+                                        title="Supprimer">
+                                    <svg style="width: 16px; height: 16px; color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Icône -->
@@ -329,13 +347,31 @@
                 <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #d1fae5;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                         <h3 style="font-size: 1.125rem; font-weight: bold; color: #059669;">{{ $suprizCustom->name_sous_categories }}</h3>
-                        <form action="{{ route('admin.categorie.toggleStatus', $suprizCustom->id) }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit"
-                                    style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $suprizCustom->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $suprizCustom->is_active ? '#166534' : '#991b1b' }};">
-                                {{ $suprizCustom->is_active ? '✓ Actif' : '✗ Inactif' }}
-                            </button>
-                        </form>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <form action="{{ route('admin.categorie.toggleStatus', $suprizCustom->id) }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit"
+                                        style="padding: 0.25rem 0.75rem; border-radius: 9999px; border: none; cursor: pointer; font-size: 0.7rem; font-weight: 700; background-color: {{ $suprizCustom->is_active ? '#dcfce7' : '#fee2e2' }}; color: {{ $suprizCustom->is_active ? '#166534' : '#991b1b' }};">
+                                    {{ $suprizCustom->is_active ? '✓ Actif' : '✗ Inactif' }}
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.categorie.destroy', $suprizCustom->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sous-catégorie ? Cette action est irréversible.')"
+                                  style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; background-color: #fee2e2; border: none; cursor: pointer; transition: background-color 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#fecaca'"
+                                        onmouseout="this.style.backgroundColor='#fee2e2'"
+                                        title="Supprimer">
+                                    <svg style="width: 16px; height: 16px; color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Icône -->
