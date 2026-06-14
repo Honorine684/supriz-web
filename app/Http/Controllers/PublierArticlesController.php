@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SousCategorie;
 use App\Models\Categorie;
 use App\Models\Product;
+use App\Models\Marchand;
 use Illuminate\Support\Facades\Storage;
 
 class PublierArticlesController extends Controller
@@ -15,8 +16,9 @@ class PublierArticlesController extends Controller
     {
         $souscategorie = SousCategorie::All();
         $produits = Product::all()->take(7);
+        $marchands = Marchand::orderBy('nom')->get();
         $active_link = "s";
-        return view('article',compact("active_link","souscategorie","produits"));
+        return view('article',compact("active_link","souscategorie","produits","marchands"));
     }
 
     public function getSousCategories(Request $request)
@@ -62,7 +64,7 @@ public function store(Request $request)
     $validatedData = $request->validate([
         'name_product' => 'required|string|max:255',
         'prix_product' => 'required|numeric',
-        'entreprise_product' => 'required|string|max:255',
+        'marchand_id' => 'required|integer|exists:marchands,id',
         'info' => 'required|string|max:255',
         'description' => 'required|string',
         'prix_promotion' => 'nullable|numeric',
@@ -81,7 +83,9 @@ public function store(Request $request)
         $article->title = $validatedData['name_product'];
         $article->price = $validatedData['prix_product'];
         $article->description = $validatedData['description'];
-        $article->entreprise = $validatedData['entreprise_product'];
+        $marchand = Marchand::findOrFail($validatedData['marchand_id']);
+        $article->marchand_id = $marchand->id;
+        $article->entreprise = $marchand->nom;
         $article->evaluation = $validatedData['evaluation'] ?? null;
         $article->prix_promo = $validatedData['prix_promotion'] ?? null;
         $article->prix_livraison = $validatedData['prix_livraison'] ?? null;
@@ -142,7 +146,8 @@ public function edit($id)
 
     $active_link = "s";
     $produits = Product::all()->take(7);
-    return view('article', compact('article','active_link','produits','firstCategory','sousCategories','sousCategoriesNonAssociees'));
+    $marchands = Marchand::orderBy('nom')->get();
+    return view('article', compact('article','active_link','produits','firstCategory','sousCategories','sousCategoriesNonAssociees','marchands'));
 }
 
 public function update(Request $request, $id)
@@ -156,7 +161,7 @@ public function update(Request $request, $id)
     $validatedData = $request->validate([
         'name_product' => 'required|string|max:255',
         'prix_product' => 'required|numeric',
-        'entreprise_product' => 'required|string|max:255',
+        'marchand_id' => 'required|integer|exists:marchands,id',
         'info' => 'required|string|max:255',
         'description' => 'required|string',
         'prix_promotion' => 'nullable|numeric',
@@ -177,7 +182,9 @@ public function update(Request $request, $id)
         $article->title = $validatedData['name_product'];
         $article->price = $validatedData['prix_product'];
         $article->description = $validatedData['description'];
-        $article->entreprise = $validatedData['entreprise_product'];
+        $marchand = Marchand::findOrFail($validatedData['marchand_id']);
+        $article->marchand_id = $marchand->id;
+        $article->entreprise = $marchand->nom;
         $article->evaluation = $validatedData['evaluation'] ?? $article->evaluation;
         $article->prix_promo = $validatedData['prix_promotion'] ?? $article->prix_promo;
         $article->prix_livraison = $validatedData['prix_livraison'] ?? $article->prix_livraison;

@@ -22,6 +22,7 @@
     use App\Http\Controllers\PasswordResetController;
     use App\Http\Controllers\AvisController;
     use App\Http\Controllers\ArrierePlanController;
+    use App\Http\Controllers\MarchandController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -89,6 +90,13 @@
         // Gestion des clients
         Route::get('/clients', [ClientController::class, 'client'])->name('clients');
         Route::get('/search-clients', [ClientController::class, 'searchClients'])->name('search.clients');
+
+        // Marchands
+        Route::get('/marchand', [MarchandController::class, 'index'])->name('marchand');
+        Route::post('/marchand/store', [MarchandController::class, 'store'])->name('marchand.store');
+        Route::get('/marchand/{id}/edit', [MarchandController::class, 'edit'])->name('marchand.edit');
+        Route::put('/marchand/{id}', [MarchandController::class, 'update'])->name('marchand.update');
+        Route::delete('/marchand/{id}', [MarchandController::class, 'destroy'])->name('marchand.destroy');
 
         // Gestion des stocks
         Route::get('/stocks', [StockController::class, 'stocks'])->name('stocks');

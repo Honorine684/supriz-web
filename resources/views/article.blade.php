@@ -80,9 +80,21 @@
                 </div>
 
                 <div class="grid w-full">
-                    <span class="text-gray-400">Entreprise</span>
-                    <input type="text" name="entreprise_product"
-                        value="{{ isset($article) ? $article->entreprise : '' }}" class="rounded">
+                    <span class="text-gray-400">Entreprise (marchand)</span>
+                    <select name="marchand_id" class="rounded" required>
+                        <option value="">-- Sélectionner un marchand --</option>
+                        @foreach($marchands as $m)
+                            <option value="{{ $m->id }}"
+                                {{ (isset($article) && $article->marchand_id == $m->id) ? 'selected' : '' }}>
+                                {{ $m->nom }}@if($m->ville) — {{ $m->ville }}@endif
+                            </option>
+                        @endforeach
+                    </select>
+                    @if($marchands->isEmpty())
+                        <a href="{{ route('admin.marchand.create') ?? '#' }}" class="text-blue-600 text-xs mt-1">
+                            Aucun marchand. Créez-en un d'abord.
+                        </a>
+                    @endif
                 </div>
             </div>
 

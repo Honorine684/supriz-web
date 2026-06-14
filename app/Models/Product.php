@@ -18,6 +18,7 @@ class Product extends Model
         'price',
         'description', // Nom du produit
         'entreprise',
+        'marchand_id',
         'evaluation',
         'prix_promo',
         'prix_livraison',
@@ -31,9 +32,14 @@ class Product extends Model
     {
         return $this->belongsToMany(HommeSousCategorie::class, 'product_sous_categorie', 'product_id', 'sous_categorie_id');
     }
-    
+
     public function achats()
     {
         return $this->hasMany(Achat::class, 'product_id');
+    }
+
+    public function marchand()
+    {
+        return $this->belongsTo(Marchand::class, 'marchand_id');
     }
 }

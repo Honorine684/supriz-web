@@ -375,11 +375,12 @@ public function updateBeneficiere(Request $request)
                              ->first();
         $achat = Achat::where('commande_id',$commande->id);
         // Récupérer tous les achats de l'utilisateur authentifié
-        $achats = $achat->with('product')
-                       ->get(); 
+        $achats = $achat->with('product.marchand')
+                       ->get();
 
         // Mapper les achats dans le format requis pour cartItems
         $cartItems = $achats->map(function ($achat) {
+            $marchand = $achat->product->marchand;
             return [
                 'product' => [
                     'id' => $achat->product->id,
@@ -397,7 +398,15 @@ public function updateBeneficiere(Request $request)
                     'statut'=>$achat->product->statut,
                     'category'=>"none",
                     'subCategory'=>"none",
-                    // Ajoutez d'autres propriétés nécessaires
+                    // Marchand (sans téléphone — $hidden côté modèle)
+                    'marchand' => $marchand ? [
+                        'id' => $marchand->id,
+                        'nom' => $marchand->nom,
+                        'adresse' => $marchand->adresse,
+                        'ville' => $marchand->ville,
+                        'latitude' => $marchand->latitude,
+                        'longitude' => $marchand->longitude,
+                    ] : null,
                 ],
                 'quantity' => $achat->qte_achat, // Utiliser la quantité d'achat
                 'achat_id' => $achat->id, // Utiliser la quantité d'achat
