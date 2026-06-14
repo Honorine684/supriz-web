@@ -5,12 +5,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Achat;
 use App\Models\Commandes;
+use App\Models\User;
+use App\Services\FirebaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use FedaPay\FedaPay;
 use App\Models\Historique;
 class PanierController extends Controller
 {
+    protected $firebaseService;
+
+    public function __construct(FirebaseService $firebaseService)
+    {
+        $this->firebaseService = $firebaseService;
+    }
+
     /**
      * Ajouter un produit au panier.
      *
@@ -556,6 +565,21 @@ public function closePaiement(Request $request)
                 'prix' => $commande->prix_total_commande,
                 'code_historiques' => $commande->code_commandes, // Générez un code unique
             ]);
+
+            // Push FCM au client
+            $user = User::find($userId);
+            if ($user && $user->fcm_token) {
+                $this->firebaseService->sendNotification(
+                    $user->fcm_token,
+                    'Commande confirmée',
+                    'Votre commande #' . $commande->code_commandes . ' a été confirmée. Total : ' . $commande->prix_total_commande . ' FCFA.',
+                    [
+                        'type' => 'order_confirmed',
+                        'commande_id' => (string) $commande->id,
+                        'code_commande' => (string) $commande->code_commandes,
+                    ]
+                );
+            }
         }
     }
 
