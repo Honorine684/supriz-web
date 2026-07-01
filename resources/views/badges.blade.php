@@ -82,38 +82,38 @@
 
                 {{-- Icon picker --}}
                 @php
-                    // Liste curée d'icônes cross-plateforme (clé = valeur stockée, ri = classe web)
+                    // Icônes pour les occasions courantes (clé = valeur stockée, ri = classe web)
                     $iconChoices = [
-                        'cake' => 'ri-cake-3-line',
-                        'heart' => 'ri-heart-line',
-                        'gift' => 'ri-gift-line',
-                        'star' => 'ri-star-line',
-                        'flower' => 'ri-flower-line',
-                        'diamond' => 'ri-vip-diamond-line',
-                        'crown' => 'ri-vip-crown-line',
-                        'fire' => 'ri-fire-line',
-                        'trophy' => 'ri-trophy-line',
-                        'magic' => 'ri-magic-line',
-                        'sparkle' => 'ri-sparkling-line',
-                        'medal' => 'ri-medal-line',
-                        'chat' => 'ri-chat-heart-line',
-                        'balloon' => 'ri-service-line',
-                        'music' => 'ri-music-2-line',
-                        'party' => 'ri-cake-2-line',
-                        'lightning' => 'ri-flashlight-line',
-                        'sun' => 'ri-sun-line',
-                        'moon' => 'ri-moon-line',
-                        'baby' => 'ri-parent-line',
-                        'ring' => 'ri-focus-line',
-                        'briefcase' => 'ri-briefcase-line',
-                        'graduation' => 'ri-school-line',
-                        'palette' => 'ri-palette-line',
-                        'coffee' => 'ri-cup-line',
-                        'plane' => 'ri-plane-line',
-                        'car' => 'ri-car-line',
-                        'home' => 'ri-home-heart-line',
-                        'shield' => 'ri-shield-star-line',
-                        'thumb' => 'ri-thumb-up-line',
+                        'cake'         => ['ri' => 'ri-cake-3-line', 'label' => 'Anniversaire'],
+                        'balloon'      => ['ri' => 'ri-sparkling-line', 'label' => 'Ballon / Fête'],
+                        'ring'         => ['ri' => 'ri-diamond-ring-line', 'label' => 'Mariage / Fiançailles'],
+                        'baby'         => ['ri' => 'ri-parent-line', 'label' => 'Naissance / Baby'],
+                        'graduation'   => ['ri' => 'ri-graduation-cap-line', 'label' => 'Diplôme'],
+                        'briefcase'    => ['ri' => 'ri-briefcase-line', 'label' => 'Promotion'],
+                        'valentine'    => ['ri' => 'ri-heart-3-line', 'label' => 'St-Valentin'],
+                        'flower'       => ['ri' => 'ri-flower-line', 'label' => 'Rose / Fleurs'],
+                        'shirt'        => ['ri' => 'ri-shirt-line', 'label' => 'Fête des Pères'],
+                        'tree'         => ['ri' => 'ri-tree-line', 'label' => 'Noël'],
+                        'goblet'       => ['ri' => 'ri-goblet-line', 'label' => 'Nouvel An 🥂'],
+                        'sparkle'      => ['ri' => 'ri-sparkling-2-line', 'label' => 'Feux d\'artifice'],
+                        'moon'         => ['ri' => 'ri-moon-line', 'label' => 'Ramadan / Aïd'],
+                        'thanks'       => ['ri' => 'ri-hand-heart-line', 'label' => 'Remerciement'],
+                        'boxing'       => ['ri' => 'ri-boxing-line', 'label' => 'Encouragement'],
+                        'heart'        => ['ri' => 'ri-heart-line', 'label' => 'Cœur'],
+                        'hearts'       => ['ri' => 'ri-hearts-line', 'label' => 'Amour'],
+                        'gift'         => ['ri' => 'ri-gift-line', 'label' => 'Cadeau'],
+                        'star'         => ['ri' => 'ri-star-line', 'label' => 'Étoile'],
+                        'trophy'       => ['ri' => 'ri-trophy-line', 'label' => 'Récompense'],
+                        'medal'        => ['ri' => 'ri-medal-line', 'label' => 'Médaille'],
+                        'crown'        => ['ri' => 'ri-vip-crown-line', 'label' => 'Couronne / VIP'],
+                        'diamond'      => ['ri' => 'ri-vip-diamond-line', 'label' => 'Diamant / Premium'],
+                        'fire'         => ['ri' => 'ri-fire-line', 'label' => 'Tendance / Hot'],
+                        'magic'        => ['ri' => 'ri-magic-line', 'label' => 'Magique'],
+                        'music'        => ['ri' => 'ri-music-2-line', 'label' => 'Musique'],
+                        'sun'          => ['ri' => 'ri-sun-line', 'label' => 'Été / Soleil'],
+                        'coffee'       => ['ri' => 'ri-cup-line', 'label' => 'Café / Boisson'],
+                        'home'         => ['ri' => 'ri-home-heart-line', 'label' => 'Famille / Maison'],
+                        'thumb'        => ['ri' => 'ri-thumb-up-line', 'label' => 'Approuvé'],
                     ];
                     $currentIcon = old('icon', $badge->icon ?? '');
                 @endphp
@@ -122,14 +122,14 @@
                     <span class="mb-2 text-sm text-gray-600 block">Icône (optionnel)</span>
                     <input type="hidden" name="icon" id="icon-input" value="{{ $currentIcon }}">
                     <div class="grid grid-cols-6 md:grid-cols-10 gap-2 p-3 bg-gray-50 border border-gray-200 rounded">
-                        <button type="button" data-icon=""
+                        <button type="button" data-icon="" title="Aucune icône"
                                 class="icon-choice aspect-square flex items-center justify-center text-xs text-gray-500 border-2 rounded-lg transition-all {{ $currentIcon === '' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white hover:border-gray-400' }}">
                             <i class="ri-forbid-line"></i>
                         </button>
-                        @foreach ($iconChoices as $key => $riClass)
-                            <button type="button" data-icon="{{ $key }}"
+                        @foreach ($iconChoices as $key => $data)
+                            <button type="button" data-icon="{{ $key }}" title="{{ $data['label'] }}"
                                     class="icon-choice aspect-square flex items-center justify-center text-lg border-2 rounded-lg transition-all {{ $currentIcon === $key ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400' }}">
-                                <i class="{{ $riClass }}"></i>
+                                <i class="{{ $data['ri'] }}"></i>
                             </button>
                         @endforeach
                     </div>
@@ -189,18 +189,7 @@
                         </thead>
                         <tbody>
                             @php
-                                $iconMap = [
-                                    'cake' => 'ri-cake-3-line','heart' => 'ri-heart-line','gift' => 'ri-gift-line',
-                                    'star' => 'ri-star-line','flower' => 'ri-flower-line','diamond' => 'ri-vip-diamond-line',
-                                    'crown' => 'ri-vip-crown-line','fire' => 'ri-fire-line','trophy' => 'ri-trophy-line',
-                                    'magic' => 'ri-magic-line','sparkle' => 'ri-sparkling-line','medal' => 'ri-medal-line',
-                                    'chat' => 'ri-chat-heart-line','balloon' => 'ri-service-line','music' => 'ri-music-2-line',
-                                    'party' => 'ri-cake-2-line','lightning' => 'ri-flashlight-line','sun' => 'ri-sun-line',
-                                    'moon' => 'ri-moon-line','baby' => 'ri-parent-line','ring' => 'ri-focus-line',
-                                    'briefcase' => 'ri-briefcase-line','graduation' => 'ri-school-line','palette' => 'ri-palette-line',
-                                    'coffee' => 'ri-cup-line','plane' => 'ri-plane-line','car' => 'ri-car-line',
-                                    'home' => 'ri-home-heart-line','shield' => 'ri-shield-star-line','thumb' => 'ri-thumb-up-line',
-                                ];
+                                $iconMap = collect($iconChoices)->mapWithKeys(fn ($d, $k) => [$k => $d['ri']])->toArray();
                             @endphp
                             @foreach ($badges as $b)
                                 @php
