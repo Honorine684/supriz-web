@@ -152,3 +152,6 @@
 
 </div>
 <div class="fixed top-0 left-0 z-40 hidden w-full h-full bg-black/50 md:hidden sidebar-overlay"></div>
+
+{{-- Recherche live universelle (filtre tables/cards de la page courante) --}}
+<script defer src="{{ asset('js/admin-search.js') }}"></script>
