@@ -23,6 +23,7 @@
     use App\Http\Controllers\AvisController;
     use App\Http\Controllers\ArrierePlanController;
     use App\Http\Controllers\MarchandController;
+    use App\Http\Controllers\BadgeController;
 
     // ============================================
     // ROUTES PUBLIQUES
@@ -156,6 +157,13 @@
         Route::get('/faq/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
         Route::put('/faq/update/{id}', [FaqController::class, 'update'])->name('faq.update');
         Route::delete('/faq/{id}', [FaqController::class, 'deleteFaq'])->name('faq.destroy');
+
+        // Badges
+        Route::get('/badges', [BadgeController::class, 'index'])->name('badges');
+        Route::post('/badges/store', [BadgeController::class, 'store'])->name('badges.store');
+        Route::get('/badges/edit/{id}', [BadgeController::class, 'edit'])->name('badges.edit');
+        Route::put('/badges/update/{id}', [BadgeController::class, 'update'])->name('badges.update');
+        Route::delete('/badges/{id}', [BadgeController::class, 'destroy'])->name('badges.destroy');
 
         // Dépenses
         Route::get('/depenses', [DepensesController::class, 'depenses'])->name('depenses');

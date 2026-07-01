@@ -10,8 +10,6 @@
     <link rel="stylesheet" href={{ asset('css/main.css') }}>
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <title>Supriz - Marchands</title>
 </head>
 
@@ -120,6 +118,105 @@
                     <div id="marchand-map" class="mt-2 rounded border" style="height: 360px; z-index: 0;"></div>
                 </div>
 
+                {{-- Jours travaillés --}}
+                @php
+                    $days = [
+                        'mon' => 'Lun', 'tue' => 'Mar', 'wed' => 'Mer',
+                        'thu' => 'Jeu', 'fri' => 'Ven', 'sat' => 'Sam', 'sun' => 'Dim',
+                    ];
+                    $selectedDays = old('working_days', $marchand->working_days ?? ['mon','tue','wed','thu','fri']);
+                    $hours = old('working_hours', $marchand->working_hours ?? [['open' => '09:00', 'close' => '18:00']]);
+                @endphp
+
+                <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 class="font-semibold text-gray-700 mb-3">Jours d'ouverture</h4>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($days as $code => $label)
+                            @php $checked = in_array($code, $selectedDays); @endphp
+                            <label class="cursor-pointer">
+                                <input type="checkbox" name="working_days[]" value="{{ $code }}"
+                                       class="hidden peer" {{ $checked ? 'checked' : '' }}>
+                                <span class="inline-block px-4 py-2 text-sm font-medium border-2 border-gray-300 rounded-full text-gray-600 transition-all peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 hover:border-blue-400">
+                                    {{ $label }}
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Plages horaires --}}
+                <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-semibold text-gray-700">Plages horaires</h4>
+                        <button type="button" id="add-range"
+                                class="px-3 py-1 text-xs text-white bg-blue-600 rounded hover:bg-blue-700">
+                            + Ajouter une plage
+                        </button>
+                    </div>
+                    <div id="ranges-list" class="space-y-2">
+                        @foreach ($hours as $i => $r)
+                            <div class="flex items-center gap-2 range-row">
+                                <span class="text-sm text-gray-500 w-16">Plage {{ $i + 1 }}</span>
+                                <input type="time" name="working_hours[{{ $i }}][open]"
+                                       value="{{ $r['open'] ?? '09:00' }}"
+                                       class="p-2 border border-gray-300 rounded">
+                                <span class="text-gray-400">à</span>
+                                <input type="time" name="working_hours[{{ $i }}][close]"
+                                       value="{{ $r['close'] ?? '18:00' }}"
+                                       class="p-2 border border-gray-300 rounded">
+                                <button type="button" class="text-red-500 hover:underline text-sm remove-range">
+                                    Retirer
+                                </button>
+                            </div>
+                        @endforeach
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Ex: 09:00–13:00 puis 15:00–19:00</p>
+                </div>
+
+                <script>
+                    (function () {
+                        const list = document.getElementById('ranges-list');
+                        const addBtn = document.getElementById('add-range');
+                        if (!list || !addBtn) return;
+
+                        function nextIndex() {
+                            return list.querySelectorAll('.range-row').length;
+                        }
+
+                        function renumber() {
+                            list.querySelectorAll('.range-row').forEach((row, i) => {
+                                row.querySelector('span').textContent = 'Plage ' + (i + 1);
+                                row.querySelectorAll('input[type=time]').forEach((inp) => {
+                                    inp.name = inp.name.replace(/working_hours\[\d+\]/, 'working_hours[' + i + ']');
+                                });
+                            });
+                        }
+
+                        function attachRemove(btn) {
+                            btn.addEventListener('click', function () {
+                                btn.closest('.range-row').remove();
+                                renumber();
+                            });
+                        }
+
+                        list.querySelectorAll('.remove-range').forEach(attachRemove);
+
+                        addBtn.addEventListener('click', function () {
+                            const i = nextIndex();
+                            const row = document.createElement('div');
+                            row.className = 'flex items-center gap-2 range-row';
+                            row.innerHTML =
+                                '<span class="text-sm text-gray-500 w-16">Plage ' + (i + 1) + '</span>' +
+                                '<input type="time" name="working_hours[' + i + '][open]" value="09:00" class="p-2 border border-gray-300 rounded">' +
+                                '<span class="text-gray-400">à</span>' +
+                                '<input type="time" name="working_hours[' + i + '][close]" value="18:00" class="p-2 border border-gray-300 rounded">' +
+                                '<button type="button" class="text-red-500 hover:underline text-sm remove-range">Retirer</button>';
+                            list.appendChild(row);
+                            attachRemove(row.querySelector('.remove-range'));
+                        });
+                    })();
+                </script>
+
                 <div class="flex gap-2 mt-4">
                     <input type="submit"
                            class="p-2 text-white rounded cursor-pointer btn-design flex-1"
@@ -216,11 +313,10 @@
     <script src="{{ asset('js/imagefile.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    {{-- Google Maps JavaScript API (Demo Key) + Places library --}}
     <script>
-        (function () {
-            const COTONOU = [6.3702928, 2.3912362];
+        function initMarchandMap() {
+            const COTONOU = { lat: 6.3702928, lng: 2.3912362 };
             const latInput = document.getElementById('latitude');
             const lngInput = document.getElementById('longitude');
             const searchInput = document.getElementById('map-search');
@@ -229,24 +325,31 @@
             const initialLat = parseFloat(latInput.value);
             const initialLng = parseFloat(lngInput.value);
             const hasInitial = !isNaN(initialLat) && !isNaN(initialLng);
-            const center = hasInitial ? [initialLat, initialLng] : COTONOU;
+            const center = hasInitial ? { lat: initialLat, lng: initialLng } : COTONOU;
 
-            const map = L.map('marchand-map').setView(center, hasInitial ? 16 : 12);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+            const map = new google.maps.Map(document.getElementById('marchand-map'), {
+                center: center,
+                zoom: hasInitial ? 16 : 12,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true,
+            });
 
             let marker = null;
             function setMarker(lat, lng) {
+                const pos = { lat: lat, lng: lng };
                 if (marker) {
-                    marker.setLatLng([lat, lng]);
+                    marker.setPosition(pos);
                 } else {
-                    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-                    marker.on('dragend', function (e) {
-                        const pos = e.target.getLatLng();
-                        latInput.value = pos.lat.toFixed(7);
-                        lngInput.value = pos.lng.toFixed(7);
+                    marker = new google.maps.Marker({
+                        position: pos,
+                        map: map,
+                        draggable: true,
+                        animation: google.maps.Animation.DROP,
+                    });
+                    marker.addListener('dragend', function (e) {
+                        latInput.value = e.latLng.lat().toFixed(7);
+                        lngInput.value = e.latLng.lng().toFixed(7);
                     });
                 }
                 latInput.value = lat.toFixed(7);
@@ -257,12 +360,16 @@
                 setMarker(initialLat, initialLng);
             }
 
-            // Cliquer sur la carte pose / déplace le marqueur
-            map.on('click', function (e) {
-                setMarker(e.latlng.lat, e.latlng.lng);
+            // Click sur la carte pose / déplace le marqueur
+            map.addListener('click', function (e) {
+                setMarker(e.latLng.lat(), e.latLng.lng());
             });
 
-            // Recherche Nominatim (debounce 600 ms, min 3 caractères, 1 req/s policy)
+            // --- Autocomplete Places (filtré Bénin) ---
+            const sessionToken = new google.maps.places.AutocompleteSessionToken();
+            const autocompleteService = new google.maps.places.AutocompleteService();
+            const placesService = new google.maps.places.PlacesService(map);
+
             let debounceTimer = null;
             function hideResults() {
                 resultsList.classList.add('hidden');
@@ -277,37 +384,47 @@
                     return;
                 }
                 debounceTimer = setTimeout(function () {
-                    const url = 'https://nominatim.openstreetmap.org/search'
-                        + '?format=json&addressdetails=1&limit=5'
-                        + '&countrycodes=bj'
-                        + '&q=' + encodeURIComponent(q);
-                    fetch(url, { headers: { 'Accept-Language': 'fr' } })
-                        .then(r => r.json())
-                        .then(items => {
-                            resultsList.innerHTML = '';
-                            if (!items.length) {
-                                resultsList.innerHTML = '<li class="p-2 text-sm text-gray-500">Aucun résultat</li>';
-                                resultsList.classList.remove('hidden');
-                                return;
-                            }
-                            items.forEach(item => {
-                                const li = document.createElement('li');
-                                li.className = 'p-2 text-sm cursor-pointer hover:bg-gray-100 border-b last:border-b-0';
-                                li.textContent = item.display_name;
-                                li.addEventListener('click', function () {
-                                    const lat = parseFloat(item.lat);
-                                    const lng = parseFloat(item.lon);
-                                    map.setView([lat, lng], 17);
-                                    setMarker(lat, lng);
-                                    searchInput.value = item.display_name;
+                    autocompleteService.getPlacePredictions({
+                        input: q,
+                        componentRestrictions: { country: 'bj' },
+                        sessionToken: sessionToken,
+                    }, function (predictions, status) {
+                        resultsList.innerHTML = '';
+                        if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions || !predictions.length) {
+                            resultsList.innerHTML = '<li class="p-2 text-sm text-gray-500">Aucun résultat</li>';
+                            resultsList.classList.remove('hidden');
+                            return;
+                        }
+                        predictions.forEach(function (pred) {
+                            const li = document.createElement('li');
+                            li.className = 'p-2 text-sm cursor-pointer hover:bg-gray-100 border-b last:border-b-0';
+                            const main = pred.structured_formatting ? pred.structured_formatting.main_text : pred.description;
+                            const sec = pred.structured_formatting && pred.structured_formatting.secondary_text
+                                ? pred.structured_formatting.secondary_text : '';
+                            li.innerHTML = '<div class="font-medium text-gray-800">' + main + '</div>'
+                                + (sec ? '<div class="text-xs text-gray-500">' + sec + '</div>' : '');
+                            li.addEventListener('click', function () {
+                                placesService.getDetails({
+                                    placeId: pred.place_id,
+                                    fields: ['geometry', 'formatted_address'],
+                                    sessionToken: sessionToken,
+                                }, function (place, st) {
+                                    if (st === google.maps.places.PlacesServiceStatus.OK && place.geometry) {
+                                        const lat = place.geometry.location.lat();
+                                        const lng = place.geometry.location.lng();
+                                        map.setCenter({ lat: lat, lng: lng });
+                                        map.setZoom(17);
+                                        setMarker(lat, lng);
+                                        searchInput.value = place.formatted_address || pred.description;
+                                    }
                                     hideResults();
                                 });
-                                resultsList.appendChild(li);
                             });
-                            resultsList.classList.remove('hidden');
-                        })
-                        .catch(() => hideResults());
-                }, 600);
+                            resultsList.appendChild(li);
+                        });
+                        resultsList.classList.remove('hidden');
+                    });
+                }, 400);
             });
 
             document.addEventListener('click', function (e) {
@@ -315,7 +432,10 @@
                     hideResults();
                 }
             });
-        })();
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsVV6ciFSfsaBkMDiNYz15xTBxRVD48Tg&libraries=places&language=fr&region=BJ&callback=initMarchandMap">
     </script>
 
 </body>

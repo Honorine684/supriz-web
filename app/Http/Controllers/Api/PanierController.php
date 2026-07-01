@@ -325,10 +325,15 @@ public function updateQuantity(Request $request) {
 
 public function updateBeneficiere(Request $request)
 {
-    // Validation des données entrantes
+    // Validation des données entrantes (delivery info optionnels selon le panier)
     $request->validate([
         'numero_beneficier' => 'required|string|min:8',
         'selectedOption' => 'required|string',
+        'date_livraison' => 'nullable|date_format:Y-m-d',
+        'heure_livraison' => 'nullable|date_format:H:i',
+        'latitude_livraison' => 'nullable|numeric|between:-90,90',
+        'longitude_livraison' => 'nullable|numeric|between:-180,180',
+        'adresse_livraison' => 'nullable|string|max:500',
     ]);
 
     // Récupérer l'ID de l'utilisateur authentifié
@@ -347,15 +352,30 @@ public function updateBeneficiere(Request $request)
         ], 404);
     }
 
-    // Mettre à jour le numéro du bénéficiaire
+    // Mettre à jour les infos de livraison
     $commande->numero_beneficier = $request->numero_beneficier;
     $commande->selectedOption = $request->selectedOption;
+    if ($request->filled('date_livraison')) {
+        $commande->date_livraison = $request->date_livraison;
+    }
+    if ($request->filled('heure_livraison')) {
+        $commande->heure_livraison = $request->heure_livraison;
+    }
+    if ($request->has('latitude_livraison')) {
+        $commande->latitude_livraison = $request->latitude_livraison;
+    }
+    if ($request->has('longitude_livraison')) {
+        $commande->longitude_livraison = $request->longitude_livraison;
+    }
+    if ($request->filled('adresse_livraison')) {
+        $commande->adresse_livraison = $request->adresse_livraison;
+    }
     $commande->save();
 
     // Répondre avec succès
     return response()->json([
         'status' => true,
-        'message' => "Numéro de bénéficiaire mis à jour avec succès !",
+        'message' => "Infos de livraison enregistrées avec succès !",
     ]);
 }
 

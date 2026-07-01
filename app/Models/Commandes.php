@@ -13,12 +13,24 @@ class Commandes extends Model
     protected $primaryKey = 'id'; // Clé primaire
 
     protected $fillable = [
-        'users_id', // ID de l'utilisateur
+        'users_id',
         'prix_total_commande',
-        'prix_total_livraison', // Prix total de la commande
-        'numero_beneficier', // Numéro du bénéficiaire
-        'status', // Statut de la commande (ex. "encours")
-        'code_commandes', // Code unique de la commande
+        'prix_total_livraison',
+        'numero_beneficier',
+        'selectedOption',
+        'status',
+        'code_commandes',
+        'date_livraison',
+        'heure_livraison',
+        'latitude_livraison',
+        'longitude_livraison',
+        'adresse_livraison',
+    ];
+
+    protected $casts = [
+        'date_livraison' => 'date',
+        'latitude_livraison' => 'decimal:7',
+        'longitude_livraison' => 'decimal:7',
     ];
 
     public function user()

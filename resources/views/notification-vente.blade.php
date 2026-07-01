@@ -153,8 +153,38 @@
 
                         <div class="flex items-center justify-between w-full mb-3 ">
                             <span class="">Destinataire :</span>
-                            <span>{{ $commande->numero_beneficier }}</span> <!-- Destinataire de la commande -->
+                            <span>{{ $commande->numero_beneficier }}</span>
                         </div>
+
+                        @if ($commande->date_livraison || $commande->heure_livraison)
+                            <div class="flex items-center justify-between w-full mb-3 ">
+                                <span class="">Livraison prévue :</span>
+                                <span class="text-blue-600 font-medium">
+                                    @if ($commande->date_livraison)
+                                        {{ \Carbon\Carbon::parse($commande->date_livraison)->format('d/m/Y') }}
+                                    @endif
+                                    @if ($commande->heure_livraison)
+                                        à {{ \Illuminate\Support\Str::substr($commande->heure_livraison, 0, 5) }}
+                                    @endif
+                                </span>
+                            </div>
+                        @endif
+
+                        @if ($commande->adresse_livraison || $commande->latitude_livraison)
+                            <div class="w-full mb-3">
+                                <span class="block mb-1">Adresse :</span>
+                                @if ($commande->adresse_livraison)
+                                    <span class="text-xs text-gray-600">{{ $commande->adresse_livraison }}</span>
+                                @endif
+                                @if ($commande->latitude_livraison && $commande->longitude_livraison)
+                                    <a href="https://maps.google.com/?q={{ $commande->latitude_livraison }},{{ $commande->longitude_livraison }}"
+                                       target="_blank"
+                                       class="block text-xs text-blue-500 hover:underline mt-1">
+                                        📍 Voir sur la carte
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
 
                         <div class="flex items-center justify-between w-full mb-3 ">
                             <span class="">Operation :</span>
@@ -260,8 +290,38 @@
 
                         <div class="flex items-center justify-between w-full mb-3 ">
                             <span class="">Destinataire :</span>
-                            <span>{{ $commande->numero_beneficier }}</span> <!-- Destinataire de la commande -->
+                            <span>{{ $commande->numero_beneficier }}</span>
                         </div>
+
+                        @if ($commande->date_livraison || $commande->heure_livraison)
+                            <div class="flex items-center justify-between w-full mb-3 ">
+                                <span class="">Livraison prévue :</span>
+                                <span class="text-blue-600 font-medium">
+                                    @if ($commande->date_livraison)
+                                        {{ \Carbon\Carbon::parse($commande->date_livraison)->format('d/m/Y') }}
+                                    @endif
+                                    @if ($commande->heure_livraison)
+                                        à {{ \Illuminate\Support\Str::substr($commande->heure_livraison, 0, 5) }}
+                                    @endif
+                                </span>
+                            </div>
+                        @endif
+
+                        @if ($commande->adresse_livraison || $commande->latitude_livraison)
+                            <div class="w-full mb-3">
+                                <span class="block mb-1">Adresse :</span>
+                                @if ($commande->adresse_livraison)
+                                    <span class="text-xs text-gray-600">{{ $commande->adresse_livraison }}</span>
+                                @endif
+                                @if ($commande->latitude_livraison && $commande->longitude_livraison)
+                                    <a href="https://maps.google.com/?q={{ $commande->latitude_livraison }},{{ $commande->longitude_livraison }}"
+                                       target="_blank"
+                                       class="block text-xs text-blue-500 hover:underline mt-1">
+                                        📍 Voir sur la carte
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
 
                         <div class="flex items-center justify-between w-full mb-3 ">
                             <span class="">Code :</span>

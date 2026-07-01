@@ -7,6 +7,7 @@ use App\Models\SousCategorie;
 use App\Models\Categorie;
 use App\Models\Product;
 use App\Models\Marchand;
+use App\Models\Badge;
 use Illuminate\Support\Facades\Storage;
 
 class PublierArticlesController extends Controller
@@ -17,8 +18,9 @@ class PublierArticlesController extends Controller
         $souscategorie = SousCategorie::All();
         $produits = Product::all()->take(7);
         $marchands = Marchand::orderBy('nom')->get();
+        $badges = Badge::orderBy('name')->get();
         $active_link = "s";
-        return view('article',compact("active_link","souscategorie","produits","marchands"));
+        return view('article',compact("active_link","souscategorie","produits","marchands","badges"));
     }
 
     public function getSousCategories(Request $request)
@@ -75,6 +77,8 @@ public function store(Request $request)
         'img1' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         'img2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'sousCategorieId' => 'required|integer',
+        'badge_ids' => 'nullable|array|max:5',
+        'badge_ids.*' => 'integer|exists:badges,id',
     ]);
 
     try {
@@ -114,6 +118,11 @@ public function store(Request $request)
         // Ajout de la sous-catégorie au produit
         $article->sousCategories()->attach($validatedData['sousCategorieId']);
 
+        // Attacher les badges (max 5)
+        if (!empty($validatedData['badge_ids'])) {
+            $article->badges()->sync(array_slice($validatedData['badge_ids'], 0, 5));
+        }
+
         // Rediriger avec un message de succès
         return redirect()->back()->with('success', 'Article publié avec succès');
     } catch (\Exception $e) {
@@ -124,7 +133,7 @@ public function store(Request $request)
 
 public function edit($id)
 {
-    $article = Product::findOrFail($id);
+    $article = Product::with('badges')->findOrFail($id);
     $product = Product::with('sousCategories.categorie')->findOrFail($id);
     $firstCategory = $product->sousCategories->first()->categorie ?? null;
     $sousCategories = $product->sousCategories;
@@ -147,7 +156,8 @@ public function edit($id)
     $active_link = "s";
     $produits = Product::all()->take(7);
     $marchands = Marchand::orderBy('nom')->get();
-    return view('article', compact('article','active_link','produits','firstCategory','sousCategories','sousCategoriesNonAssociees','marchands'));
+    $badges = Badge::orderBy('name')->get();
+    return view('article', compact('article','active_link','produits','firstCategory','sousCategories','sousCategoriesNonAssociees','marchands','badges'));
 }
 
 public function update(Request $request, $id)
@@ -172,6 +182,8 @@ public function update(Request $request, $id)
         'img1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'img2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         'sousCategorieId' => 'required|integer',
+        'badge_ids' => 'nullable|array|max:5',
+        'badge_ids.*' => 'integer|exists:badges,id',
     ]);
 
     try {
@@ -219,6 +231,13 @@ public function update(Request $request, $id)
 
         // Mise à jour de la sous-catégorie du produit
         $article->sousCategories()->sync([$validatedData['sousCategorieId']]);
+
+        // Synchroniser les badges (max 5)
+        $article->badges()->sync(
+            isset($validatedData['badge_ids'])
+                ? array_slice($validatedData['badge_ids'], 0, 5)
+                : []
+        );
 
         $souscategorie = SousCategorie::All();
         $produits = Product::all()->take(7);

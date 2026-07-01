@@ -20,6 +20,8 @@ class Marchand extends Model
         'latitude',
         'longitude',
         'telephone',
+        'working_days',
+        'working_hours',
     ];
 
     // Le téléphone marchand n'est jamais exposé dans les réponses API client.
@@ -31,6 +33,8 @@ class Marchand extends Model
     protected $casts = [
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
+        'working_days' => 'array',
+        'working_hours' => 'array',
     ];
 
     public function products()

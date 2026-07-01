@@ -30,7 +30,7 @@ class ProductController extends Controller
                 ], 404);
             }
 
-            $products = Product::with('marchand')
+            $products = Product::with(['marchand', 'badges'])
                 ->whereHas('sousCategories', function($query) use ($subcategoryId) {
                     $query->where('homme_sous_categories.id', $subcategoryId);
                 })->get();
@@ -58,7 +58,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with('marchand')->get();
+            $products = Product::with(['marchand', 'badges'])->get();
             return response()->json($products, 200);
         } catch (\Throwable $th) {
             Log::error('Error in index: ' . $th->getMessage());
@@ -72,7 +72,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            $product = Product::with('marchand')->find($id);
+            $product = Product::with(['marchand', 'badges'])->find($id);
             if ($product) {
                 return response()->json($product, 200);
             } else {

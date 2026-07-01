@@ -374,8 +374,87 @@
                 <i class="ri-menu-line"></i>
             </button>
 
-            <!-- Header -->
-            <h1 class="admin-header">Admin</h1>
+            <!-- Header + Toggle -->
+            <div class="flex items-center justify-between flex-wrap gap-4 mb-6">
+                <h1 class="admin-header !mb-0">Admin</h1>
+
+                <div class="dashboard-toggle" data-active="supriz">
+                    <div class="toggle-slider"></div>
+                    <button type="button" class="toggle-opt" data-view="supriz">
+                        <i class="ri-heart-line"></i>
+                        <span>Supriz</span>
+                    </button>
+                    <button type="button" class="toggle-opt" data-view="ecom">
+                        <i class="ri-shopping-cart-2-line"></i>
+                        <span>E-commerce</span>
+                    </button>
+                </div>
+            </div>
+
+            <style>
+                .dashboard-toggle {
+                    display: inline-flex;
+                    position: relative;
+                    background: #fff;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 999px;
+                    padding: 4px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+                }
+                .dashboard-toggle .toggle-opt {
+                    position: relative; z-index: 2;
+                    display: inline-flex; align-items: center; gap: 8px;
+                    padding: 10px 22px; border: none; background: transparent;
+                    color: #6b7280; font-weight: 600; font-size: 14px;
+                    cursor: pointer;
+                    transition: color .3s ease;
+                }
+                .dashboard-toggle .toggle-opt i { font-size: 16px; }
+                .dashboard-toggle[data-active="supriz"] .toggle-opt[data-view="supriz"],
+                .dashboard-toggle[data-active="ecom"] .toggle-opt[data-view="ecom"] {
+                    color: #fff;
+                }
+                .toggle-slider {
+                    position: absolute; top: 4px; bottom: 4px;
+                    left: 4px; width: calc(50% - 4px);
+                    background: linear-gradient(135deg, #005792 0%, #0077b6 100%);
+                    border-radius: 999px; z-index: 1;
+                    transition: transform .35s cubic-bezier(.4,0,.2,1);
+                    box-shadow: 0 2px 8px rgba(0,87,146,.3);
+                }
+                .dashboard-toggle[data-active="ecom"] .toggle-slider {
+                    transform: translateX(100%);
+                }
+                .dash-view {
+                    animation: fadeSlideIn .4s cubic-bezier(.4,0,.2,1);
+                }
+                .dash-view.hidden { display: none; }
+                @keyframes fadeSlideIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .ecom-stat-card {
+                    background: #fff; border-radius: 16px; padding: 20px;
+                    border: 1px solid #e5e7eb;
+                    display: flex; align-items: center; gap: 14px;
+                }
+                .ecom-stat-card .icon {
+                    width: 48px; height: 48px; border-radius: 12px;
+                    display: flex; align-items: center; justify-content: center;
+                    font-size: 22px;
+                }
+                .ecom-stat-card .value {
+                    font-size: 22px; font-weight: 700; color: #111827;
+                }
+                .ecom-stat-card .label {
+                    font-size: 12px; color: #6b7280; font-weight: 500;
+                }
+            </style>
+
+            {{-- ============================================================ --}}
+            {{-- VUE SUPRIZ (par défaut) --}}
+            {{-- ============================================================ --}}
+            <div class="dash-view" id="view-supriz">
 
             <!-- Statistiques par Catégorie -->
             <div class="stats-row">
@@ -531,6 +610,144 @@
                     </table>
                 </div>
             </div>
+
+            </div> {{-- END #view-supriz --}}
+
+            {{-- ============================================================ --}}
+            {{-- VUE E-COMMERCE --}}
+            {{-- ============================================================ --}}
+            <div class="dash-view hidden" id="view-ecom">
+
+                {{-- Stats principales --}}
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#dcfce7;color:#059669;">
+                            <i class="ri-money-euro-circle-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ number_format($totalVentes, 0, ',', ' ') }}</div>
+                            <div class="label">Ventes (FCFA)</div>
+                        </div>
+                    </div>
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#dbeafe;color:#005792;">
+                            <i class="ri-truck-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ number_format($totalLivraison, 0, ',', ' ') }}</div>
+                            <div class="label">Livraisons (FCFA)</div>
+                        </div>
+                    </div>
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#fef3c7;color:#d97706;">
+                            <i class="ri-shopping-bag-3-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ $nbAchatsTotal }}</div>
+                            <div class="label">Articles vendus</div>
+                        </div>
+                    </div>
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#fce7f3;color:#ec4899;">
+                            <i class="ri-store-2-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ $nbProduits }}</div>
+                            <div class="label">Produits actifs</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Statuts des commandes --}}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#fef3c7;color:#d97706;">
+                            <i class="ri-time-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ $countEncours }}</div>
+                            <div class="label">Commandes en cours</div>
+                        </div>
+                    </div>
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#dbeafe;color:#005792;">
+                            <i class="ri-checkbox-circle-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ $countConfirmer }}</div>
+                            <div class="label">Confirmées</div>
+                        </div>
+                    </div>
+                    <div class="ecom-stat-card">
+                        <div class="icon" style="background:#dcfce7;color:#059669;">
+                            <i class="ri-truck-line"></i>
+                        </div>
+                        <div>
+                            <div class="value">{{ $countLivree }}</div>
+                            <div class="label">Livrées</div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Chart ventes mensuelles --}}
+                <div class="bg-white rounded-2xl p-5 border border-gray-200 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-900 text-base">Ventes mensuelles</h3>
+                            <span class="text-xs text-gray-500">Année {{ \Carbon\Carbon::now()->year }}</span>
+                        </div>
+                    </div>
+                    <div id="ecom-chart"></div>
+                </div>
+
+                {{-- Commandes récentes --}}
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                    <div class="p-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-gray-900">Commandes récentes</h3>
+                    </div>
+                    @if($commandesRecentes->isEmpty())
+                        <p class="p-6 text-center text-gray-400">Aucune commande.</p>
+                    @else
+                        <table class="w-full">
+                            <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Code</th>
+                                    <th class="px-4 py-3 text-left">Client</th>
+                                    <th class="px-4 py-3 text-left">Montant</th>
+                                    <th class="px-4 py-3 text-left">Statut</th>
+                                    <th class="px-4 py-3 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($commandesRecentes as $c)
+                                    <tr class="border-t border-gray-100">
+                                        <td class="px-4 py-3 text-sm font-mono text-gray-800">{{ $c['code'] }}</td>
+                                        <td class="px-4 py-3 text-sm text-gray-700">{{ $c['client'] }}</td>
+                                        <td class="px-4 py-3 text-sm font-semibold text-gray-900">
+                                            {{ number_format($c['montant'], 0, ',', ' ') }} F
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            @php
+                                                $badgeClass = match($c['status']) {
+                                                    'encours' => 'bg-yellow-100 text-yellow-700',
+                                                    'confirmer' => 'bg-blue-100 text-blue-700',
+                                                    'livrée' => 'bg-green-100 text-green-700',
+                                                    default => 'bg-gray-100 text-gray-700',
+                                                };
+                                            @endphp
+                                            <span class="px-2.5 py-1 rounded-full text-xs font-medium {{ $badgeClass }}">
+                                                {{ ucfirst($c['status']) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-gray-500">{{ $c['date'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    @endif
+                </div>
+
+            </div> {{-- END #view-ecom --}}
         </div>
     </main>
     <!-- end: Main -->
@@ -623,6 +840,75 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="js/script.js"></script>
     <script src="{{ mix('js/app.js') }}"></script>
+
+    {{-- Toggle Supriz / E-commerce + chart e-commerce --}}
+    <script>
+        (function () {
+            const toggle = document.querySelector('.dashboard-toggle');
+            const vSupriz = document.getElementById('view-supriz');
+            const vEcom = document.getElementById('view-ecom');
+            const ecomData = @json($ecomActivity ?? ['months' => [], 'totals' => []]);
+            let ecomChart = null;
+
+            function setView(view) {
+                toggle.dataset.active = view;
+                if (view === 'supriz') {
+                    vEcom.classList.add('hidden');
+                    vSupriz.classList.remove('hidden');
+                } else {
+                    vSupriz.classList.add('hidden');
+                    vEcom.classList.remove('hidden');
+                    // Init chart e-commerce à la première ouverture
+                    if (!ecomChart && document.getElementById('ecom-chart')) {
+                        ecomChart = new ApexCharts(document.getElementById('ecom-chart'), {
+                            chart: {
+                                type: 'area', height: 300,
+                                fontFamily: 'Inter, sans-serif',
+                                toolbar: { show: false },
+                            },
+                            series: [{
+                                name: 'Ventes (FCFA)',
+                                data: ecomData.totals,
+                            }],
+                            xaxis: {
+                                categories: ecomData.months,
+                                labels: { style: { colors: '#6b7280', fontSize: '11px' } },
+                                axisBorder: { show: false },
+                                axisTicks: { show: false },
+                            },
+                            yaxis: {
+                                labels: {
+                                    style: { colors: '#6b7280', fontSize: '11px' },
+                                    formatter: v => Math.round(v).toLocaleString('fr-FR'),
+                                },
+                            },
+                            colors: ['#005792'],
+                            fill: {
+                                type: 'gradient',
+                                gradient: {
+                                    shadeIntensity: 1,
+                                    opacityFrom: 0.4,
+                                    opacityTo: 0.05,
+                                    stops: [0, 100],
+                                },
+                            },
+                            stroke: { curve: 'smooth', width: 3 },
+                            dataLabels: { enabled: false },
+                            grid: { borderColor: '#f3f4f6', strokeDashArray: 4 },
+                            tooltip: {
+                                y: { formatter: v => Math.round(v).toLocaleString('fr-FR') + ' F' },
+                            },
+                        });
+                        ecomChart.render();
+                    }
+                }
+            }
+
+            toggle.querySelectorAll('.toggle-opt').forEach(btn => {
+                btn.addEventListener('click', () => setView(btn.dataset.view));
+            });
+        })();
+    </script>
 
 </body>
 

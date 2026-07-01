@@ -42,4 +42,9 @@ class Product extends Model
     {
         return $this->belongsTo(Marchand::class, 'marchand_id');
     }
+
+    public function badges()
+    {
+        return $this->belongsToMany(Badge::class, 'badge_product', 'product_id', 'badge_id');
+    }
 }

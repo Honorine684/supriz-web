@@ -17,18 +17,21 @@ class NotificationVenteController extends Controller
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
                         }, 'user'])
-                        ->get(); 
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
     $commandes_entente = Commandes::where('status', 'confirmer')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
                         }, 'user'])
+                        ->orderBy('created_at', 'desc')
                         ->get();
                         
     $commandes_termine = Commandes::where('status', 'livrée')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
                         }, 'user'])
+                        ->orderBy('created_at', 'desc')
                         ->get();
 
                         $commande_price = []; // Initialisation du tableau des prix des commandes

@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Message;
 use App\Models\SousCategorie;
 use App\Models\Categorie;
+use App\Models\Commandes;
+use App\Models\Product;
+use App\Models\Achat;
 use Carbon\Carbon;
 
 class MaisonController extends Controller
@@ -109,6 +112,47 @@ class MaisonController extends Controller
                 ];
             });
 
+        // ============ STATS E-COMMERCE ============
+        $totalVentes = Commandes::whereIn('status', ['confirmer', 'livrée'])
+            ->sum('prix_total_commande');
+        $totalLivraison = Commandes::whereIn('status', ['confirmer', 'livrée'])
+            ->sum('prix_total_livraison');
+        $countEncours = Commandes::where('status', 'encours')->count();
+        $countConfirmer = Commandes::where('status', 'confirmer')->count();
+        $countLivree = Commandes::where('status', 'livrée')->count();
+        $nbProduits = Product::count();
+        $nbAchatsTotal = Achat::sum('qte_achat');
+
+        // Ventes par mois (année en cours)
+        $ventesMonthly = Commandes::whereIn('status', ['confirmer', 'livrée'])
+            ->whereYear('created_at', Carbon::now()->year)
+            ->selectRaw('MONTH(created_at) as month, SUM(prix_total_commande) as total')
+            ->groupBy('month')
+            ->get()
+            ->keyBy('month');
+
+        $ecomActivity = ['months' => [], 'totals' => []];
+        for ($i = 1; $i <= 12; $i++) {
+            $ecomActivity['months'][] = $monthNames[$i - 1];
+            $ecomActivity['totals'][] = (float) ($ventesMonthly->get($i)->total ?? 0);
+        }
+
+        // Commandes récentes
+        $commandesRecentes = Commandes::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($c) {
+                return [
+                    'id' => $c->id,
+                    'code' => $c->code_commandes,
+                    'client' => $c->user->name ?? 'Anonyme',
+                    'montant' => $c->prix_total_commande,
+                    'status' => $c->status,
+                    'date' => $c->created_at->format('d/m/Y'),
+                ];
+            });
+
         // Passer les variables à la vue
         return view('maison', compact(
             'active_link',
@@ -117,7 +161,17 @@ class MaisonController extends Controller
             'nombreClics',
             'clientsActifs',
             'activityData',
-            'utilisateursRecents'
+            'utilisateursRecents',
+            // e-commerce
+            'totalVentes',
+            'totalLivraison',
+            'countEncours',
+            'countConfirmer',
+            'countLivree',
+            'nbProduits',
+            'nbAchatsTotal',
+            'ecomActivity',
+            'commandesRecentes'
         ));
     }
 }
