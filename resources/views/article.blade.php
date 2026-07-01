@@ -260,7 +260,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="form-label">Prix (FCFA) <span class="req">*</span></label>
                             <input type="number" name="prix_product" min="0" step="100"
@@ -275,14 +275,11 @@
                                    class="form-input" placeholder="Optionnel">
                             <p class="text-xs text-gray-500 mt-1">Doit être inférieur au prix normal</p>
                         </div>
-
-                        <div>
-                            <label class="form-label">Prix de livraison (FCFA)</label>
-                            <input type="number" name="prix_livraison" min="0" step="100"
-                                   value="{{ old('prix_livraison', $article->prix_livraison ?? '') }}"
-                                   class="form-input" placeholder="0">
-                        </div>
                     </div>
+                    <p class="text-xs text-gray-500 mt-3">
+                        <i class="ri-truck-line text-blue-500"></i>
+                        Les frais de livraison sont calculés automatiquement selon la distance client-marchand.
+                    </p>
                 </div>
 
                 {{-- Section 2: Catégorisation --}}
