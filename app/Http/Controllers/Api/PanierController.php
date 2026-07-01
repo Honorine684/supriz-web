@@ -648,13 +648,17 @@ public function successPage(Request $request)
         $productIds = $achats->pluck('product_id')->toArray();
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        // Calculer le total des remises
-        $total_prix_promo = $achats->reduce(function ($carry, $achat) use ($products) {
+        // Calculer le total des remises : (prix_normal - prix_promo) * quantité
+        $total_remise = $achats->reduce(function ($carry, $achat) use ($products) {
             $produit = $products->get($achat->product_id);
-            return $carry + ($produit ? $produit->prix_promo : 0);
+            if (!$produit || !$produit->prix_promo || $produit->prix_promo >= $produit->price) {
+                return $carry;
+            }
+            $economie_unitaire = $produit->price - $produit->prix_promo;
+            return $carry + $economie_unitaire * $achat->qte_achat;
         }, 0);
 
-        return $total_prix_promo;
+        return $total_remise;
     }
 
 

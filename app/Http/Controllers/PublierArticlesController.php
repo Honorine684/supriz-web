@@ -79,7 +79,7 @@ public function store(Request $request)
         'sousCategorieId' => 'required|integer',
         'badge_ids' => 'nullable|array|max:5',
         'badge_ids.*' => 'integer|exists:badges,id',
-    ]);
+    ], $this->validationMessages(), $this->validationAttributes());
 
     try {
         // Création de l'article
@@ -184,7 +184,7 @@ public function update(Request $request, $id)
         'sousCategorieId' => 'required|integer',
         'badge_ids' => 'nullable|array|max:5',
         'badge_ids.*' => 'integer|exists:badges,id',
-    ]);
+    ], $this->validationMessages(), $this->validationAttributes());
 
     try {
         // Recherche de l'article existant
@@ -255,9 +255,51 @@ public function update(Request $request, $id)
 
 
 
+    /** Attributs (noms de champ) en français pour les messages d'erreur. */
+    private function validationAttributes(): array
+    {
+        return [
+            'name_product' => 'nom du produit',
+            'prix_product' => 'prix',
+            'marchand_id' => 'marchand',
+            'info' => 'durée de préparation',
+            'description' => 'description',
+            'prix_promotion' => 'prix promotionnel',
+            'prix_livraison' => 'prix de livraison',
+            'personnalisation' => 'personnalisation',
+            'categorie_dhomme' => 'catégorie',
+            'evaluation' => 'évaluation',
+            'img1' => 'image principale',
+            'img2' => 'image secondaire',
+            'sousCategorieId' => 'sous-catégorie',
+            'badge_ids' => 'badges',
+            'badge_ids.*' => 'badge',
+        ];
+    }
 
-
-
-
-
+    /** Messages de validation personnalisés en français. */
+    private function validationMessages(): array
+    {
+        return [
+            'required' => 'Le champ :attribute est obligatoire.',
+            'string' => 'Le champ :attribute doit être du texte.',
+            'numeric' => 'Le champ :attribute doit être un nombre.',
+            'integer' => 'Le champ :attribute doit être un entier.',
+            'max' => [
+                'string' => 'Le champ :attribute ne doit pas dépasser :max caractères.',
+                'file' => "Le fichier :attribute ne doit pas dépasser :max Ko.",
+                'array' => 'Le champ :attribute ne doit pas contenir plus de :max éléments.',
+                'numeric' => 'Le champ :attribute ne doit pas être supérieur à :max.',
+            ],
+            'min' => [
+                'numeric' => 'Le champ :attribute doit être au moins :min.',
+                'string' => 'Le champ :attribute doit contenir au moins :min caractères.',
+            ],
+            'in' => 'La valeur du champ :attribute est invalide.',
+            'exists' => "Le :attribute sélectionné n'existe pas.",
+            'image' => 'Le champ :attribute doit être une image.',
+            'mimes' => "Le fichier :attribute doit être de type: :values.",
+            'array' => 'Le champ :attribute doit être une liste.',
+        ];
+    }
 }

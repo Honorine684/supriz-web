@@ -195,13 +195,11 @@
         {{-- Alerts --}}
         <div class="px-3 sm:px-4 md:px-8">
             @if ($errors->any())
-                <div class="p-3 mb-4 bg-red-50 border border-red-200 rounded-lg">
-                    <p class="font-medium text-red-700 mb-1">Veuillez corriger les erreurs suivantes :</p>
-                    <ul class="list-disc list-inside text-sm text-red-600">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="p-3 mb-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+                    <i class="ri-error-warning-line text-red-500 text-lg"></i>
+                    <p class="text-sm text-red-700">
+                        Merci de corriger les erreurs indiquées ci-dessous en rouge.
+                    </p>
                 </div>
             @endif
 
@@ -237,13 +235,14 @@
                             <label class="form-label">Nom du produit <span class="req">*</span></label>
                             <input type="text" name="name_product"
                                    value="{{ old('name_product', $article->title ?? '') }}"
-                                   class="form-input" placeholder="Ex: Bouquet de roses rouges"
+                                   class="form-input @error('name_product') !border-red-400 @enderror" placeholder="Ex: Bouquet de roses rouges"
                                    maxlength="255" required>
+                            @error('name_product') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="form-label">Marchand <span class="req">*</span></label>
-                            <select name="marchand_id" class="form-input" required>
+                            <select name="marchand_id" class="form-input @error('marchand_id') !border-red-400 @enderror" required>
                                 <option value="">— Sélectionner un marchand —</option>
                                 @foreach($marchands as $m)
                                     <option value="{{ $m->id }}"
@@ -252,6 +251,7 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('marchand_id') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                             @if($marchands->isEmpty())
                                 <a href="{{ route('admin.marchand') }}" class="text-blue-600 text-xs mt-1 inline-block">
                                     Aucun marchand. Créez-en un d'abord.
@@ -265,14 +265,16 @@
                             <label class="form-label">Prix (FCFA) <span class="req">*</span></label>
                             <input type="number" name="prix_product" min="0" step="100"
                                    value="{{ old('prix_product', $article->price ?? '') }}"
-                                   class="form-input" placeholder="0" required>
+                                   class="form-input @error('prix_product') !border-red-400 @enderror" placeholder="0" required>
+                            @error('prix_product') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
                             <label class="form-label">Prix promotionnel (FCFA)</label>
                             <input type="number" name="prix_promotion" min="0" step="100"
                                    value="{{ old('prix_promotion', $article->prix_promo ?? '') }}"
-                                   class="form-input" placeholder="Optionnel">
+                                   class="form-input @error('prix_promotion') !border-red-400 @enderror" placeholder="Optionnel">
+                            @error('prix_promotion') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                             <p class="text-xs text-gray-500 mt-1">Doit être inférieur au prix normal</p>
                         </div>
                     </div>
@@ -388,7 +390,8 @@
                             <label class="form-label">Durée de préparation <span class="req">*</span></label>
                             <input type="text" name="info"
                                    value="{{ old('info', $article->info ?? '') }}"
-                                   class="form-input" placeholder="Ex: 24h, 48h, 2j" maxlength="255" required>
+                                   class="form-input @error('info') !border-red-400 @enderror" placeholder="Ex: 24h, 48h, 2j" maxlength="255" required>
+                            @error('info') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                             <p class="text-xs text-gray-500 mt-1">Format: nombre + h (heures) ou j (jours)</p>
                         </div>
 

@@ -62,22 +62,13 @@
                     {{ isset($badge) ? 'Modifier le badge' : 'Créer un badge' }}
                 </p>
 
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
-                    <div class="md:col-span-3">
-                        <label class="block mb-2 text-sm text-gray-600">Nom du badge</label>
-                        <input type="text" name="name"
-                               value="{{ old('name', $badge->name ?? '') }}"
-                               placeholder="Ex: Anniversaire, Mariage..."
-                               maxlength="50"
-                               class="w-full p-2 border border-gray-300 rounded" required>
-                    </div>
-
-                    <div>
-                        <label class="block mb-2 text-sm text-gray-600">Couleur (optionnel)</label>
-                        <input type="color" name="color"
-                               value="{{ old('color', $badge->color ?? '#005792') }}"
-                               class="w-full h-10 p-1 border border-gray-300 rounded cursor-pointer">
-                    </div>
+                <div class="mb-3">
+                    <label class="block mb-2 text-sm text-gray-600">Nom du badge</label>
+                    <input type="text" name="name"
+                           value="{{ old('name', $badge->name ?? '') }}"
+                           placeholder="Ex: Anniversaire, Mariage..."
+                           maxlength="50"
+                           class="w-full p-2 border border-gray-300 rounded" required>
                 </div>
 
                 {{-- Icon picker --}}
@@ -182,7 +173,6 @@
                             <tr class="text-left text-gray-500 text-[12px] uppercase">
                                 <th class="px-4 py-2">Aperçu</th>
                                 <th class="px-4 py-2">Nom</th>
-                                <th class="px-4 py-2">Couleur</th>
                                 <th class="px-4 py-2">Créé le</th>
                                 <th class="px-4 py-2 text-right">Actions</th>
                             </tr>
@@ -193,28 +183,20 @@
                             @endphp
                             @foreach ($badges as $b)
                                 @php
-                                    $c = $b->color ?? '#005792';
                                     $riClass = $iconMap[$b->icon] ?? null;
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-2 border-b border-b-gray-50">
-                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full"
-                                              style="color: {{ $c }}; background-color: {{ $c }}1F; border: 1px solid {{ $c }}40;">
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-md"
+                                              style="color: #ffffff; background-color: #005792;">
                                             @if ($riClass)
-                                                <i class="{{ $riClass }}"></i>
+                                                <i class="{{ $riClass }}" style="color: #ffffff;"></i>
                                             @endif
                                             {{ $b->name }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-2 text-[13px] text-gray-700 border-b border-b-gray-50">
                                         {{ $b->name }}
-                                    </td>
-                                    <td class="px-4 py-2 border-b border-b-gray-50">
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-block w-5 h-5 border border-gray-200 rounded"
-                                                  style="background-color: {{ $c }};"></span>
-                                            <code class="text-xs text-gray-500">{{ $c }}</code>
-                                        </div>
                                     </td>
                                     <td class="px-4 py-2 text-[13px] text-gray-400 border-b border-b-gray-50">
                                         {{ $b->created_at?->format('d-m-Y') }}

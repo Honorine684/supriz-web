@@ -18,13 +18,12 @@ class BadgeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50|unique:badges,name',
-            'color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
             'icon' => 'nullable|string|max:40',
         ]);
 
         Badge::create([
             'name' => trim($request->input('name')),
-            'color' => $request->input('color'),
+            'color' => '#005792',
             'icon' => $request->input('icon'),
         ]);
 
@@ -43,14 +42,13 @@ class BadgeController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:50|unique:badges,name,' . $id,
-            'color' => 'nullable|regex:/^#([A-Fa-f0-9]{6})$/',
             'icon' => 'nullable|string|max:40',
         ]);
 
         $badge = Badge::findOrFail($id);
         $badge->update([
             'name' => trim($request->input('name')),
-            'color' => $request->input('color'),
+            'color' => '#005792',
             'icon' => $request->input('icon'),
         ]);
 
