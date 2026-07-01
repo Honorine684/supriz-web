@@ -62,18 +62,18 @@
                     {{ isset($badge) ? 'Modifier le badge' : 'Créer un badge' }}
                 </p>
 
-                <div class="flex flex-col md:flex-row gap-4 mb-3">
-                    <div class="grid flex-1">
-                        <span class="mb-2 text-sm text-gray-600">Nom du badge</span>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-3">
+                    <div class="md:col-span-3">
+                        <label class="block mb-2 text-sm text-gray-600">Nom du badge</label>
                         <input type="text" name="name"
                                value="{{ old('name', $badge->name ?? '') }}"
                                placeholder="Ex: Anniversaire, Mariage..."
                                maxlength="50"
-                               class="p-2 border border-gray-300 rounded w-full" required>
+                               class="w-full p-2 border border-gray-300 rounded" required>
                     </div>
 
-                    <div class="grid w-full md:w-44">
-                        <span class="mb-2 text-sm text-gray-600">Couleur (optionnel)</span>
+                    <div>
+                        <label class="block mb-2 text-sm text-gray-600">Couleur (optionnel)</label>
                         <input type="color" name="color"
                                value="{{ old('color', $badge->color ?? '#005792') }}"
                                class="w-full h-10 p-1 border border-gray-300 rounded cursor-pointer">

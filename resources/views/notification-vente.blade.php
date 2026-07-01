@@ -86,71 +86,51 @@
             </div>
         @endif
 
-        {{-- Cartes statistiques rapides --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        {{-- Onglets sobres --}}
+        <div class="grid grid-cols-3 gap-2 mb-6 p-1 bg-gray-100 rounded-xl">
             <button type="button" data-section="section-encours"
-                    class="section-tab bg-white border-2 border-yellow-200 hover:border-yellow-400 rounded-xl p-4 text-left transition-all">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
-                        <i class="ri-time-line text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs text-gray-500 uppercase font-medium tracking-wide">En cours</div>
-                        <div class="text-2xl font-bold text-gray-900">{{ count($commandes_encours) }}</div>
-                    </div>
-                </div>
+                    class="section-tab flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-white/60 transition-all">
+                <i class="ri-time-line"></i>
+                <span>En cours</span>
+                <span class="tab-count px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">{{ count($commandes_encours) }}</span>
             </button>
-
             <button type="button" data-section="section-entente"
-                    class="section-tab bg-white border-2 border-blue-200 hover:border-blue-400 rounded-xl p-4 text-left transition-all">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                        <i class="ri-truck-line text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs text-gray-500 uppercase font-medium tracking-wide">Livraison attente</div>
-                        <div class="text-2xl font-bold text-gray-900">{{ count($commandes_entente) }}</div>
-                    </div>
-                </div>
+                    class="section-tab flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-white/60 transition-all">
+                <i class="ri-truck-line"></i>
+                <span>En attente</span>
+                <span class="tab-count px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">{{ count($commandes_entente) }}</span>
             </button>
-
             <button type="button" data-section="section-termine"
-                    class="section-tab bg-white border-2 border-green-200 hover:border-green-400 rounded-xl p-4 text-left transition-all">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                        <i class="ri-checkbox-circle-line text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-xs text-gray-500 uppercase font-medium tracking-wide">Terminées</div>
-                        <div class="text-2xl font-bold text-gray-900">{{ count($commandes_termine) }}</div>
-                    </div>
-                </div>
+                    class="section-tab flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-white/60 transition-all">
+                <i class="ri-checkbox-circle-line"></i>
+                <span>Livrées</span>
+                <span class="tab-count px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">{{ count($commandes_termine) }}</span>
             </button>
         </div>
 
         <style>
             .section-tab.active {
-                border-color: #005792 !important;
-                background: linear-gradient(135deg, rgba(0,87,146,.05), rgba(0,87,146,.02));
-                box-shadow: 0 4px 12px rgba(0,87,146,.1);
+                background: #ffffff;
+                color: #005792;
+                box-shadow: 0 1px 3px rgba(0,0,0,.08);
+            }
+            .section-tab.active .tab-count {
+                background: rgba(0,87,146,.1);
+                color: #005792;
             }
             .commande-section { display: none; }
             .commande-section.active {
                 display: block;
-                animation: fadeInUp .3s ease-out;
+                animation: fadeInUp .25s ease-out;
             }
             @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(8px); }
+                from { opacity: 0; transform: translateY(6px); }
                 to { opacity: 1; transform: translateY(0); }
             }
         </style>
 
         {{-- Section: En cours --}}
         <div id="section-encours" class="commande-section active">
-            <div class="flex items-center gap-2 mb-3">
-                <div class="w-1 h-6 bg-yellow-500 rounded-full"></div>
-                <h3 class="font-semibold text-gray-800">Opérations en attente ({{ count($commandes_encours) }})</h3>
-            </div>
             @if ($commandes_encours->isEmpty())
                 <div class="bg-white border border-dashed border-gray-300 rounded-xl p-8 text-center">
                     <i class="ri-inbox-line text-4xl text-gray-300 block mb-2"></i>
@@ -168,10 +148,6 @@
 
         {{-- Section: Livraison en attente --}}
         <div id="section-entente" class="commande-section">
-            <div class="flex items-center gap-2 mb-3">
-                <div class="w-1 h-6 bg-blue-500 rounded-full"></div>
-                <h3 class="font-semibold text-gray-800">Livraisons en attente ({{ count($commandes_entente) }})</h3>
-            </div>
             @if ($commandes_entente->isEmpty())
                 <div class="bg-white border border-dashed border-gray-300 rounded-xl p-8 text-center">
                     <i class="ri-truck-line text-4xl text-gray-300 block mb-2"></i>
@@ -186,10 +162,6 @@
 
         {{-- Section: Terminées --}}
         <div id="section-termine" class="commande-section">
-            <div class="flex items-center gap-2 mb-3">
-                <div class="w-1 h-6 bg-green-500 rounded-full"></div>
-                <h3 class="font-semibold text-gray-800">Commandes livrées ({{ count($commandes_termine) }})</h3>
-            </div>
             @if ($commandes_termine->isEmpty())
                 <div class="bg-white border border-dashed border-gray-300 rounded-xl p-8 text-center">
                     <i class="ri-inbox-archive-line text-4xl text-gray-300 block mb-2"></i>

@@ -6,6 +6,28 @@
         $so = strtolower($commande->selectedOption);
         $isMoi = $so === 'moi même' || $so === 'moi meme';
     }
+
+    // Normalise un numéro pour WhatsApp (international sans +, ni espace).
+    // Bénin: 10 chiffres commençant par 0 -> 229 + 9 chiffres restants
+    // 8 chiffres -> 229 + ...
+    // Sinon on garde tel quel après nettoyage.
+    if (!function_exists('supriz_wa_number')) {
+        function supriz_wa_number($num) {
+            if (!$num) return null;
+            $s = preg_replace('/[^\d+]/', '', (string) $num);
+            if ($s === '') return null;
+            if (str_starts_with($s, '+')) $s = substr($s, 1);
+            if (strlen($s) === 10 && str_starts_with($s, '0')) {
+                $s = '229' . substr($s, 1);
+            } elseif (strlen($s) === 8) {
+                $s = '229' . $s;
+            }
+            return $s;
+        }
+    }
+    $userWa = supriz_wa_number($commande->user->numero ?? null);
+    $beneficiaireWa = supriz_wa_number($commande->numero_beneficier ?? null);
+
     $statusMap = [
         'encours' => ['label' => 'En cours', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-800', 'dot' => 'bg-yellow-500'],
         'confirmer' => ['label' => 'Confirmée', 'bg' => 'bg-blue-100', 'text' => 'text-blue-800', 'dot' => 'bg-blue-500'],
@@ -69,12 +91,14 @@
             {{-- Téléphone client --}}
             <div class="bg-gray-50 rounded-xl p-3">
                 <div class="text-xs text-gray-500 mb-1 flex items-center gap-1">
-                    <i class="ri-phone-line"></i> Téléphone client
+                    <i class="ri-whatsapp-line text-green-600"></i> WhatsApp client
                 </div>
                 <div class="font-semibold text-sm text-gray-800">
-                    @if ($commande->user && $commande->user->numero)
-                        <a href="tel:{{ $commande->user->numero }}" class="hover:underline">
+                    @if ($userWa)
+                        <a href="https://wa.me/{{ $userWa }}" target="_blank"
+                           class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-1">
                             {{ $commande->user->numero }}
+                            <i class="ri-external-link-line text-xs"></i>
                         </a>
                     @else
                         <span class="text-gray-400">Non renseigné</span>
@@ -89,9 +113,15 @@
                     {{ $isMoi ? 'Pour lui-même' : 'Bénéficiaire' }}
                 </div>
                 <div class="font-semibold text-sm text-gray-800">
-                    <a href="tel:{{ $commande->numero_beneficier }}" class="hover:underline">
-                        {{ $commande->numero_beneficier }}
-                    </a>
+                    @if ($beneficiaireWa)
+                        <a href="https://wa.me/{{ $beneficiaireWa }}" target="_blank"
+                           class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-1">
+                            <i class="ri-whatsapp-line"></i>
+                            {{ $commande->numero_beneficier }}
+                        </a>
+                    @else
+                        <span class="text-gray-400">Non renseigné</span>
+                    @endif
                 </div>
             </div>
         </div>
