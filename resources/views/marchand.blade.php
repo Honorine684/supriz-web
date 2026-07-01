@@ -20,17 +20,17 @@
 
     <main class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Marchands</h4>
+        <div class="pt-4 md:pt-6 pb-0 px-4 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
+                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="" class="max-w-[120px] md:max-w-none h-auto">
+                <h4 class="font-bold text-right text-white text-sm md:text-base">Marchands</h4>
                 <div class="flex">
                     <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
                 </div>
             </div>
         </div>
 
-        <div class="p-6">
+        <div class="p-4 md:p-6">
 
             @if ($errors->any())
                 <div class="bg-red-500 text-center p-2 rounded text-white mb-3">
@@ -115,7 +115,7 @@
                     <p class="text-xs text-gray-500 mt-1">
                         Cliquez sur un résultat, ou déplacez directement le marqueur sur la carte pour ajuster.
                     </p>
-                    <div id="marchand-map" class="mt-2 rounded border" style="height: 360px; z-index: 0;"></div>
+                    <div id="marchand-map" class="mt-2 rounded border h-[260px] md:h-[360px]" style="z-index: 0;"></div>
                 </div>
 
                 {{-- Jours travaillés --}}
@@ -155,15 +155,15 @@
                     </div>
                     <div id="ranges-list" class="space-y-2">
                         @foreach ($hours as $i => $r)
-                            <div class="flex items-center gap-2 range-row">
+                            <div class="flex flex-wrap items-center gap-2 range-row">
                                 <span class="text-sm text-gray-500 w-16">Plage {{ $i + 1 }}</span>
                                 <input type="time" name="working_hours[{{ $i }}][open]"
                                        value="{{ $r['open'] ?? '09:00' }}"
-                                       class="p-2 border border-gray-300 rounded">
+                                       class="p-2 border border-gray-300 rounded min-w-0 flex-shrink">
                                 <span class="text-gray-400">à</span>
                                 <input type="time" name="working_hours[{{ $i }}][close]"
                                        value="{{ $r['close'] ?? '18:00' }}"
-                                       class="p-2 border border-gray-300 rounded">
+                                       class="p-2 border border-gray-300 rounded min-w-0 flex-shrink">
                                 <button type="button" class="text-red-500 hover:underline text-sm remove-range">
                                     Retirer
                                 </button>
@@ -204,12 +204,12 @@
                         addBtn.addEventListener('click', function () {
                             const i = nextIndex();
                             const row = document.createElement('div');
-                            row.className = 'flex items-center gap-2 range-row';
+                            row.className = 'flex flex-wrap items-center gap-2 range-row';
                             row.innerHTML =
                                 '<span class="text-sm text-gray-500 w-16">Plage ' + (i + 1) + '</span>' +
-                                '<input type="time" name="working_hours[' + i + '][open]" value="09:00" class="p-2 border border-gray-300 rounded">' +
+                                '<input type="time" name="working_hours[' + i + '][open]" value="09:00" class="p-2 border border-gray-300 rounded min-w-0 flex-shrink">' +
                                 '<span class="text-gray-400">à</span>' +
-                                '<input type="time" name="working_hours[' + i + '][close]" value="18:00" class="p-2 border border-gray-300 rounded">' +
+                                '<input type="time" name="working_hours[' + i + '][close]" value="18:00" class="p-2 border border-gray-300 rounded min-w-0 flex-shrink">' +
                                 '<button type="button" class="text-red-500 hover:underline text-sm remove-range">Retirer</button>';
                             list.appendChild(row);
                             attachRemove(row.querySelector('.remove-range'));
@@ -217,7 +217,7 @@
                     })();
                 </script>
 
-                <div class="flex gap-2 mt-4">
+                <div class="flex flex-col sm:flex-row gap-2 mt-4">
                     <input type="submit"
                            class="p-2 text-white rounded cursor-pointer btn-design flex-1"
                            value="{{ isset($marchand) ? 'Modifier' : 'Enregistrer' }}">
@@ -233,7 +233,7 @@
             <p class="mt-3 mb-2">Liste des marchands</p>
 
             <div class="p-3 overflow-x-auto bg-white border border-gray-100 shadow-md rounded-20 shadow-black/5">
-                <table class="w-full">
+                <table class="w-full min-w-[720px]">
                     <thead>
                         <tr class="text-left text-xs text-gray-500 border-b">
                             <th class="px-4 py-2">Nom</th>

@@ -43,9 +43,12 @@
         .card-section {
             background: #fff;
             border-radius: 16px;
-            padding: 20px;
+            padding: 16px;
             margin-bottom: 16px;
             border: 1px solid #e5e7eb;
+        }
+        @media (min-width: 768px) {
+            .card-section { padding: 20px; }
         }
         .card-title {
             font-size: 15px;
@@ -135,11 +138,19 @@
             position: sticky; bottom: 0;
             background: #fff;
             border-top: 1px solid #e5e7eb;
-            padding: 16px 20px;
+            padding: 12px 16px;
             margin: 20px -16px -16px;
             box-shadow: 0 -4px 12px rgba(0,0,0,.04);
-            display: flex; gap: 12px;
+            display: flex; gap: 8px;
+            flex-wrap: wrap;
             justify-content: flex-end;
+        }
+        @media (min-width: 768px) {
+            .sticky-bar { padding: 16px 20px; gap: 12px; flex-wrap: nowrap; }
+        }
+        .btn-primary, .btn-secondary { flex: 1 1 auto; justify-content: center; }
+        @media (min-width: 640px) {
+            .btn-primary, .btn-secondary { flex: 0 0 auto; }
         }
         .btn-primary {
             display: inline-flex; align-items: center; gap: 8px;
@@ -171,18 +182,18 @@
     <main class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20">
 
         {{-- Header --}}
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">
+        <div class="pt-4 md:pt-6 pb-0 px-4 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
+                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="" class="max-w-[120px] md:max-w-none h-auto">
+                <h4 class="font-bold text-right text-white text-sm md:text-base">
                     {{ isset($article) ? 'Modifier un article' : 'Publier un article' }}
                 </h4>
-                <div class="w-10"></div>
+                <div class="w-10 hidden md:block"></div>
             </div>
         </div>
 
         {{-- Alerts --}}
-        <div class="px-4 md:px-8">
+        <div class="px-3 sm:px-4 md:px-8">
             @if ($errors->any())
                 <div class="p-3 mb-4 bg-red-50 border border-red-200 rounded-lg">
                     <p class="font-medium text-red-700 mb-1">Veuillez corriger les erreurs suivantes :</p>
@@ -431,7 +442,7 @@
                     </div>
                     <p class="text-xs text-gray-500 mb-3">Formats acceptés: JPG, PNG, GIF — Max 2 MB par image</p>
 
-                    <div class="grid grid-cols-2 gap-4 max-w-md">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md">
                         @php
                             $img1Url = isset($article) && $article->photo_main
                                 ? asset('storage/'.$article->photo_main) : null;
@@ -486,7 +497,8 @@
                 @if($produits->isEmpty())
                     <p class="p-6 text-center text-gray-400">Aucune publication.</p>
                 @else
-                    <table class="w-full">
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[640px]">
                         <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
                             <tr>
                                 <th class="px-4 py-3 text-left">Image</th>
@@ -535,6 +547,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
                 @endif
             </div>
         </div>

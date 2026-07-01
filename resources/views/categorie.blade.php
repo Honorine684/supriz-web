@@ -25,15 +25,15 @@
     <main
         class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Catégoeries</h4>
-                <div class="flex">
-                    <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
+        <div class="pt-4 pb-0 px-4 md:pt-6 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+                <h4 class="font-bold text-right text-white text-base md:text-lg">Catégoeries</h4>
+                <div class="flex flex-wrap items-center gap-2">
+                    <img class="mr-3 max-w-full h-auto" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
 
-                    <div class="flex">
-                        <input type="text" class="pr-10 rounded-20" placeholder="Recherche">
+                    <div class="flex relative">
+                        <input type="text" class="pr-10 rounded-20 w-full max-w-full" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon"
                             src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                     </div>
@@ -62,6 +62,7 @@
         @endif
 
 
+        <div class="px-3 md:px-0">
         <form class="mt-5" action="{{ isset($sousCategorie) ? route('admin.categorie.update', $sousCategorie->id) : route('admin.add.categorie') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @if(isset($sousCategorie))
@@ -216,7 +217,7 @@
         <div style="margin-top: 3rem; margin-bottom: 2rem;">
             <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Catégories Supriz Prédéfinies</h2>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1.5rem;">
                 @foreach($suprizPredefinies as $supriz)
                 <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5F2FF;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -342,7 +343,7 @@
             <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #1f2937;">Catégories Supriz Personnalisées</h2>
             <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 1rem;">Catégories ajoutées manuellement - Gérez leurs images et icônes ci-dessous</p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 1.5rem;">
                 @foreach($suprizPersonnalisees as $suprizCustom)
                 <div style="background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #d1fae5;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -467,8 +468,8 @@
         <div style="margin-top: 2rem;">
             <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #005792;">Sous-catégories Supriz</h2>
 
-            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden; border: 2px solid #E5F2FF;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="overflow-x-auto" style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 2px solid #E5F2FF;">
+                <table style="width: 100%; min-width: 700px; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #005792;">
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Nom</th>
@@ -588,8 +589,8 @@
         <div style="margin-top: 2rem;">
             <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem; color: #374151;">Sous-catégories Homme / Femme / Enfant</h2>
 
-            <div style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="overflow-x-auto" style="background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <table style="width: 100%; min-width: 700px; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #374151;">
                             <th style="padding: 1rem 1.5rem; text-align: left; color: white; font-weight: bold; font-size: 0.875rem; text-transform: uppercase;">Nom</th>
@@ -700,6 +701,7 @@
 
 
 
+        </div>
         </div>
     </main>
     <!-- end: Main -->

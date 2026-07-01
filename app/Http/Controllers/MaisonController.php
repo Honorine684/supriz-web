@@ -143,10 +143,16 @@ class MaisonController extends Controller
             ->limit(10)
             ->get()
             ->map(function ($c) {
+                $clientName = 'Anonyme';
+                if ($c->user) {
+                    $full = trim(($c->user->prenom ?? '') . ' ' . ($c->user->nom ?? ''));
+                    if ($full !== '') $clientName = $full;
+                    elseif (!empty($c->user->email)) $clientName = $c->user->email;
+                }
                 return [
                     'id' => $c->id,
                     'code' => $c->code_commandes,
-                    'client' => $c->user->name ?? 'Anonyme',
+                    'client' => $clientName,
                     'montant' => $c->prix_total_commande,
                     'status' => $c->status,
                     'date' => $c->created_at->format('d/m/Y'),

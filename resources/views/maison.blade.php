@@ -311,11 +311,13 @@
 
         @media (max-width: 640px) {
             .stats-row {
-                flex-direction: column;
+                gap: 12px;
             }
 
             .stat-card {
-                min-width: 100%;
+                min-width: 180px;
+                width: 180px;
+                padding: 16px;
             }
 
             .stat-number {
@@ -403,11 +405,15 @@
                 }
                 .dashboard-toggle .toggle-opt {
                     position: relative; z-index: 2;
-                    display: inline-flex; align-items: center; gap: 8px;
-                    padding: 10px 22px; border: none; background: transparent;
-                    color: #6b7280; font-weight: 600; font-size: 14px;
+                    display: inline-flex; align-items: center; gap: 6px;
+                    padding: 8px 14px; border: none; background: transparent;
+                    color: #6b7280; font-weight: 600; font-size: 13px;
                     cursor: pointer;
                     transition: color .3s ease;
+                    white-space: nowrap;
+                }
+                @media (min-width: 640px) {
+                    .dashboard-toggle .toggle-opt { padding: 10px 22px; font-size: 14px; gap: 8px; }
                 }
                 .dashboard-toggle .toggle-opt i { font-size: 16px; }
                 .dashboard-toggle[data-active="supriz"] .toggle-opt[data-view="supriz"],
@@ -708,7 +714,8 @@
                     @if($commandesRecentes->isEmpty())
                         <p class="p-6 text-center text-gray-400">Aucune commande.</p>
                     @else
-                        <table class="w-full">
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[640px]">
                             <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
                                 <tr>
                                     <th class="px-4 py-3 text-left">Code</th>
@@ -744,6 +751,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
                     @endif
                 </div>
 

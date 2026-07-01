@@ -23,14 +23,14 @@
 
     <!-- start: Main -->
     <main
-        class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
+        class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 p-4 md:p-6 overflow-x-hidden">
 
 
         <a href=""><span class="mr-4 cursor-pointer border-bottom-design text-color-design">Information
                 Générale</span></a>
         <hr class="mb-6">
 
-        <h2 class="font-bold">Profil</h2>
+        <h2 class="font-bold text-lg md:text-xl">Profil</h2>
 
         @if ($errors->any())
             <div class="bg-red-500 text-center p-2 rounded text-white">
@@ -63,42 +63,42 @@
                     class="relative opacity-0 cursor-pointer h-input-file rounded-full -t-15">
             </div>
             <div class="index-30">
-                <div class="flex index-30 items-center justify-between">
-                    <div class="w-full grid mr-7">
+                <div class="flex flex-col md:flex-row index-30 md:items-center md:justify-between gap-4 md:gap-0">
+                    <div class="w-full grid md:mr-7">
                         <span class="font-bold mb-3">Nom : </span>
                         <input type="text" value="{{ $user->nom }}"
-                            class="border-none mr-10 index-30 rounded bg-transparent" name="nom"
+                            class="border-none md:mr-10 index-30 rounded bg-transparent w-full" name="nom"
                             placeholder="Admin">
                     </div>
 
-                    <div class="w-full grid mr-7">
+                    <div class="w-full grid md:mr-7">
                         <span class="font-bold mb-3">Prenom : </span>
                         <input type="text" value="{{ $user->prenom }}"
-                            class="border-none mr-10 rounded bg-transparent" name="prenom" placeholder="Admin">
+                            class="border-none md:mr-10 rounded bg-transparent w-full" name="prenom" placeholder="Admin">
                     </div>
 
-                    <div class="w-full ml-7 grid">
+                    <div class="w-full md:ml-7 grid">
                         <span class="font-bold mb-3">Email : </span>
-                        <input type="email" class="bg-transparent rounded border-none" value="{{ $user->email }}"
+                        <input type="email" class="bg-transparent rounded border-none w-full" value="{{ $user->email }}"
                             name="email" placeholder="johndoe@gmail.com">
                     </div>
                 </div>
 
                 <input type="submit" name="submit"
-                    class="w-80 relative right-0 rounded p-2 text-white cursor-pointer btn-design mt-10"
+                    class="w-full md:w-80 relative right-0 rounded p-2 text-white cursor-pointer btn-design mt-10"
                     value="Enregistrer les modifications">
             </div>
         </form>
 
         <!-- Section Mot de passe -->
         <div class="mt-10 border-t pt-6">
-            <h2 class="font-bold mb-4">Modifier le mot de passe</h2>
-            <p class="text-gray-600 mb-4">Pour changer votre mot de passe, un email vous sera envoyé avec un lien de réinitialisation.</p>
+            <h2 class="font-bold mb-4 text-lg md:text-xl">Modifier le mot de passe</h2>
+            <p class="text-gray-600 mb-4 text-sm md:text-base">Pour changer votre mot de passe, un email vous sera envoyé avec un lien de réinitialisation.</p>
             <form action="{{ route('admin.send.password.reset') }}" method="POST">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ $user->id }}">
                 <button type="submit"
-                    class="w-80 rounded p-2 text-white cursor-pointer btn-design flex items-center justify-center gap-2">
+                    class="w-full md:w-80 rounded p-2 text-white cursor-pointer btn-design flex items-center justify-center gap-2 text-sm md:text-base">
                     <i class="ri-mail-send-line"></i>
                     Recevoir un email de réinitialisation
                 </button>

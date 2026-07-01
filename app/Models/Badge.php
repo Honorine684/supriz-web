@@ -16,6 +16,7 @@ class Badge extends Model
     protected $fillable = [
         'name',
         'color',
+        'icon',
     ];
 
     public function products()

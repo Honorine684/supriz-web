@@ -25,15 +25,15 @@
     <main
         class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Messages</h4>
-                <div class="flex">
-                    <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
+        <div class="pt-4 pb-0 px-4 md:pt-6 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+                <h4 class="font-bold text-right text-white text-base md:text-lg">Messages</h4>
+                <div class="flex flex-wrap items-center gap-2">
+                    <img class="mr-3 max-w-full h-auto" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
 
-                    <div class="flex">
-                        <input type="text" class="pr-10 rounded-20" placeholder="Recherche">
+                    <div class="flex relative">
+                        <input type="text" class="pr-10 rounded-20 w-full max-w-full" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon"
                             src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                     </div>
@@ -42,7 +42,7 @@
 
         </div>
 
-        <div class="flex mt-3"><a href="{{ route('admin.notifications') }}"><span class="mr-4 cursor-pointer">Rédiger une
+        <div class="flex flex-wrap gap-x-4 gap-y-2 mt-3 px-3 md:px-0"><a href="{{ route('admin.notifications') }}"><span class="cursor-pointer">Rédiger une
                     notification</span></a><a href="{{ route('admin.publicite') }}"><span
                     class="cursor-pointer text-color-design border-bottom-design">Faire une publicité</span></a></div>
         <hr class="bottom-10">
@@ -73,8 +73,8 @@
                     <input type="file" name="image" id="imageInput" accept="image/*" name=""
                         class="relative opacity-0 cursor-pointer h-input-file -t-15">
                 </div>
-                <div class="flex w-full mt-2">
-                    <div class="grid index-30 w-1/2">
+                <div class="flex flex-col md:flex-row w-full mt-2 gap-4 md:gap-0">
+                    <div class="grid index-30 w-full md:w-1/2">
                         <span class="text-gray-400">Catégories</span>
                         <div class="flex items-center justify-between w-10 radio-column">
                             <input type="radio" name="categorie_dhomme" value="h"
@@ -95,9 +95,9 @@
                         </div>
                     </div>
 
-                    <div class="grid w-1/2 ml-10">
+                    <div class="grid w-full md:w-1/2 md:ml-10">
                         <span class="mb-2 text-gray-400">Sous-Catégories</span>
-                        <select name="sousCategorieId" id="sous-categorie" class="p-1 rounded">
+                        <select name="sousCategorieId" id="sous-categorie" class="p-1 rounded w-full">
                             <option value="0">Sous-Catégories</option>
                         </select>
                     </div>

@@ -23,17 +23,17 @@
 
     <!-- start: Main -->
     <main
-    class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
+    class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 p-3 md:p-4 overflow-x-hidden">
 
-    <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-        <div class="flex items-center justify-between mb-5">
-            <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-            <h4 class="font-bold text-right text-white">Messages</h4>
-            <div class="flex">
+    <div class="pt-4 md:pt-6 pb-0 px-3 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-3">
+            <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+            <h4 class="font-bold text-center md:text-right text-white text-base md:text-lg">Messages</h4>
+            <div class="flex items-center flex-wrap gap-2">
                 <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
 
-                <div class="flex">
-                    <input type="text" class="pr-10 rounded-20" placeholder="Recherche">
+                <div class="flex relative w-full md:w-auto">
+                    <input type="text" class="pr-10 rounded-20 w-full md:w-auto" placeholder="Recherche">
                     <img class="absolute cursor-pointer search_icon"
                         src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                 </div>
@@ -41,10 +41,10 @@
         </div>
     </div>
 
-    <div class="flex mt-3">
-        <a href="{{ route('admin.notifications') }}"><span class="mr-4 cursor-pointer border-bottom-design text-color-design">Rédiger une
+    <div class="flex flex-wrap gap-2 mt-3">
+        <a href="{{ route('admin.notifications') }}"><span class="mr-4 cursor-pointer border-bottom-design text-color-design text-sm md:text-base">Rédiger une
             notification</span></a>
-        <a href="{{ route('admin.publicite') }}"><span class="cursor-pointer ">Faire une publicité</span></a>
+        <a href="{{ route('admin.publicite') }}"><span class="cursor-pointer text-sm md:text-base">Faire une publicité</span></a>
     </div>
     <hr>
 
@@ -54,7 +54,7 @@
                 @if ($notif->titre && !$notif->user_id)
                     {{-- Notification admin : à droite, en bleu --}}
                     <div class="flex mt-4 justify-end">
-                        <div class="p-3 font-light rounded-20" style="background-color: #005792; color: white; max-width: 80%;">
+                        <div class="p-3 font-light rounded-20" style="background-color: #005792; color: white; max-width: 85%;">
                             <p class="font-semibold">{{ $notif->titre }}</p>
                             <p>{{ $notif->contenus }}</p>
                             <p class="text-xs mt-1" style="opacity: 0.7;">{{ $notif->created_at->format('d/m/Y H:i') }}</p>

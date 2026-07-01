@@ -25,15 +25,15 @@
     <main
         class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Catégoeries</h4>
-                <div class="flex">
-                    <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
+        <div class="pt-4 pb-0 px-4 md:pt-6 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+                <h4 class="font-bold text-right text-white text-base md:text-lg">Catégoeries</h4>
+                <div class="flex flex-wrap items-center gap-2">
+                    <img class="mr-3 max-w-full h-auto" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
 
-                    <div class="flex">
-                        <input type="text" class="pr-10 rounded-20" placeholder="Recherche">
+                    <div class="flex relative">
+                        <input type="text" class="pr-10 rounded-20 w-full max-w-full" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon"
                             src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                     </div>
@@ -62,6 +62,7 @@
         @endif
 
 
+        <div class="px-3 md:px-0">
         <form class="mt-5"
             action="{{ isset($depenseEdit) ? route('admin.depenses.update', $depenseEdit->id) : route('admin.depenses.store') }}"
             method="POST">
@@ -109,7 +110,7 @@
 
         <div
             class="p-3 overflow-x-auto bg-white border border-gray-100 shadow-md rounded-20 shadow-black/5 lg:col-span-2">
-            <table class="w-full">
+            <table class="w-full min-w-[600px]">
 
                 <tbody>
                     @if (!$depenses->isEmpty())
@@ -167,6 +168,7 @@
                     <!-- Add the remaining rows as needed -->
                 </tbody>
             </table>
+        </div>
         </div>
         </div>
 

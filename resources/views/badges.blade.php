@@ -20,12 +20,12 @@
 
     <main class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20 ">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Badges</h4>
+        <div class="pt-4 pb-0 px-4 md:pt-6 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+                <h4 class="font-bold text-right text-white text-base md:text-lg">Badges</h4>
                 <div class="flex">
-                    <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
+                    <img class="mr-3 max-w-full h-auto" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
                 </div>
             </div>
         </div>
@@ -50,7 +50,7 @@
             </div>
         @endif
 
-        <div class="px-6">
+        <div class="px-4 md:px-6">
             <form action="{{ isset($badge) ? route('admin.badges.update', $badge->id) : route('admin.badges.store') }}"
                 method="POST" class="p-4 mb-6 bg-white shadow-md rounded-20">
                 @csrf
@@ -62,17 +62,17 @@
                     {{ isset($badge) ? 'Modifier le badge' : 'Créer un badge' }}
                 </p>
 
-                <div class="flex gap-4 mb-3">
+                <div class="flex flex-col md:flex-row gap-4 mb-3">
                     <div class="grid flex-1">
                         <span class="mb-2 text-sm text-gray-600">Nom du badge</span>
                         <input type="text" name="name"
                                value="{{ old('name', $badge->name ?? '') }}"
                                placeholder="Ex: Anniversaire, Mariage..."
                                maxlength="50"
-                               class="p-2 border border-gray-300 rounded" required>
+                               class="p-2 border border-gray-300 rounded w-full" required>
                     </div>
 
-                    <div class="grid w-44">
+                    <div class="grid w-full md:w-44">
                         <span class="mb-2 text-sm text-gray-600">Couleur (optionnel)</span>
                         <input type="color" name="color"
                                value="{{ old('color', $badge->color ?? '#005792') }}"
@@ -80,7 +80,84 @@
                     </div>
                 </div>
 
-                <div class="flex gap-2">
+                {{-- Icon picker --}}
+                @php
+                    // Liste curée d'icônes cross-plateforme (clé = valeur stockée, ri = classe web)
+                    $iconChoices = [
+                        'cake' => 'ri-cake-3-line',
+                        'heart' => 'ri-heart-line',
+                        'gift' => 'ri-gift-line',
+                        'star' => 'ri-star-line',
+                        'flower' => 'ri-flower-line',
+                        'diamond' => 'ri-vip-diamond-line',
+                        'crown' => 'ri-vip-crown-line',
+                        'fire' => 'ri-fire-line',
+                        'trophy' => 'ri-trophy-line',
+                        'magic' => 'ri-magic-line',
+                        'sparkle' => 'ri-sparkling-line',
+                        'medal' => 'ri-medal-line',
+                        'chat' => 'ri-chat-heart-line',
+                        'balloon' => 'ri-service-line',
+                        'music' => 'ri-music-2-line',
+                        'party' => 'ri-cake-2-line',
+                        'lightning' => 'ri-flashlight-line',
+                        'sun' => 'ri-sun-line',
+                        'moon' => 'ri-moon-line',
+                        'baby' => 'ri-parent-line',
+                        'ring' => 'ri-focus-line',
+                        'briefcase' => 'ri-briefcase-line',
+                        'graduation' => 'ri-school-line',
+                        'palette' => 'ri-palette-line',
+                        'coffee' => 'ri-cup-line',
+                        'plane' => 'ri-plane-line',
+                        'car' => 'ri-car-line',
+                        'home' => 'ri-home-heart-line',
+                        'shield' => 'ri-shield-star-line',
+                        'thumb' => 'ri-thumb-up-line',
+                    ];
+                    $currentIcon = old('icon', $badge->icon ?? '');
+                @endphp
+
+                <div class="mb-3">
+                    <span class="mb-2 text-sm text-gray-600 block">Icône (optionnel)</span>
+                    <input type="hidden" name="icon" id="icon-input" value="{{ $currentIcon }}">
+                    <div class="grid grid-cols-6 md:grid-cols-10 gap-2 p-3 bg-gray-50 border border-gray-200 rounded">
+                        <button type="button" data-icon=""
+                                class="icon-choice aspect-square flex items-center justify-center text-xs text-gray-500 border-2 rounded-lg transition-all {{ $currentIcon === '' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white hover:border-gray-400' }}">
+                            <i class="ri-forbid-line"></i>
+                        </button>
+                        @foreach ($iconChoices as $key => $riClass)
+                            <button type="button" data-icon="{{ $key }}"
+                                    class="icon-choice aspect-square flex items-center justify-center text-lg border-2 rounded-lg transition-all {{ $currentIcon === $key ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400' }}">
+                                <i class="{{ $riClass }}"></i>
+                            </button>
+                        @endforeach
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        L'icône choisie s'affichera devant le nom du badge dans l'app.
+                    </p>
+                </div>
+
+                <script>
+                    (function () {
+                        const input = document.getElementById('icon-input');
+                        document.querySelectorAll('.icon-choice').forEach(btn => {
+                            btn.addEventListener('click', () => {
+                                document.querySelectorAll('.icon-choice').forEach(b => {
+                                    b.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-600');
+                                    b.classList.add('border-gray-200', 'bg-white');
+                                    if (b.dataset.icon !== '') b.classList.add('text-gray-600');
+                                });
+                                btn.classList.remove('border-gray-200', 'bg-white', 'text-gray-600');
+                                btn.classList.add('border-blue-500', 'bg-blue-50');
+                                if (btn.dataset.icon !== '') btn.classList.add('text-blue-600');
+                                input.value = btn.dataset.icon;
+                            });
+                        });
+                    })();
+                </script>
+
+                <div class="flex flex-wrap gap-2">
                     <input type="submit"
                            class="px-4 py-2 text-white rounded cursor-pointer btn-design"
                            value="{{ isset($badge) ? 'Modifier' : 'Enregistrer' }}">
@@ -111,14 +188,32 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $iconMap = [
+                                    'cake' => 'ri-cake-3-line','heart' => 'ri-heart-line','gift' => 'ri-gift-line',
+                                    'star' => 'ri-star-line','flower' => 'ri-flower-line','diamond' => 'ri-vip-diamond-line',
+                                    'crown' => 'ri-vip-crown-line','fire' => 'ri-fire-line','trophy' => 'ri-trophy-line',
+                                    'magic' => 'ri-magic-line','sparkle' => 'ri-sparkling-line','medal' => 'ri-medal-line',
+                                    'chat' => 'ri-chat-heart-line','balloon' => 'ri-service-line','music' => 'ri-music-2-line',
+                                    'party' => 'ri-cake-2-line','lightning' => 'ri-flashlight-line','sun' => 'ri-sun-line',
+                                    'moon' => 'ri-moon-line','baby' => 'ri-parent-line','ring' => 'ri-focus-line',
+                                    'briefcase' => 'ri-briefcase-line','graduation' => 'ri-school-line','palette' => 'ri-palette-line',
+                                    'coffee' => 'ri-cup-line','plane' => 'ri-plane-line','car' => 'ri-car-line',
+                                    'home' => 'ri-home-heart-line','shield' => 'ri-shield-star-line','thumb' => 'ri-thumb-up-line',
+                                ];
+                            @endphp
                             @foreach ($badges as $b)
                                 @php
                                     $c = $b->color ?? '#005792';
+                                    $riClass = $iconMap[$b->icon] ?? null;
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-2 border-b border-b-gray-50">
-                                        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                                        <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full"
                                               style="color: {{ $c }}; background-color: {{ $c }}1F; border: 1px solid {{ $c }}40;">
+                                            @if ($riClass)
+                                                <i class="{{ $riClass }}"></i>
+                                            @endif
                                             {{ $b->name }}
                                         </span>
                                     </td>

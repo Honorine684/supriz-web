@@ -74,14 +74,14 @@
     <!-- start: Main -->
     <main class="custmer-toggle w-full md:w-[calc(100%-256px)] md:ml-64 bg-gray-50 min-h-screen transition-all main rounded-20">
 
-        <div class="pt-6 pb-0 pl-6 pr-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
-            <div class="flex items-center justify-between mb-5">
-                <img src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
-                <h4 class="font-bold text-right text-white">Gestion des Arrière-plans</h4>
-                <div class="flex">
-                    <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
-                    <div class="flex">
-                        <input type="text" class="pr-10 rounded-20" placeholder="Recherche">
+        <div class="pt-4 pb-0 px-4 md:pt-6 md:px-6 mb-5 overflow-x-auto bg-design lg:col-span-2 rounded-20">
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <img class="max-w-full h-auto" src="{{ asset('/images/svg/llogosupriz2.svg') }}" alt="">
+                <h4 class="font-bold text-right text-white text-base md:text-lg">Gestion des Arrière-plans</h4>
+                <div class="flex flex-wrap items-center gap-2">
+                    <img class="mr-3 max-w-full h-auto" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
+                    <div class="flex relative">
+                        <input type="text" class="pr-10 rounded-20 w-full max-w-full" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon" src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                     </div>
                 </div>
@@ -109,10 +109,10 @@
         @endif
 
         <!-- Formulaire d'ajout d'arrière-plan -->
-        <div class="p-8 mb-6 bg-white rounded-20" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <div class="p-4 md:p-8 mb-6 bg-white rounded-20 mx-3 md:mx-0" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div class="flex items-center mb-6">
-                <i class="mr-3 text-3xl ri-image-fill" style="color: #005792;"></i>
-                <h2 class="text-2xl font-bold" style="color: #005792;">Ajouter un arrière-plan</h2>
+                <i class="mr-3 text-2xl md:text-3xl ri-image-fill" style="color: #005792;"></i>
+                <h2 class="text-lg md:text-2xl font-bold" style="color: #005792;">Ajouter un arrière-plan</h2>
             </div>
 
             <div class="p-4 mb-6 rounded-lg" style="background-color: #E5F2FF; border-left: 4px solid #005792;">
@@ -202,11 +202,11 @@
         </div>
 
         <!-- Liste des arrière-plans par catégorie -->
-        <div class="p-8 bg-white rounded-20" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+        <div class="p-4 md:p-8 bg-white rounded-20 mx-3 md:mx-0" style="box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center">
-                    <i class="mr-3 text-3xl ri-gallery-line" style="color: #005792;"></i>
-                    <h2 class="text-2xl font-bold" style="color: #005792;">
+                    <i class="mr-3 text-2xl md:text-3xl ri-gallery-line" style="color: #005792;"></i>
+                    <h2 class="text-lg md:text-2xl font-bold" style="color: #005792;">
                         Arrière-plans par catégorie
                     </h2>
                 </div>
@@ -215,12 +215,12 @@
             @forelse($arrierePlansGroupes as $categorie => $arrierePlans)
                 <!-- En-tête de catégorie -->
                 <div class="p-4 mb-4 rounded-lg" style="background: linear-gradient(135deg, #005792 0%, #0077b6 100%);">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <i class="mr-3 text-2xl text-white ri-folder-image-fill"></i>
-                            <h3 class="text-xl font-bold text-white">{{ $categorie }}</h3>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center min-w-0">
+                            <i class="mr-3 text-2xl text-white ri-folder-image-fill flex-shrink-0"></i>
+                            <h3 class="text-base md:text-xl font-bold text-white truncate">{{ $categorie }}</h3>
                         </div>
-                        <span class="px-3 py-1 text-sm font-semibold text-black bg-white bg-opacity-20 rounded-full">
+                        <span class="px-3 py-1 text-xs md:text-sm font-semibold text-black bg-white bg-opacity-20 rounded-full whitespace-nowrap">
                             {{ $arrierePlans->count() }} arrière-plan(s)
                         </span>
                     </div>
