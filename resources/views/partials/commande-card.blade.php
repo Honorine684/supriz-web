@@ -43,9 +43,9 @@
     {{-- Header --}}
     <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-xl text-white flex items-center justify-center"
+            <div class="w-12 h-12 rounded-xl flex items-center justify-center"
                  style="background: linear-gradient(135deg, #005792 0%, #003d6b 100%);">
-                <i class="ri-shopping-cart-2-line text-xl"></i>
+                <i class="ri-shopping-cart-2-line text-xl" style="color: #ffffff;"></i>
             </div>
             <div>
                 <div class="font-mono font-bold text-gray-900 text-base tracking-wider">
