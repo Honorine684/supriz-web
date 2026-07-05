@@ -550,10 +550,21 @@
                                         </div>
                                     </td>
                                     <td class="px-4 py-3 text-right">
-                                        <a href="{{ route('admin.article.edit', $item->id) }}"
-                                           class="text-blue-600 hover:underline text-sm font-medium">
-                                            Modifier
-                                        </a>
+                                        <div class="flex items-center justify-end gap-3">
+                                            <a href="{{ route('admin.article.edit', $item->id) }}"
+                                               class="text-blue-600 hover:underline text-sm font-medium">
+                                                Modifier
+                                            </a>
+                                            <form action="{{ route('admin.produit.destroy', $item->id) }}" method="POST"
+                                                  onsubmit="return confirm('Supprimer le produit « {{ $item->title }} » ?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="text-red-600 hover:underline text-sm font-medium">
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
