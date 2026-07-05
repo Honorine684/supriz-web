@@ -33,7 +33,9 @@ class ProductController extends Controller
             $products = Product::with(['marchand', 'badges'])
                 ->whereHas('sousCategories', function($query) use ($subcategoryId) {
                     $query->where('homme_sous_categories.id', $subcategoryId);
-                })->get();
+                })
+                ->orderByDesc('created_at')
+                ->get();
 
             // Ajouter les informations de catégorie et de sous-catégorie aux produits
             $products->each(function($product) use ($request) {
@@ -58,7 +60,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            $products = Product::with(['marchand', 'badges'])->get();
+            $products = Product::with(['marchand', 'badges'])->orderByDesc('created_at')->get();
             return response()->json($products, 200);
         } catch (\Throwable $th) {
             Log::error('Error in index: ' . $th->getMessage());

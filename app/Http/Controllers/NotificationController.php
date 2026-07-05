@@ -19,7 +19,7 @@ class NotificationController extends Controller
     public function notification()
     {
         $active_link = "m";
-        $notifs = Notification::All();
+        $notifs = Notification::latest()->get();
         $user = auth()->user();
         return view('message',compact("active_link","notifs","user"));
     }

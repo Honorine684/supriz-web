@@ -24,7 +24,7 @@ class StockController extends Controller
     }
 
     // Nombre de produits
-    $produits = Product::all();
+    $produits = Product::latest()->get();
     $nbrproduits = $produits->count();
 
     // Variable pour activer le lien dans la vue

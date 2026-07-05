@@ -9,7 +9,7 @@ class PubliciteController extends Controller
     //
     public function publicite()
     {
-        $publicite = Publicite::All();
+        $publicite = Publicite::latest()->get();
         $active_link = "m";
         return view('publicite',compact("active_link","publicite"));
     }

@@ -11,7 +11,7 @@ class ClientController extends Controller
     {
 
         $active_link = "c"; 
-        $users_ = User::All();
+        $users_ = User::latest()->get();
         return view('client',compact("active_link","users_"));
     }
 

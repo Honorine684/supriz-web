@@ -8,7 +8,7 @@ class DepensesController extends Controller
 {
     //
     public function depenses(){
-        $depenses = Depenses::All();
+        $depenses = Depenses::latest()->get();
         $active_link = "dep";
         return view('depenses', compact('active_link','depenses'));
     }
@@ -49,7 +49,7 @@ public function edit($id)
 {
     $depenseEdit = Depenses::find($id);
     $active_link = "dep";
-    $depenses = Depenses::all();
+    $depenses = Depenses::latest()->get();
     return view('depenses', compact('depenses', 'depenseEdit','active_link'));
 }
 
