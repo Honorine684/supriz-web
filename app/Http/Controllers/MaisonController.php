@@ -105,7 +105,9 @@ class MaisonController extends Controller
             ->map(function($message) {
                 return [
                     'id' => $message->id,
-                    'nom' => substr($message->titre, 0, 20) . '...',
+                    'nom' => $message->titre
+                        ? mb_strimwidth($message->titre, 0, 20, '...')
+                        : 'Sans titre',
                     'avatar' => null,
                     'categorie' => $message->sousCategorie->name_sous_categories ?? 'Catégorie',
                     'date' => $message->created_at->format('d/m/Y')
@@ -137,18 +139,56 @@ class MaisonController extends Controller
             $ecomActivity['totals'][] = (float) ($ventesMonthly->get($i)->total ?? 0);
         }
 
+        // Normalise un numéro pour WhatsApp (international sans +, ni espace).
+        // Bénin : 10 chiffres commençant par 0 -> 229 + 9 restants ; 8 chiffres -> 229 + ...
+        $waNorm = function ($num) {
+            if (!$num) return null;
+            $s = preg_replace('/[^\d+]/', '', (string) $num);
+            if ($s === '') return null;
+            if (str_starts_with($s, '+')) $s = substr($s, 1);
+            if (strlen($s) === 10 && str_starts_with($s, '0')) {
+                $s = '229' . substr($s, 1);
+            } elseif (strlen($s) === 8) {
+                $s = '229' . $s;
+            }
+            return $s;
+        };
+
         // Commandes récentes
-        $commandesRecentes = Commandes::with('user')
+        $commandesRecentes = Commandes::with(['user', 'achats.product.marchand'])
             ->orderBy('created_at', 'desc')
             ->limit(10)
             ->get()
-            ->map(function ($c) {
+            ->map(function ($c) use ($waNorm) {
                 $clientName = 'Anonyme';
                 if ($c->user) {
                     $full = trim(($c->user->prenom ?? '') . ' ' . ($c->user->nom ?? ''));
                     if ($full !== '') $clientName = $full;
                     elseif (!empty($c->user->email)) $clientName = $c->user->email;
                 }
+
+                // Regroupe les produits de la commande par marchand
+                $marchands = [];
+                foreach ($c->achats as $achat) {
+                    $produit = $achat->product;
+                    if (!$produit || !$produit->marchand) continue;
+                    $m = $produit->marchand;
+                    if (!isset($marchands[$m->id])) {
+                        $marchands[$m->id] = [
+                            'nom' => $m->nom,
+                            'wa' => $waNorm($m->telephone),
+                            'items' => [],
+                        ];
+                    }
+                    $marchands[$m->id]['items'][] = ($produit->title ?? 'Produit') . ' x' . $achat->qte_achat;
+                }
+                // Message WhatsApp pré-rempli, propre à chaque marchand
+                $marchands = array_values(array_map(function ($m) use ($c) {
+                    $m['text'] = "Bonjour {$m['nom']}, nouvelle commande Supriz {$c->code_commandes} : "
+                        . implode(', ', $m['items']) . '.';
+                    return $m;
+                }, $marchands));
+
                 return [
                     'id' => $c->id,
                     'code' => $c->code_commandes,
@@ -156,6 +196,7 @@ class MaisonController extends Controller
                     'montant' => $c->prix_total_commande,
                     'status' => $c->status,
                     'date' => $c->created_at->format('d/m/Y'),
+                    'marchands' => $marchands,
                 ];
             });
 

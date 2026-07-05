@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    // Secret protégeant les endpoints cron (/cron/*). À définir dans .env.
+    'cron_secret_key' => env('CRON_SECRET_KEY', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

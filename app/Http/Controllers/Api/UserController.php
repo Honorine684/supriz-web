@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Services\SocialAuthService;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -221,10 +223,16 @@ class UserController extends Controller
     {
         try {
             $user = auth()->user();
-            $user->nom = $request->input('name');
-            // $user->prenom = $request->input('prenom');
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
+
+            $user->nom = $validated['name'];
             $user->save();
             return response()->json(['message' => 'Name updated successfully']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to update name', 'message' => $e->getMessage()], 500);
         }
@@ -232,18 +240,42 @@ class UserController extends Controller
 
     public function updateEmail(Request $request)
     {
-        $user = auth()->user();
-        $user->email = $request->input('email');
-        $user->save();
-        return response()->json(['message' => 'Email updated successfully']);
+        try {
+            $user = auth()->user();
+
+            $validated = $request->validate([
+                'email' => [
+                    'required', 'string', 'email', 'max:255',
+                    Rule::unique('users', 'email')->ignore($user->id),
+                ],
+            ]);
+
+            $user->email = $validated['email'];
+            $user->save();
+            return response()->json(['message' => 'Email updated successfully']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
+        }
     }
 
     public function updateNumber(Request $request)
     {
-        $user = auth()->user();
-        $user->numero = $request->input('numero');
-        $user->save();
-        return response()->json(['message' => 'Number updated successfully']);
+        try {
+            $user = auth()->user();
+
+            $validated = $request->validate([
+                'numero' => [
+                    'required', 'string', 'min:8', 'max:20',
+                    Rule::unique('users', 'numero')->ignore($user->id),
+                ],
+            ]);
+
+            $user->numero = $validated['numero'];
+            $user->save();
+            return response()->json(['message' => 'Number updated successfully']);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json(['status' => false, 'errors' => $e->errors()], 422);
+        }
     }
 
     public function sendOtp(Request $request)
@@ -326,6 +358,9 @@ class UserController extends Controller
             // Le code OTP est correct et n'a pas expiré
             $user->otp = null;
             $user->otp_expires_at = null;
+            // Marquer la vérification pour autoriser la réinitialisation du mot de passe
+            // (fenêtre courte contrôlée dans updatePasswordMdp).
+            $user->password_reset_verified_at = now();
             $user->save();
             return response()->json(['message' => 'OTP verified successfully','id'=>$user->id]);
         }
@@ -412,7 +447,19 @@ class UserController extends Controller
             ], 404);
         }
 
+        // SÉCURITÉ : n'autoriser la réinitialisation que si un OTP a été vérifié
+        // récemment (via /verify-otp). Empêche de changer le mot de passe d'un
+        // compte tiers en connaissant seulement son e-mail.
+        if (!$user->password_reset_verified_at || $user->password_reset_verified_at->lt(now()->subMinutes(15))) {
+            return response()->json([
+                'status' => false,
+                'message' => "Vérification OTP requise ou expirée. Veuillez recommencer.",
+            ], 403);
+        }
+
         $user->password = $request->new_password;
+        // Consommer le verrou : un seul reset par vérification OTP.
+        $user->password_reset_verified_at = null;
         $user->save();
 
         return response()->json([
@@ -424,38 +471,67 @@ class UserController extends Controller
     /**
      * Social Login (Google/Apple)
      */
-    public function socialLogin(Request $request)
+    public function socialLogin(Request $request, SocialAuthService $social)
     {
         try {
-            // Vérifier d'abord si l'utilisateur existe déjà (inclure les soft-deleted)
-            $existingUser = User::withTrashed()->where('email', $request->email)->first();
-
-            // Si l'utilisateur était soft-deleted, le restaurer
-            if ($existingUser && $existingUser->trashed()) {
-                $existingUser->restore();
-                \Log::info('User restored from soft delete', ['email' => $request->email]);
-            }
-
-            // Si l'utilisateur n'existe pas, le numéro est obligatoire
-            $rules = [
+            // Valider la forme de la requête AVANT toute recherche d'utilisateur.
+            $baseRules = [
                 'provider' => 'required|string|in:google,apple',
                 'token' => 'required|string',
                 'email' => 'required|email',
                 'name' => 'required|string',
             ];
 
-            if (!$existingUser) {
-                $rules['numero'] = 'required|string|unique:users,numero';
-            }
-
-            $validateUser = Validator::make($request->all(), $rules);
-
+            $validateUser = Validator::make($request->all(), $baseRules);
             if ($validateUser->fails()) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Validation error',
                     'errors' => $validateUser->errors()
                 ], 422);
+            }
+
+            // SÉCURITÉ : vérifier le jeton auprès du fournisseur (Google/Apple).
+            // On n'accepte l'e-mail QUE s'il provient d'un jeton signé et destiné
+            // à notre application, jamais l'e-mail brut envoyé par le client.
+            $verifiedEmail = $social->verifiedEmail($request->provider, $request->token);
+
+            if (!$verifiedEmail) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Jeton d'authentification invalide.",
+                ], 401);
+            }
+
+            // L'e-mail annoncé par le client doit correspondre à l'e-mail vérifié.
+            if (strtolower($request->email) !== $verifiedEmail) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "L'e-mail ne correspond pas au jeton fourni.",
+                ], 401);
+            }
+
+            // À partir d'ici, on ne travaille QU'avec l'e-mail vérifié.
+            $existingUser = User::withTrashed()->where('email', $verifiedEmail)->first();
+
+            // Si l'utilisateur était soft-deleted, le restaurer
+            if ($existingUser && $existingUser->trashed()) {
+                $existingUser->restore();
+                \Log::info('User restored from soft delete', ['email' => $verifiedEmail]);
+            }
+
+            // Si l'utilisateur n'existe pas, le numéro est obligatoire
+            if (!$existingUser) {
+                $validateNumero = Validator::make($request->all(), [
+                    'numero' => 'required|string|unique:users,numero',
+                ]);
+                if ($validateNumero->fails()) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Validation error',
+                        'errors' => $validateNumero->errors()
+                    ], 422);
+                }
             }
 
             // Chercher ou créer l'utilisateur
@@ -465,7 +541,7 @@ class UserController extends Controller
                 // Créer un nouvel utilisateur
                 $user = User::create([
                     'nom' => $request->name,
-                    'email' => $request->email,
+                    'email' => $verifiedEmail,
                     'numero' => $request->numero,
                     'password' => Hash::make(\Illuminate\Support\Str::random(16)),
                     'provider' => $request->provider,

@@ -42,6 +42,9 @@ tar -czf supriz-deploy.tar.gz \
   --exclude='.git' \
   --exclude='.env' \
   --exclude='.env.local' \
+  --exclude='.env.hostinger' \
+  --exclude='.env.example' \
+  --exclude='firebase-credentials.json' \
   --exclude='storage/logs/*' \
   --exclude='storage/framework/cache/data/*' \
   --exclude='storage/framework/sessions/*' \
@@ -85,6 +88,8 @@ echo -e "${RED}⚠️  IMPORTANT :${NC}"
 echo "  - NE PAS uploader le fichier .env local"
 echo "  - Créez un nouveau .env sur le serveur avec .env.hostinger"
 echo "  - Changez APP_DEBUG=false en production"
+echo "  - firebase-credentials.json N'EST PAS dans l'archive (clé privée)."
+echo "    Uploadez-le séparément et en sécurité (SCP/SFTP) à la racine du projet."
 echo ""
 
 # 7. Réinstaller les dépendances dev (optionnel)

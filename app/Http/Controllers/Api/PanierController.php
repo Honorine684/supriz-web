@@ -21,6 +21,38 @@ class PanierController extends Controller
     }
 
     /**
+     * Configure le SDK FedaPay depuis la config (jamais de clé en dur).
+     */
+    private function configureFedaPay(): void
+    {
+        FedaPay::setApiKey(config('fedapay.secret_key'));
+        FedaPay::setEnvironment(config('fedapay.environment', 'sandbox'));
+    }
+
+    /**
+     * Calcule le montant total d'une commande CÔTÉ SERVEUR (produits + livraison),
+     * en une seule requête. Ne jamais faire confiance au montant envoyé par le client.
+     */
+    private function computeOrderAmount(Commandes $commande): int
+    {
+        $achats = Achat::where('commande_id', $commande->id)->get();
+        $productIds = $achats->pluck('product_id')->unique()->toArray();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $total = $achats->reduce(function ($carry, $achat) use ($products) {
+            $produit = $products->get($achat->product_id);
+            if (!$produit) {
+                return $carry;
+            }
+            $prixUnitaire = $produit->prix_promo ?: $produit->price;
+            $livraison = $produit->prix_livraison ?? 0;
+            return $carry + ($prixUnitaire * $achat->qte_achat) + $livraison;
+        }, 0);
+
+        return (int) round($total);
+    }
+
+    /**
      * Ajouter un produit au panier.
      *
      * @param  Request  $request
@@ -59,7 +91,23 @@ class PanierController extends Controller
     
             // Récupérer le produit
             $product = Product::find($request->product_id);
-    
+
+            // Règle métier : un panier ne peut contenir que des produits d'un
+            // SEUL marchand. Barrière autoritaire (l'app a déjà un garde-fou,
+            // mais on ne fait jamais confiance au client). On compare au
+            // marchand des achats déjà présents dans la commande « encours ».
+            $existingMarchandId = Achat::where('commande_id', $commande->id)
+                ->join('products', 'achat.product_id', '=', 'products.id')
+                ->value('products.marchand_id');
+
+            if ($existingMarchandId !== null
+                && (int) $existingMarchandId !== (int) $product->marchand_id) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Votre panier contient déjà des produits d'un autre marchand. Videz-le pour commander chez celui-ci.",
+                ], 409);
+            }
+
             // Ajouter le produit au panier (table achat)
             $achat = Achat::create([
                 'product_id' => $product->id,
@@ -107,6 +155,13 @@ class PanierController extends Controller
         // Trouver l'achat à supprimer
         $achat = Achat::find($request->achat_id);
 
+        if (!$achat) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Achat introuvable',
+            ], 404);
+        }
+
         // Vérifier si l'achat appartient à une commande en cours pour l'utilisateur
         $commande = Commandes::where('id', $achat->commande_id)
             ->where('users_id', $userId)
@@ -124,6 +179,12 @@ class PanierController extends Controller
         // Supprimer l'achat
         $achat->delete();
         Log::info("Achat ID {$request->achat_id} supprimé avec succès du panier de l'utilisateur ID {$userId}");
+
+        // Si la commande n'a plus aucun achat, la supprimer aussi
+        if ($commande->achats()->count() === 0) {
+            $commande->delete();
+            Log::info("Commande ID {$commande->id} supprimée car vide.");
+        }
 
         return response()->json([
             'status' => true,
@@ -161,12 +222,27 @@ public function removeSelectedItems(Request $request)
             ], 400);
         }
 
-        // Trouver et supprimer les achats appartenant à l'utilisateur
+        // Récupérer les IDs de commandes impactées AVANT suppression
+        $commandeIds = Achat::whereIn('id', $selectedItemIds)
+            ->whereHas('commande', function ($query) use ($userId) {
+                $query->where('users_id', $userId)
+                      ->where('status', 'encours');
+            })
+            ->pluck('commande_id')
+            ->unique();
+
+        // Supprimer les achats
         Achat::whereIn('id', $selectedItemIds)
             ->whereHas('commande', function ($query) use ($userId) {
                 $query->where('users_id', $userId)
                       ->where('status', 'encours');
             })->delete();
+
+        // Supprimer les commandes qui n'ont plus aucun achat
+        \App\Models\Commandes::whereIn('id', $commandeIds)
+            ->where('status', 'encours')
+            ->doesntHave('achats')
+            ->delete();
 
         Log::info("Les achats sélectionnés ont été supprimés avec succès pour l'utilisateur ID {$userId}");
 
@@ -402,6 +478,12 @@ public function updateBeneficiere(Request $request)
         $commande = Commandes::where('users_id', $userId)
                              ->where('status', 'encours')
                              ->first();
+
+        // Pas de commande en cours => panier vide (et non une erreur 500).
+        if (!$commande) {
+            return response()->json([]);
+        }
+
         $achat = Achat::where('commande_id',$commande->id);
         // Récupérer tous les achats de l'utilisateur authentifié
         $achats = $achat->with('product.marchand')
@@ -435,10 +517,17 @@ public function updateBeneficiere(Request $request)
                         'ville' => $marchand->ville,
                         'latitude' => $marchand->latitude,
                         'longitude' => $marchand->longitude,
+                        // Horaires du marchand : nécessaires au sélecteur de
+                        // date/heure de livraison côté app (grisage des jours de
+                        // fermeture + créneaux horaires). Sans ça, l'app retombe
+                        // sur "tous les jours ouverts / 08:00–20:00".
+                        'working_days' => $marchand->working_days,
+                        'working_hours' => $marchand->working_hours,
                     ] : null,
                 ],
                 'quantity' => $achat->qte_achat, // Utiliser la quantité d'achat
-                'achat_id' => $achat->id, // Utiliser la quantité d'achat
+                'achat_id' => $achat->id, // Identifiant de la ligne d'achat
+                'description_de_personnalisation' => $achat->description_de_personnalisation,
                 'isSelected' => false,
             ];
         });
@@ -450,9 +539,8 @@ public function updateBeneficiere(Request $request)
 
 public function createTransaction(Request $request)
 {
-    // Validation des données entrantes
+    // Validation des données entrantes (le montant est recalculé côté serveur).
     $request->validate([
-        'amount' => 'required|numeric|min:1',
         'name' => 'required|string',
         'email' => 'required|email',
         'phone_number' => 'required|string',
@@ -464,28 +552,49 @@ public function createTransaction(Request $request)
     if (!Auth::check()) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
-    
+
     $userId = Auth::id(); // Obtenir l'ID de l'utilisateur connecté
 
-    // Log des variables reçues
+    // Récupérer la commande en cours et calculer le montant CÔTÉ SERVEUR.
+    $commande = Commandes::where('users_id', $userId)
+        ->where('status', 'encours')
+        ->first();
+
+    if (!$commande) {
+        return response()->json(['error' => "Aucune commande en cours à payer."], 404);
+    }
+
+    // Défense en profondeur : ne jamais lancer un paiement sur une commande
+    // dont les informations de livraison n'ont pas été renseignées (l'app
+    // l'impose déjà, mais un appel API direct pourrait les contourner).
+    if (empty($commande->numero_beneficier) || empty($commande->selectedOption)) {
+        return response()->json([
+            'error' => "Les informations de livraison doivent être renseignées avant le paiement.",
+        ], 422);
+    }
+
+    $amount = $this->computeOrderAmount($commande);
+
+    if ($amount < 1) {
+        return response()->json(['error' => "Le montant de la commande est invalide."], 422);
+    }
+
+    // Log des variables reçues (jamais le montant client).
     Log::info('Données reçues pour la transaction:', [
-        'amount' => $request->amount,
-        'name' => $request->name,
-        'email' => $request->email,
-        'phone_number' => $request->phone_number,
+        'user_id' => $userId,
+        'commande_id' => $commande->id,
+        'amount_serveur' => $amount,
         'phone_number_country' => $request->phone_number_country,
     ]);
 
-    // Définir la clé API et l'environnement
-    FedaPay::setApiKey('sk_sandbox_sJ2DhG6GgFvt1FkG69EcCDia');
-    // FedaPay::setApiKey('sk_live_uLv0-fHy7hbuMOjTSSfzBWaY');
-    FedaPay::setEnvironment('sandbox'); // 'live' ou 'sandbox'
+    // Configurer FedaPay depuis la config (.env).
+    $this->configureFedaPay();
 
     try {
         // Créer la transaction
         $transaction = \FedaPay\Transaction::create([
             "description" => "Transaction for {$request->email}",
-            "amount" => $request->amount,
+            "amount" => $amount,
             "currency" => ["iso" => "XOF"],
             // Ajout de l'ID utilisateur dans l'URL de callback
             "callback_url" => secure_url(route('payment.callback', ['user_id' => auth()->user()->id])),
@@ -500,15 +609,14 @@ public function createTransaction(Request $request)
             ]
         ]);
 
+        // Mémoriser l'id de transaction pour vérifier le paiement au callback.
+        $commande->fedapay_transaction_id = $transaction->id;
+        $commande->save();
+
         // Log de la transaction réussie
         Log::info('Transaction créée avec succès', [
             'transaction_id' => $transaction->id,
-            'transaction_url' => $transaction->generateToken(),
         ]);
-
-        $commande = Commandes::where('users_id', $userId)
-        ->where('status', 'encours')
-        ->first();
 
         return response()->json(['transaction_url' => $transaction->generateToken(),'code'=>$commande->code_commandes]);
     } catch (\FedaPay\Error\ApiConnection $e) {
@@ -533,78 +641,122 @@ public function closePaiement(Request $request)
 {
     // Récupérer l'ID de l'utilisateur à partir des paramètres d'URL
     $userId = $request->query('user_id');
-        
-    // Logique pour vérifier et traiter la confirmation du paiement
-    $data = $request->all();
 
-    if ($data['status'] == 'approved') {
-        // Récupérer la commande de l'utilisateur
-        $commande = Commandes::where('users_id', $userId)->where('status', 'encours')->first();
+    // Récupérer la commande de l'utilisateur
+    $commande = Commandes::where('users_id', $userId)->where('status', 'encours')->first();
 
-        if ($commande) {
-            // Récupérer les achats associés à la commande
-            $achats = Achat::where('commande_id', $commande->id)->get();
-            $sommeLivraison = 0;
+    // SÉCURITÉ : ne jamais faire confiance au 'status' passé dans l'URL.
+    // On vérifie le paiement directement auprès de FedaPay via l'id mémorisé
+    // lors de la création de la transaction.
+    $paid = false;
+    if ($commande && $commande->fedapay_transaction_id && $this->verifyFedaPayPayment($commande)) {
+        $paid = true;
+        // Récupérer les achats associés à la commande
+        $achats = Achat::where('commande_id', $commande->id)->get();
+        $productIds = $achats->pluck('product_id')->unique()->toArray();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-            // Créer une liste pour stocker les noms des produits
-            $nomsProduits = [];
+        $sommeLivraison = 0;
+        $totalProduits = 0;
+        $nomsProduits = [];
 
-            foreach ($achats as $achat) {
-                // Récupérer le produit associé à l'achat
-                $product = Product::find($achat->product_id); // Utiliser find pour récupérer le produit
+        foreach ($achats as $achat) {
+            $product = $products->get($achat->product_id);
 
-                if ($product) { // Vérifier si le produit existe
-                    // Mettre à jour le prix de l'achat
-                    $achat->price = $product->prix_promo ? $product->prix_promo : $product->price;
-                    $sommeLivraison += $product->prix_livraison; 
+            if ($product) {
+                $prixUnitaire = $product->prix_promo ? $product->prix_promo : $product->price;
+                $achat->price = $prixUnitaire;
+                $achat->save();
 
-                    // Enregistrer les modifications sur l'achat
-                    $achat->save();
-
-                    // Ajouter le nom du produit à la liste
-                    $nomsProduits[] = $product->title; // Assurez-vous que 'name' est la colonne correcte
-                }
+                $totalProduits += $prixUnitaire * $achat->qte_achat;
+                $sommeLivraison += $product->prix_livraison ?? 0;
+                $nomsProduits[] = $product->title;
             }
+        }
 
-            // Calculer les totaux de la commande
-            $commande->prix_total_commande = $achats->sum('price');
-            $commande->prix_total_livraison = $sommeLivraison;
-            $commande->status = 'confirmer'; // Mettre à jour le statut de la commande
-            $commande->save(); // Enregistrer les modifications sur la commande
+        // Calculer les totaux de la commande
+        $commande->prix_total_commande = $totalProduits;
+        $commande->prix_total_livraison = $sommeLivraison;
+        $commande->status = 'confirmer'; // Mettre à jour le statut de la commande
+        $commande->save();
 
-            // Créer une chaîne contenant la liste des noms des produits
+        $descriptionProduits = implode(', ', $nomsProduits);
 
-            $descriptionProduits = implode(', ', $nomsProduits);
+        // Créer un enregistrement d'historique
+        Historique::create([
+            'id_commande' => $commande->id,
+            'users_id' => $userId,
+            'description' => 'Commande supriz : ' . $descriptionProduits,
+            'type' => 'simple',
+            'prix' => $commande->prix_total_commande,
+            'code_historiques' => $commande->code_commandes,
+        ]);
 
-            // Créer un enregistrement d'historique
-            Historique::create([
-                'id_commande' => $commande->id,
-                'users_id' => $userId,
-                'description' => 'Commande supriz : ' . $descriptionProduits,
-                'type' => 'simple', // Ou 'supriz' selon le cas
-                'prix' => $commande->prix_total_commande,
-                'code_historiques' => $commande->code_commandes, // Générez un code unique
-            ]);
-
-            // Push FCM au client
-            $user = User::find($userId);
-            if ($user && $user->fcm_token) {
-                $this->firebaseService->sendNotification(
-                    $user->fcm_token,
-                    'Commande confirmée',
-                    'Votre commande #' . $commande->code_commandes . ' a été confirmée. Total : ' . $commande->prix_total_commande . ' FCFA.',
-                    [
-                        'type' => 'order_confirmed',
-                        'commande_id' => (string) $commande->id,
-                        'code_commande' => (string) $commande->code_commandes,
-                    ]
-                );
-            }
+        // Push FCM au client
+        $user = User::find($userId);
+        if ($user && $user->fcm_token) {
+            $this->firebaseService->sendNotification(
+                $user->fcm_token,
+                'Commande confirmée',
+                'Votre commande #' . $commande->code_commandes . ' a été confirmée. Total : ' . ($commande->prix_total_commande + $commande->prix_total_livraison) . ' FCFA.',
+                [
+                    'type' => 'order_confirmed',
+                    'commande_id' => (string) $commande->id,
+                    'code_commande' => (string) $commande->code_commandes,
+                ]
+            );
         }
     }
 
-    // Rediriger vers une page de succès
-    return redirect()->route('paiement.success', ['user_id' => $userId]);
+    // Rediriger en indiquant le VRAI résultat du paiement (jamais "success"
+    // par défaut). L'app lit le paramètre `payment` pour afficher succès ou échec.
+    return redirect()->route('paiement.success', [
+        'user_id' => $userId,
+        'payment' => $paid ? 'success' : 'echec',
+    ]);
+}
+
+/**
+ * Vérifie auprès de FedaPay qu'une transaction est réellement payée
+ * et que son montant correspond au total attendu de la commande.
+ */
+private function verifyFedaPayPayment(Commandes $commande): bool
+{
+    try {
+        $this->configureFedaPay();
+
+        $transaction = \FedaPay\Transaction::retrieve($commande->fedapay_transaction_id);
+
+        // Statuts considérés comme payés par FedaPay.
+        $paidStatuses = ['approved', 'transferred', 'refunded'];
+        if (!in_array($transaction->status, $paidStatuses, true)) {
+            Log::warning('Paiement non confirmé par FedaPay', [
+                'commande_id' => $commande->id,
+                'transaction_id' => $commande->fedapay_transaction_id,
+                'status' => $transaction->status ?? null,
+            ]);
+            return false;
+        }
+
+        // Le montant payé doit correspondre au montant attendu.
+        $expected = $this->computeOrderAmount($commande);
+        if ((int) $transaction->amount !== $expected) {
+            Log::warning('Montant FedaPay incohérent', [
+                'commande_id' => $commande->id,
+                'attendu' => $expected,
+                'recu' => $transaction->amount ?? null,
+            ]);
+            return false;
+        }
+
+        return true;
+    } catch (\Throwable $e) {
+        Log::error('Erreur vérification FedaPay', [
+            'commande_id' => $commande->id,
+            'error' => $e->getMessage(),
+        ]);
+        return false;
+    }
 }
 
 public function successPage(Request $request)
@@ -612,8 +764,12 @@ public function successPage(Request $request)
     // Récupérer l'ID de l'utilisateur
     $userId = $request->query('user_id');
 
-    // Retourner une vue avec un message de succès
-    return view('paiement.success', compact('userId'));
+    // 'success' par défaut pour rétro-compatibilité ; 'echec' si le paiement
+    // n'a pas été confirmé par FedaPay.
+    $paid = $request->query('payment', 'success') !== 'echec';
+
+    // Retourner une vue reflétant le vrai résultat du paiement.
+    return view('paiement.success', compact('userId', 'paid'));
 }
 
     /**

@@ -29,7 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('remove-from-cart/delete/{achat_id}', [PanierController::class, 'removeFromCart']);
     Route::post('/cart/remove-selected', [PanierController::class, 'removeSelectedItems']);
     Route::post('update-quantity', [PanierController::class, 'updateQuantity']);
-    Route::post('close-shop', [PanierController::class, 'closeShop']);
 
     Route::post('numero-beneficiere', [PanierController::class, 'updateBeneficiere']);
 

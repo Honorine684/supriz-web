@@ -83,7 +83,7 @@
     })->name('admin');
 
     // Toutes les routes admin
-    Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
         // Dashboard
         Route::get('/dashboard', [MaisonController::class, 'maison'])->name('dashboard');

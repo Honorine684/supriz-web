@@ -40,4 +40,13 @@ return [
         'project_id' => env('FIREBASE_PROJECT_ID', 'supriz-bb081'),
     ],
 
+    // Client IDs autorisés pour la connexion sociale (séparés par des virgules).
+    'google' => [
+        'client_ids' => env('GOOGLE_CLIENT_IDS', ''),
+    ],
+
+    'apple' => [
+        'client_ids' => env('APPLE_CLIENT_IDS', ''),
+    ],
+
 ];

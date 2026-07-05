@@ -16,21 +16,21 @@ class NotificationVenteController extends Controller
     $commandes_encours = Commandes::where('status', 'encours')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
-                        }, 'user'])
+                        }, 'achats.product.marchand', 'user'])
                         ->orderBy('created_at', 'desc')
                         ->get();
 
     $commandes_entente = Commandes::where('status', 'confirmer')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
-                        }, 'user'])
+                        }, 'achats.product.marchand', 'user'])
                         ->orderBy('created_at', 'desc')
                         ->get();
-                        
+
     $commandes_termine = Commandes::where('status', 'livrée')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés
-                        }, 'user'])
+                        }, 'achats.product.marchand', 'user'])
                         ->orderBy('created_at', 'desc')
                         ->get();
 
@@ -41,15 +41,22 @@ class NotificationVenteController extends Controller
                             if (!isset($commande_price[$commande_encours->id])) {
                                 $commande_price[$commande_encours->id] = 0;
                             }
-                            
+
                             foreach ($commande_encours->achats as $achat) {
+                                // Produit potentiellement supprimé définitivement (hors soft-delete) :
+                                // on l'ignore pour éviter un accès sur null.
+                                $produit = $achat->product;
+                                if (!$produit) {
+                                    continue;
+                                }
+
                                 // Vérification des prix promo et calcul du prix du produit avec la quantité
-                                $prix_produit = $achat->product->prix_promo ? $achat->product->prix_promo : $achat->product->price;
+                                $prix_produit = $produit->prix_promo ? $produit->prix_promo : $produit->price;
                                 $total_produit = $prix_produit * $achat->qte_achat;
-                        
-                                // Ajout des frais de livraison
-                                $frais_livraison = $achat->product->prix_livraison;
-                        
+
+                                // Ajout des frais de livraison (0 si non défini)
+                                $frais_livraison = $produit->prix_livraison ?? 0;
+
                                 // Addition des frais de livraison et du prix du produit au prix total de la commande
                                 $commande_price[$commande_encours->id] += $total_produit + $frais_livraison;
                             }

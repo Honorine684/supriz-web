@@ -17,4 +17,12 @@ class Historique extends Model
         'prix',
         'code_historiques',
     ];
+
+    /**
+     * Commande associée à cette ligne d'historique.
+     */
+    public function commande()
+    {
+        return $this->belongsTo(Commandes::class, 'id_commande');
+    }
 }

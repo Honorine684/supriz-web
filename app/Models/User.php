@@ -34,6 +34,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed', // Ensure password is hashed
+        'is_admin' => 'boolean',
+        'password_reset_verified_at' => 'datetime',
     ];
 
     // Relation avec le modèle Supriz

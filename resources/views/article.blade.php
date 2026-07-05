@@ -310,11 +310,12 @@
                                 </label>
                             @endforeach
                         </div>
+                        @error('categorie_dhomme') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label">Sous-catégorie <span class="req">*</span></label>
-                        <select name="sousCategorieId" id="sous-categorie" class="form-input" required>
+                        <select name="sousCategorieId" id="sous-categorie" class="form-input @error('sousCategorieId') !border-red-400 @enderror" required>
                             <option value="">— Sélectionnez d'abord une catégorie —</option>
                             @isset($article)
                                 @foreach ($sousCategories as $sousCategorie)
@@ -329,6 +330,7 @@
                                 @endforeach
                             @endisset
                         </select>
+                        @error('sousCategorieId') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Badges --}}
@@ -416,8 +418,9 @@
 
                     <div class="mb-4">
                         <label class="form-label">Description <span class="req">*</span></label>
-                        <textarea name="description" class="form-input" rows="4"
+                        <textarea name="description" class="form-input @error('description') !border-red-400 @enderror" rows="4"
                                   placeholder="Décrivez le produit en détail..." required>{{ old('description', $article->description ?? '') }}</textarea>
+                        @error('description') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     {{-- Personnalisation switch --}}
@@ -450,29 +453,35 @@
                                 ? asset('storage/'.$article->photo_secondary) : null;
                         @endphp
 
-                        <div class="image-drop {{ $img1Url ? 'has-image' : '' }}" id="drop-1">
-                            <input type="file" name="img1" id="imgInput1" accept="image/*"
-                                   {{ isset($article) ? '' : 'required' }}>
-                            <img id="imgPreview1" src="{{ $img1Url ?? '' }}"
-                                 style="{{ $img1Url ? '' : 'display:none;' }}" alt="">
-                            <div class="placeholder" {{ $img1Url ? 'style=display:none;' : '' }}>
-                                <i class="ri-add-circle-line text-3xl block mb-1"></i>
-                                Image principale<br>
-                                <span class="text-blue-600">Cliquer pour ajouter</span>
+                        <div>
+                            <div class="image-drop {{ $img1Url ? 'has-image' : '' }} @error('img1') !border-red-400 @enderror" id="drop-1">
+                                <input type="file" name="img1" id="imgInput1" accept="image/*"
+                                       {{ isset($article) ? '' : 'required' }}>
+                                <img id="imgPreview1" src="{{ $img1Url ?? '' }}"
+                                     style="{{ $img1Url ? '' : 'display:none;' }}" alt="">
+                                <div class="placeholder" {{ $img1Url ? 'style=display:none;' : '' }}>
+                                    <i class="ri-add-circle-line text-3xl block mb-1"></i>
+                                    Image principale<br>
+                                    <span class="text-blue-600">Cliquer pour ajouter</span>
+                                </div>
+                                <button type="button" class="remove-btn" onclick="resetImage(1, event)">×</button>
                             </div>
-                            <button type="button" class="remove-btn" onclick="resetImage(1, event)">×</button>
+                            @error('img1') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <div class="image-drop {{ $img2Url ? 'has-image' : '' }}" id="drop-2">
-                            <input type="file" name="img2" id="imgInput2" accept="image/*">
-                            <img id="imgPreview2" src="{{ $img2Url ?? '' }}"
-                                 style="{{ $img2Url ? '' : 'display:none;' }}" alt="">
-                            <div class="placeholder" {{ $img2Url ? 'style=display:none;' : '' }}>
-                                <i class="ri-add-circle-line text-3xl block mb-1"></i>
-                                Image secondaire<br>
-                                <span class="text-blue-600">Optionnel</span>
+                        <div>
+                            <div class="image-drop {{ $img2Url ? 'has-image' : '' }} @error('img2') !border-red-400 @enderror" id="drop-2">
+                                <input type="file" name="img2" id="imgInput2" accept="image/*">
+                                <img id="imgPreview2" src="{{ $img2Url ?? '' }}"
+                                     style="{{ $img2Url ? '' : 'display:none;' }}" alt="">
+                                <div class="placeholder" {{ $img2Url ? 'style=display:none;' : '' }}>
+                                    <i class="ri-add-circle-line text-3xl block mb-1"></i>
+                                    Image secondaire<br>
+                                    <span class="text-blue-600">Optionnel</span>
+                                </div>
+                                <button type="button" class="remove-btn" onclick="resetImage(2, event)">×</button>
                             </div>
-                            <button type="button" class="remove-btn" onclick="resetImage(2, event)">×</button>
+                            @error('img2') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>

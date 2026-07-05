@@ -13,8 +13,21 @@ use Illuminate\Support\Facades\Log;
 
 class CronController extends Controller
 {
-    // Clé secrète pour protéger l'endpoint
-    private const CRON_SECRET_KEY = 'supriz_cron_2024_secret';
+    /**
+     * Clé secrète protégeant les endpoints cron. Définie via .env (CRON_SECRET_KEY),
+     * jamais en dur dans le code versionné.
+     */
+    private function cronSecret(): string
+    {
+        return (string) config('app.cron_secret_key');
+    }
+
+    private function secretIsValid(Request $request): bool
+    {
+        $secret = $this->cronSecret();
+        // Rejeter si aucun secret n'est configuré, ou s'il ne correspond pas.
+        return $secret !== '' && hash_equals($secret, (string) $request->query('key'));
+    }
 
     /**
      * Endpoint pour cron-job.org - Envoyer les notifications d'anniversaire
@@ -26,7 +39,7 @@ class CronController extends Controller
     public function sendBirthdayNotifications(Request $request)
     {
         // Vérifier la clé secrète
-        if ($request->query('key') !== self::CRON_SECRET_KEY) {
+        if (!$this->secretIsValid($request)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Unauthorized'
@@ -189,7 +202,7 @@ class CronController extends Controller
     public function testRealBirthday(Request $request)
     {
         // Vérifier la clé secrète
-        if ($request->query('key') !== self::CRON_SECRET_KEY) {
+        if (!$this->secretIsValid($request)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Unauthorized'

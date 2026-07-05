@@ -36,7 +36,11 @@
 <body>
     @include('partials.gtm-body')
 
-    <h1>Paiement réussi... !</h1>
-    
+    @if(!empty($paid))
+        <h1>Paiement réussi... !</h1>
+    @else
+        <h1>Le paiement n'a pas abouti. Veuillez réessayer.</h1>
+    @endif
+
 </body>
 </html>

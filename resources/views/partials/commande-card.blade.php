@@ -150,6 +150,29 @@
                                     @if ($achat->product)
                                         <div class="font-medium text-gray-800">{{ $achat->product->title }}</div>
                                         <div class="text-xs text-gray-500">{{ $achat->product->entreprise }}</div>
+                                        @if ($achat->product->marchand)
+                                            @php
+                                                $marchand = $achat->product->marchand;
+                                                $marchandWa = supriz_wa_number($marchand->telephone);
+                                                $waText = rawurlencode(
+                                                    "Bonjour {$marchand->nom}, nouvelle commande Supriz {$commande->code_commandes} : "
+                                                    . ($achat->product->title ?? '') . " x{$achat->qte_achat}."
+                                                );
+                                            @endphp
+                                            <div class="text-xs mt-1 flex items-center gap-1 flex-wrap">
+                                                <i class="ri-store-2-line text-gray-400"></i>
+                                                <span class="text-gray-600 font-medium">{{ $marchand->nom }}</span>
+                                                @if ($marchandWa)
+                                                    <a href="https://wa.me/{{ $marchandWa }}?text={{ $waText }}" target="_blank"
+                                                       onclick="event.stopPropagation();"
+                                                       class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-0.5">
+                                                        <i class="ri-whatsapp-line"></i> Prendre la commande
+                                                    </a>
+                                                @else
+                                                    <span class="text-gray-400">(WhatsApp non renseigné)</span>
+                                                @endif
+                                            </div>
+                                        @endif
                                     @else
                                         <span class="text-gray-400 italic">Produit supprimé</span>
                                     @endif

@@ -230,6 +230,25 @@
                 </div>
             </form>
 
+            @php
+                // Normalise un numéro pour WhatsApp (international sans +, ni espace).
+                // Bénin : 10 chiffres commençant par 0 -> 229 + 9 restants ; 8 chiffres -> 229 + ...
+                if (!function_exists('supriz_wa_number')) {
+                    function supriz_wa_number($num) {
+                        if (!$num) return null;
+                        $s = preg_replace('/[^\d+]/', '', (string) $num);
+                        if ($s === '') return null;
+                        if (str_starts_with($s, '+')) $s = substr($s, 1);
+                        if (strlen($s) === 10 && str_starts_with($s, '0')) {
+                            $s = '229' . substr($s, 1);
+                        } elseif (strlen($s) === 8) {
+                            $s = '229' . $s;
+                        }
+                        return $s;
+                    }
+                }
+            @endphp
+
             <p class="mt-3 mb-2">Liste des marchands</p>
 
             <div class="p-3 overflow-x-auto bg-white border border-gray-100 shadow-md rounded-20 shadow-black/5">
@@ -267,7 +286,18 @@
                                     </span>
                                 </td>
                                 <td class="px-4 py-2 border-b border-b-gray-50">
-                                    <span class="text-[13px] text-gray-500">{{ $m->telephone ?? '—' }}</span>
+                                    @php
+                                        $mWa = supriz_wa_number($m->telephone);
+                                        $waText = rawurlencode("Bonjour {$m->nom}, je vous contacte de la part de Supriz.");
+                                    @endphp
+                                    @if ($mWa)
+                                        <a href="https://wa.me/{{ $mWa }}?text={{ $waText }}" target="_blank"
+                                           class="text-[13px] text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-1">
+                                            <i class="ri-whatsapp-line"></i> {{ $m->telephone }}
+                                        </a>
+                                    @else
+                                        <span class="text-[13px] text-gray-500">{{ $m->telephone ?? '—' }}</span>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-2 border-b border-b-gray-50">
                                     <span class="text-[13px] text-gray-500">{{ $m->products()->count() }}</span>

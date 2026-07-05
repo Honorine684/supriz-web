@@ -28,6 +28,17 @@ class LoginController extends Controller
 
         // Tenter de se connecter avec les informations d'identification fournies
         if (Auth::attempt($credentials)) {
+            // Réserver l'accès web/back-office aux administrateurs.
+            if (!Auth::user()->is_admin) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => "Ce compte n'est pas autorisé à accéder à l'administration.",
+                ]);
+            }
+
             Auth::user()->update(['last_login_at' => Carbon::now()]);
             // Authentification réussie, rediriger vers le dashboard admin
             return redirect()->route('admin.dashboard');

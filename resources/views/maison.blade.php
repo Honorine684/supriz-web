@@ -715,11 +715,12 @@
                         <p class="p-6 text-center text-gray-400">Aucune commande.</p>
                     @else
                     <div class="overflow-x-auto">
-                        <table class="w-full min-w-[640px]">
+                        <table class="w-full min-w-[760px]">
                             <thead class="bg-gray-50 text-xs text-gray-500 uppercase">
                                 <tr>
                                     <th class="px-4 py-3 text-left">Code</th>
                                     <th class="px-4 py-3 text-left">Client</th>
+                                    <th class="px-4 py-3 text-left">Marchand</th>
                                     <th class="px-4 py-3 text-left">Montant</th>
                                     <th class="px-4 py-3 text-left">Statut</th>
                                     <th class="px-4 py-3 text-left">Date</th>
@@ -730,6 +731,24 @@
                                     <tr class="border-t border-gray-100">
                                         <td class="px-4 py-3 text-sm font-mono text-gray-800">{{ $c['code'] }}</td>
                                         <td class="px-4 py-3 text-sm text-gray-700">{{ $c['client'] }}</td>
+                                        <td class="px-4 py-3 text-sm">
+                                            @forelse ($c['marchands'] as $m)
+                                                <div class="flex items-center gap-1 mb-0.5 whitespace-nowrap">
+                                                    <i class="ri-store-2-line text-gray-400"></i>
+                                                    @if ($m['wa'])
+                                                        <a href="https://wa.me/{{ $m['wa'] }}?text={{ rawurlencode($m['text']) }}"
+                                                           target="_blank"
+                                                           class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-0.5">
+                                                            {{ $m['nom'] }} <i class="ri-whatsapp-line"></i>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-gray-600" title="WhatsApp non renseigné">{{ $m['nom'] }}</span>
+                                                    @endif
+                                                </div>
+                                            @empty
+                                                <span class="text-gray-300">—</span>
+                                            @endforelse
+                                        </td>
                                         <td class="px-4 py-3 text-sm font-semibold text-gray-900">
                                             {{ number_format($c['montant'], 0, ',', ' ') }} F
                                         </td>
@@ -867,7 +886,7 @@
                     vSupriz.classList.add('hidden');
                     vEcom.classList.remove('hidden');
                     // Init chart e-commerce à la première ouverture
-                    if (!ecomChart && document.getElementById('ecom-chart')) {
+                    if (!ecomChart && document.getElementById('ecom-chart') && typeof ApexCharts !== 'undefined') {
                         ecomChart = new ApexCharts(document.getElementById('ecom-chart'), {
                             chart: {
                                 type: 'area', height: 300,
