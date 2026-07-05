@@ -90,9 +90,12 @@ public function store(Request $request)
         $marchand = Marchand::findOrFail($validatedData['marchand_id']);
         $article->marchand_id = $marchand->id;
         $article->entreprise = $marchand->nom;
-        $article->evaluation = $validatedData['evaluation'] ?? null;
+        // Colonnes NOT NULL en base : évaluation et prix_livraison ne doivent
+        // jamais être null (0 par défaut). Le champ prix_livraison a été retiré
+        // du formulaire (calcul auto), d'où le fallback.
+        $article->evaluation = $validatedData['evaluation'] ?? 0;
         $article->prix_promo = $validatedData['prix_promotion'] ?? null;
-        $article->prix_livraison = $validatedData['prix_livraison'] ?? null;
+        $article->prix_livraison = $validatedData['prix_livraison'] ?? 0;
         $article->info = $validatedData['info'];
         $article->statut = 'in_stock';
 
@@ -126,8 +129,8 @@ public function store(Request $request)
         // Rediriger avec un message de succès
         return redirect()->back()->with('success', 'Article publié avec succès');
     } catch (\Exception $e) {
-        // En cas d'erreur, rediriger avec un message d'erreur
-        return redirect()->back()->with('error', 'Une erreur est survenue. Veuillez réessayer.');
+        report($e); // loggue l'exception réelle dans storage/logs/laravel.log
+        return redirect()->back()->with('error', 'Erreur : ' . $e->getMessage());
     }
 }
 
@@ -246,8 +249,8 @@ public function update(Request $request, $id)
         return redirect()->route('admin.publierArticles')  // Remplacez 'article.index' par le nom de votre route de redirection
         ->with('success', 'Modification réussie !');
         } catch (\Exception $e) {
-        // En cas d'erreur, rediriger avec un message d'erreur
-        return redirect()->back()->with('error', 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.');
+        report($e); // loggue l'exception réelle dans storage/logs/laravel.log
+        return redirect()->back()->with('error', 'Erreur lors de la mise à jour : ' . $e->getMessage());
     }
 }
 
