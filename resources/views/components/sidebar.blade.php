@@ -99,7 +99,7 @@
                 <span class="text-sm">Notifications</span>
                 @if (!empty($commandesEnAttenteCount) && $commandesEnAttenteCount > 0)
                     <span title="Commandes en attente de livraison"
-                        class="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+                        style="margin-left:auto;display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;font-size:11px;font-weight:700;line-height:1;border-radius:999px;background:#f59e0b;color:#3a2600;font-variant-numeric:tabular-nums;box-shadow:0 0 0 3px rgba(245,158,11,.16);">
                         {{ $commandesEnAttenteCount > 99 ? '99+' : $commandesEnAttenteCount }}
                     </span>
                 @endif

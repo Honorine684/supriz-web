@@ -390,11 +390,14 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div class="md:col-span-2">
                             <label class="form-label">Durée de préparation <span class="req">*</span></label>
-                            <input type="text" name="info"
-                                   value="{{ old('info', $article->info ?? '') }}"
-                                   class="form-input @error('info') !border-red-400 @enderror" placeholder="Ex: 24h, 48h, 2j" maxlength="255" required>
+                            <div class="flex items-center gap-2">
+                                <input type="number" name="info" min="1" max="8760" step="1"
+                                       value="{{ old('info', $article->info ?? '') }}"
+                                       class="form-input @error('info') !border-red-400 @enderror" placeholder="Ex: 24" required>
+                                <span class="text-sm text-gray-500 whitespace-nowrap">heure(s)</span>
+                            </div>
                             @error('info') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
-                            <p class="text-xs text-gray-500 mt-1">Format: nombre + h (heures) ou j (jours)</p>
+                            <p class="text-xs text-gray-500 mt-1">Nombre d'heures (ex : 24 pour 1 jour, 48 pour 2 jours).</p>
                         </div>
 
                         <div>
