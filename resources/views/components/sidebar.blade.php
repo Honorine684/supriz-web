@@ -97,6 +97,12 @@
                 class="flex items-center py-2 px-4 text-gray-300 hover:bg-gray-950 hover:text-gray-100 rounded-md group-[.active]:bg-gray-800 group-[.active]:text-white group-[.selected]:bg-gray-950 group-[.selected]:text-gray-100">
                 <i class="mr-3 text-lg ri-notification-line"></i>
                 <span class="text-sm">Notifications</span>
+                @if (!empty($commandesEnAttenteCount) && $commandesEnAttenteCount > 0)
+                    <span title="Commandes en attente de livraison"
+                        class="ml-auto inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+                        {{ $commandesEnAttenteCount > 99 ? '99+' : $commandesEnAttenteCount }}
+                    </span>
+                @endif
             </a>
         </li>
 
