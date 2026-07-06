@@ -67,7 +67,8 @@ public function store(Request $request)
         'name_product' => 'required|string|max:255',
         'prix_product' => 'required|numeric',
         'marchand_id' => 'required|integer|exists:marchands,id',
-        'info' => 'required|integer|min:1|max:8760',
+        'info' => 'required|integer|min:1|max:100000',
+        'info_unit' => 'required|string|in:min,h,j',
         'description' => 'required|string',
         'prix_promotion' => 'nullable|numeric',
         'prix_livraison' => 'nullable|numeric',
@@ -96,7 +97,8 @@ public function store(Request $request)
         $article->evaluation = $validatedData['evaluation'] ?? 0;
         $article->prix_promo = $validatedData['prix_promotion'] ?? null;
         $article->prix_livraison = $validatedData['prix_livraison'] ?? 0;
-        $article->info = $validatedData['info'];
+        // Compose "30min" / "24h" / "2j" à partir du nombre + de l'unité choisie.
+        $article->info = $validatedData['info'] . $validatedData['info_unit'];
         $article->statut = 'in_stock';
 
         // Gestion de la personnalisation (présente ou non)
@@ -175,7 +177,8 @@ public function update(Request $request, $id)
         'name_product' => 'required|string|max:255',
         'prix_product' => 'required|numeric',
         'marchand_id' => 'required|integer|exists:marchands,id',
-        'info' => 'required|integer|min:1|max:8760',
+        'info' => 'required|integer|min:1|max:100000',
+        'info_unit' => 'required|string|in:min,h,j',
         'description' => 'required|string',
         'prix_promotion' => 'nullable|numeric',
         'prix_livraison' => 'nullable|numeric',
@@ -203,7 +206,8 @@ public function update(Request $request, $id)
         $article->evaluation = $validatedData['evaluation'] ?? $article->evaluation;
         $article->prix_promo = $validatedData['prix_promotion'] ?? $article->prix_promo;
         $article->prix_livraison = $validatedData['prix_livraison'] ?? $article->prix_livraison;
-        $article->info = $validatedData['info'];
+        // Compose "30min" / "24h" / "2j" à partir du nombre + de l'unité choisie.
+        $article->info = $validatedData['info'] . $validatedData['info_unit'];
 
 
         // Gestion de la personnalisation (présente ou non)
@@ -266,6 +270,7 @@ public function update(Request $request, $id)
             'prix_product' => 'prix',
             'marchand_id' => 'marchand',
             'info' => 'durée de préparation',
+            'info_unit' => 'unité de durée',
             'description' => 'description',
             'prix_promotion' => 'prix promotionnel',
             'prix_livraison' => 'prix de livraison',

@@ -390,14 +390,31 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div class="md:col-span-2">
                             <label class="form-label">Durée de préparation <span class="req">*</span></label>
+                            @php
+                                // Décompose la valeur stockée (ex: "30min", "24h", "2j", ou "48" legacy=heures)
+                                // en nombre + unité pour pré-remplir le formulaire.
+                                $rawInfo = strtolower((string) old('info', $article->info ?? ''));
+                                $infoNum = preg_replace('/[^0-9]/', '', $rawInfo);
+                                $infoUnit = old('info_unit');
+                                if (!$infoUnit) {
+                                    if (str_contains($rawInfo, 'min') || str_ends_with($rawInfo, 'm')) $infoUnit = 'min';
+                                    elseif (str_contains($rawInfo, 'j')) $infoUnit = 'j';
+                                    else $infoUnit = 'h'; // "24h" ou nombre pur (legacy = heures)
+                                }
+                            @endphp
                             <div class="flex items-center gap-2">
-                                <input type="number" name="info" min="1" max="8760" step="1"
-                                       value="{{ old('info', $article->info ?? '') }}"
-                                       class="form-input @error('info') !border-red-400 @enderror" placeholder="Ex: 24" required>
-                                <span class="text-sm text-gray-500 whitespace-nowrap">heure(s)</span>
+                                <input type="number" name="info" min="1" step="1"
+                                       value="{{ $infoNum }}"
+                                       class="form-input @error('info') !border-red-400 @enderror" placeholder="Ex: 30" required>
+                                <select name="info_unit" class="form-input max-w-[130px] @error('info_unit') !border-red-400 @enderror">
+                                    <option value="min" {{ $infoUnit === 'min' ? 'selected' : '' }}>minutes</option>
+                                    <option value="h" {{ $infoUnit === 'h' ? 'selected' : '' }}>heures</option>
+                                    <option value="j" {{ $infoUnit === 'j' ? 'selected' : '' }}>jours</option>
+                                </select>
                             </div>
                             @error('info') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
-                            <p class="text-xs text-gray-500 mt-1">Nombre d'heures (ex : 24 pour 1 jour, 48 pour 2 jours).</p>
+                            @error('info_unit') <p class="text-xs text-red-600 mt-1">{{ $message }}</p> @enderror
+                            <p class="text-xs text-gray-500 mt-1">Ex : 30 minutes, 2 heures, ou 2 jours.</p>
                         </div>
 
                         <div>
