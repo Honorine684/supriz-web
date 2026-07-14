@@ -833,15 +833,12 @@
                 <h2 class="gift-title">{{ $message->titre }}</h2>
                 <div class="gift-animation">
                     @php
-                        // Si message créé depuis l'app (user_id existe) -> gift_image
-                        // Si message créé depuis le web (pas de user_id) -> image
-                        if ($message->user_id) {
-                            // Message depuis l'app : utiliser gift_image, sinon image comme fallback
-                            $giftImage = $message->sousCategorie->gift_image ?? $message->sousCategorie->image ?? null;
-                        } else {
-                            // Message depuis le web : utiliser image
-                            $giftImage = $message->sousCategorie->image ?? null;
-                        }
+                        // Le cadeau fait foi sur le champ admin dédié « Image cadeau (Gift) »
+                        // = gift_image (fallback image), quelle que soit l'origine (app OU web).
+                        // Ainsi site et app affichent le même GIF défini dans le dashboard.
+                        $giftImage = $message->sousCategorie->gift_image
+                            ?? $message->sousCategorie->image
+                            ?? null;
                         $giftImageUrl = $giftImage ? asset('storage/' . $giftImage) : asset('images/clientIamges/Wrapped_Gift.gif');
                         $isGif = $giftImage ? strtolower(pathinfo($giftImage, PATHINFO_EXTENSION)) === 'gif' : true;
                     @endphp

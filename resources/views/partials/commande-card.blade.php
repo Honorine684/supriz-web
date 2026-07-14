@@ -37,6 +37,68 @@
     $prixTotal = $totalCalcul
         ?? (($commande->prix_total_commande ?? 0) + ($commande->prix_total_livraison ?? 0));
     $canValidate = $commande->status === 'confirmer';
+
+    // Regroupe les produits par marchand pour construire un message WhatsApp
+    // complet et formaté (tous les produits du marchand dans cette commande).
+    $marchandGroups = [];
+    foreach ($commande->achats as $achatItem) {
+        $m = $achatItem->product->marchand ?? null;
+        if (!$m) continue;
+        $marchandGroups[$m->id]['marchand'] = $m;
+        $marchandGroups[$m->id]['achats'][] = $achatItem;
+    }
+
+    $marchandMessages = [];
+    foreach ($marchandGroups as $mid => $group) {
+        $m = $group['marchand'];
+        $lignes = ["Prise de commande — {$commande->code_commandes}", ""];
+        $multi = count($group['achats']) > 1;
+        $i = 1;
+        foreach ($group['achats'] as $a) {
+            $p = $a->product;
+            $prix = $p
+                ? number_format(($p->prix_promo ?: $p->price), 0, ',', ' ') . ' F'
+                : '—';
+            $perso = $a->description_de_personnalisation ?: '—';
+            $prefix = $multi ? "{$i}) " : "";
+            $indent = $multi ? "   " : "";
+            $lignes[] = "{$prefix}Produits: " . ($p->title ?? 'Produit supprimé');
+            $lignes[] = "{$indent}Quantité: {$a->qte_achat}";
+            $lignes[] = "{$indent}Prix: {$prix}";
+            $lignes[] = "{$indent}Personnalisation: {$perso}";
+            $lignes[] = "";
+            $i++;
+        }
+        $lignes[] = "Partenaires: {$m->nom}";
+        $marchandMessages[$mid] = rawurlencode(implode("\n", $lignes));
+    }
+
+    // Texte complet de la commande (copier-coller au clic sur une ligne).
+    $copyLines = ["Prise de commande — {$commande->code_commandes}", ""];
+    $multiAll = $commande->achats->count() > 1;
+    $n = 1;
+    foreach ($commande->achats as $a) {
+        $p = $a->product;
+        $prixItem = $p
+            ? number_format(($p->prix_promo ?: $p->price), 0, ',', ' ') . ' F'
+            : '—';
+        $persoItem = $a->description_de_personnalisation ?: '—';
+        $partenaire = ($p && $p->marchand) ? $p->marchand->nom : '—';
+        $prefix = $multiAll ? "{$n}) " : "";
+        $indent = $multiAll ? "   " : "";
+        $copyLines[] = "{$prefix}Produits: " . ($p->title ?? 'Produit supprimé');
+        $copyLines[] = "{$indent}Quantité: {$a->qte_achat}";
+        $copyLines[] = "{$indent}Prix: {$prixItem}";
+        $copyLines[] = "{$indent}Personnalisation: {$persoItem}";
+        $copyLines[] = "{$indent}Partenaires: {$partenaire}";
+        $copyLines[] = "";
+        $n++;
+    }
+    $copyLines[] = "Total: " . number_format($prixTotal, 0, ',', ' ') . " F";
+    $commandeCopyText = implode("\n", $copyLines);
+
+    // Suivi des marchands dont le lien WhatsApp a déjà été affiché (une fois par marchand).
+    $linkShownMarchands = [];
 @endphp
 
 <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-4">
@@ -145,6 +207,7 @@
                     <tbody>
                         @foreach ($commande->achats as $achat)
                             <tr class="border-t border-gray-100 hover:bg-gray-50 cursor-copy"
+                                data-copy="{{ $commandeCopyText }}"
                                 onclick="copyToClipboard(this)">
                                 <td class="px-3 py-2.5">
                                     @if ($achat->product)
@@ -154,22 +217,25 @@
                                             @php
                                                 $marchand = $achat->product->marchand;
                                                 $marchandWa = supriz_wa_number($marchand->telephone);
-                                                $waText = rawurlencode(
-                                                    "Bonjour {$marchand->nom}, nouvelle commande Supriz {$commande->code_commandes} : "
-                                                    . ($achat->product->title ?? '') . " x{$achat->qte_achat}."
-                                                );
+                                                // Message complet : tous les produits de ce marchand dans la commande.
+                                                $waText = $marchandMessages[$marchand->id] ?? '';
+                                                // Le lien « Prendre la commande » ne s'affiche qu'une fois par marchand.
+                                                $showLink = !in_array($marchand->id, $linkShownMarchands, true);
+                                                if ($showLink) { $linkShownMarchands[] = $marchand->id; }
                                             @endphp
                                             <div class="text-xs mt-1 flex items-center gap-1 flex-wrap">
                                                 <i class="ri-store-2-line text-gray-400"></i>
                                                 <span class="text-gray-600 font-medium">{{ $marchand->nom }}</span>
-                                                @if ($marchandWa)
-                                                    <a href="https://wa.me/{{ $marchandWa }}?text={{ $waText }}" target="_blank"
-                                                       onclick="event.stopPropagation();"
-                                                       class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-0.5">
-                                                        <i class="ri-whatsapp-line"></i> Prendre la commande
-                                                    </a>
-                                                @else
-                                                    <span class="text-gray-400">(WhatsApp non renseigné)</span>
+                                                @if ($showLink)
+                                                    @if ($marchandWa)
+                                                        <a href="https://wa.me/{{ $marchandWa }}?text={{ $waText }}" target="_blank"
+                                                           onclick="event.stopPropagation();"
+                                                           class="text-green-600 hover:text-green-700 hover:underline inline-flex items-center gap-0.5">
+                                                            <i class="ri-whatsapp-line"></i> Prendre la commande
+                                                        </a>
+                                                    @else
+                                                        <span class="text-gray-400">(WhatsApp non renseigné)</span>
+                                                    @endif
                                                 @endif
                                             </div>
                                         @endif

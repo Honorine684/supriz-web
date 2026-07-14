@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HommeSousCategorie extends Model
 {
     use HasFactory;
+    // Même table que SousCategorie (SoftDeletes) : on doit exclure les
+    // sous-catégories supprimées (deleted_at) partout dans l'app.
+    use SoftDeletes;
 
     protected $table = 'homme_sous_categories'; // Nom de la table
     protected $primaryKey = 'id'; // Clé primaire

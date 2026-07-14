@@ -45,6 +45,11 @@ return [
         'client_ids' => env('GOOGLE_CLIENT_IDS', ''),
     ],
 
+    // Clé Google Maps JavaScript API (carte marchand + Places).
+    'google_maps' => [
+        'key' => env('GOOGLE_MAPS_API_KEY', ''),
+    ],
+
     'apple' => [
         'client_ids' => env('APPLE_CLIENT_IDS', ''),
     ],

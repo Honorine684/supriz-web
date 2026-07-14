@@ -465,7 +465,7 @@
         }
     </script>
     <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsVV6ciFSfsaBkMDiNYz15xTBxRVD48Tg&libraries=places&language=fr&region=BJ&callback=initMarchandMap">
+            src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&libraries=places&language=fr&region=BJ&callback=initMarchandMap">
     </script>
 
 </body>

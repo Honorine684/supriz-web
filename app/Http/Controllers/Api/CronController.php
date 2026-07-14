@@ -197,6 +197,28 @@ class CronController extends Controller
     }
 
     /**
+     * Endpoint pour cron-job.org - Supprimer les notifications de plus de 7 jours.
+     * Miroir de la tâche planifiée `notifications:prune-old` (fiabilité Hostinger).
+     */
+    public function pruneOldNotifications(Request $request)
+    {
+        if (!$this->secretIsValid($request)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        \Illuminate\Support\Facades\Artisan::call('notifications:prune-old');
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Notifications purgées',
+            'output' => trim(\Illuminate\Support\Facades\Artisan::output()),
+        ]);
+    }
+
+    /**
      * Forcer l'envoi d'une notification pour le premier anniversaire actif (test)
      */
     public function testRealBirthday(Request $request)

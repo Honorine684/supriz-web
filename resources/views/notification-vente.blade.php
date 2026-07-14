@@ -199,25 +199,13 @@
     <!-- end: Main -->
     <script>
         function copyToClipboard(row) {
-            // Titres des colonnes correspondant à chaque cellule (sauf "Prix Unitaire")
-            const titles = ['Produit', 'Quantité', 'Personnalisation'];
+            // La commande complète formatée est fournie via l'attribut data-copy.
+            const textToCopy = (row.dataset.copy || '').trim();
+            if (!textToCopy) return;
 
-            let textToCopy = '';
-            const cells = row.querySelectorAll('td');
-
-            // Boucler à travers les cellules et récupérer le texte, sauf la 2ème colonne (prix unitaire)
-            cells.forEach((cell, index) => {
-                // Ignorer la 2ème colonne (index 1)
-                if (index !== 1) {
-                    textToCopy += titles[index === 0 ? 0 : index - 1] + ': ' + cell.textContent.trim() +
-                        '\n'; // Ajoute le titre et la valeur
-                }
-            });
-
-            // Utiliser l'API Clipboard pour copier le texte
-            navigator.clipboard.writeText(textToCopy.trim())
+            navigator.clipboard.writeText(textToCopy)
                 .then(() => {
-                    alert('Contenu copié dans le presse-papier !');
+                    alert('Commande copiée dans le presse-papier !');
                 })
                 .catch(err => {
                     console.error('Erreur lors de la copie : ', err);

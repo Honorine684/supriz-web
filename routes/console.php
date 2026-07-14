@@ -112,3 +112,9 @@ Schedule::command('birthdays:send-notifications')
 Schedule::command('birthdays:reset-notifications')
     ->yearlyOn(1, 1, '00:00')
     ->timezone('Africa/Porto-Novo');
+
+// Supprimer chaque jour les notifications de plus de 7 jours (dashboard + app)
+Schedule::command('notifications:prune-old')
+    ->dailyAt('03:00')
+    ->timezone('Africa/Porto-Novo')
+    ->withoutOverlapping();

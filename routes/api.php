@@ -99,4 +99,6 @@ Route::post('/update-password-mdp', [UserController::class, 'updatePasswordMdp']
 
 // Endpoint pour cron-job.org (notifications anniversaire)
 Route::get('/cron/birthday-notifications', [CronController::class, 'sendBirthdayNotifications']);
+// Endpoint pour cron-job.org (purge des notifications de +7 jours)
+Route::get('/cron/prune-notifications', [CronController::class, 'pruneOldNotifications']);
 Route::get('/cron/test-real-birthday', [CronController::class, 'testRealBirthday']);

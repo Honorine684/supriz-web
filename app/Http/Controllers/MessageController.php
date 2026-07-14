@@ -277,7 +277,7 @@ class MessageController extends Controller
                 WHEN name_sous_categories = 'Noël' THEN 5
                 ELSE 6
             END, name_sous_categories ASC")
-            ->get(['id', 'name_sous_categories', 'icone', 'image', 'placeholder_texte']);
+            ->get(['id', 'name_sous_categories', 'icone', 'image', 'gift_image', 'placeholder_texte']);
 
         return response()->json([
             'success' => true,

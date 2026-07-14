@@ -2151,7 +2151,7 @@
                             </button>
                             <div class="categories-grid">
                                 @foreach($categoriesSupriz as $categorie)
-                                <div class="category-item" data-category="{{ $categorie->id }}" data-placeholder="{{ $categorie->placeholder_texte ?? 'Ex: Votre message ici' }}" data-image="{{ $categorie->image ?? '' }}">
+                                <div class="category-item" data-category="{{ $categorie->id }}" data-placeholder="{{ $categorie->placeholder_texte ?? 'Ex: Votre message ici' }}" data-image="{{ $categorie->gift_image ?? $categorie->image ?? '' }}">
                                     <div class="category-icon-wrapper">
                                         @if($categorie->icone)
                                             <img src="{{ asset('storage/' . $categorie->icone) }}" alt="{{ $categorie->name_sous_categories }}" class="category-icon">
@@ -3559,7 +3559,7 @@
                             }
                             categoryItem.setAttribute('data-category', categorie.id);
                             categoryItem.setAttribute('data-placeholder', categorie.placeholder_texte || 'Ex: Votre message ici');
-                            categoryItem.setAttribute('data-image', categorie.image || '');
+                            categoryItem.setAttribute('data-image', categorie.gift_image || categorie.image || '');
 
                             const iconWrapper = document.createElement('div');
                             iconWrapper.className = 'category-icon-wrapper';
