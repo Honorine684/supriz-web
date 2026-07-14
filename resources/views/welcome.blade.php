@@ -2520,28 +2520,53 @@
                         ['name' => 'Fete des meres', 'icon' => 'bi-flower1'],
                         ['name' => 'Saint-Valentin', 'icon' => 'bi-suit-heart'],
                     ];
+
+                    // Construire la liste affichee : categories reelles actives (avec leur id + icone)
+                    $marqueeItems = [];
+                    if (isset($categoriesSupriz) && count($categoriesSupriz) > 0) {
+                        foreach ($categoriesSupriz as $categorie) {
+                            $marqueeItems[] = [
+                                'name'  => $categorie->name_sous_categories,
+                                'icone' => $categorie->icone,          // chemin storage ou null
+                                'icon'  => 'bi-gift',                  // fallback bootstrap icon
+                                'url'   => route('nouveau.message') . '?categorie=' . $categorie->id,
+                            ];
+                        }
+                    }
+
+                    // Filet de securite : si trop peu d'occasions reelles actives, completer avec les
+                    // occasions par defaut (sans doublon de nom) pour que le bandeau reste varie et ne
+                    // repete pas un seul item a l'infini.
+                    if (count($marqueeItems) < 6) {
+                        $existingNames = array_map(fn($it) => mb_strtolower($it['name']), $marqueeItems);
+                        foreach ($defaultCategoriesMarquee as $cat) {
+                            if (count($marqueeItems) >= 8) break;
+                            if (!in_array(mb_strtolower($cat['name']), $existingNames)) {
+                                $marqueeItems[] = [
+                                    'name'  => $cat['name'],
+                                    'icone' => null,
+                                    'icon'  => $cat['icon'],
+                                    'url'   => route('nouveau.message'),
+                                ];
+                                $existingNames[] = mb_strtolower($cat['name']);
+                            }
+                        }
+                    }
                 @endphp
 
+                {{-- Duplication x4 : indispensable au defilement continu (l'animation translateX(-25%)
+                     correspond a la largeur d'une copie). Chaque copie contient la liste variee ci-dessus. --}}
                 @for($i = 0; $i < 4; $i++)
-                    @if(isset($categoriesSupriz) && count($categoriesSupriz) > 0)
-                        @foreach($categoriesSupriz as $categorie)
-                        <a href="{{ route('nouveau.message') }}?categorie={{ $categorie->id }}" class="marquee-item" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
-                            @if($categorie->icone)
-                                <img src="{{ asset('storage/' . $categorie->icone) }}" alt="" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
-                            @else
-                                <i class="bi bi-gift" style="font-size: 16px; color: white;"></i>
-                            @endif
-                            <span style="color: white; font-size: 13px; font-weight: 500; white-space: nowrap;">{{ $categorie->name_sous_categories }}</span>
-                        </a>
-                        @endforeach
-                    @else
-                        @foreach($defaultCategoriesMarquee as $cat)
-                        <a href="{{ route('nouveau.message') }}" class="marquee-item" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
-                            <i class="{{ $cat['icon'] }}" style="font-size: 16px; color: white;"></i>
-                            <span style="color: white; font-size: 13px; font-weight: 500; white-space: nowrap;">{{ $cat['name'] }}</span>
-                        </a>
-                        @endforeach
-                    @endif
+                    @foreach($marqueeItems as $item)
+                    <a href="{{ $item['url'] }}" class="marquee-item" style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); padding: 8px 18px; border-radius: 50px; text-decoration: none; transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;">
+                        @if(!empty($item['icone']))
+                            <img src="{{ asset('storage/' . $item['icone']) }}" alt="" style="width: 18px; height: 18px; filter: brightness(0) invert(1);">
+                        @else
+                            <i class="{{ $item['icon'] }}" style="font-size: 16px; color: white;"></i>
+                        @endif
+                        <span style="color: white; font-size: 13px; font-weight: 500; white-space: nowrap;">{{ $item['name'] }}</span>
+                    </a>
+                    @endforeach
                 @endfor
             </div>
         </div>
