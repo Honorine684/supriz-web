@@ -579,9 +579,9 @@
                 </table>
             </div>
 
-            <!-- Pagination Supriz -->
+            <!-- Pagination Supriz (appends : conserve la page de l'autre tableau) -->
             <div style="margin-top: 1rem; padding: 1rem;">
-                {{ $sousCategoriesSupriz->links() }}
+                {{ $sousCategoriesSupriz->appends(request()->except('supriz_page'))->links() }}
             </div>
         </div>
 
@@ -693,9 +693,9 @@
                 </table>
             </div>
 
-            <!-- Pagination Autres -->
+            <!-- Pagination Autres (appends : conserve la page de l'autre tableau) -->
             <div style="margin-top: 1rem; padding: 1rem;">
-                {{ $sousCategoriesAutres->links() }}
+                {{ $sousCategoriesAutres->appends(request()->except('autres_page'))->links() }}
             </div>
         </div>
 

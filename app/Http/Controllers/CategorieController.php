@@ -14,17 +14,21 @@ class CategorieController extends Controller
         $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
 
         // Récupérer les sous-catégories Supriz (avec pagination)
+        // orderBy obligatoire : sans tri stable, MySQL peut répéter/omettre
+        // des lignes d'une page à l'autre.
         $sousCategoriesSupriz = SousCategorie::with('categorie')
             ->where('type_categorie_id', $suprizCategorie->id ?? null)
+            ->orderBy('id')
             ->paginate(5, ['*'], 'supriz_page');
 
         // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
         $sousCategoriesAutres = SousCategorie::with('categorie')
             ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
+            ->orderBy('id')
             ->paginate(5, ['*'], 'autres_page');
 
         // Pour compatibilité avec l'ancien code (toutes les sous-catégories)
-        $sousCategories = SousCategorie::with('categorie')->paginate(5);
+        $sousCategories = SousCategorie::with('categorie')->orderBy('id')->paginate(5);
 
         // Récupérer les catégories Supriz prédéfinies
         $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];
@@ -123,17 +127,21 @@ public function edit($id)
     $suprizCategorie = Categorie::where('name_id_categories', 's')->first();
 
     // Récupérer les sous-catégories Supriz (avec pagination)
+    // orderBy obligatoire : sans tri stable, MySQL peut répéter/omettre
+    // des lignes d'une page à l'autre.
     $sousCategoriesSupriz = SousCategorie::with('categorie')
         ->where('type_categorie_id', $suprizCategorie->id ?? null)
+        ->orderBy('id')
         ->paginate(5, ['*'], 'supriz_page');
 
     // Récupérer les sous-catégories Homme/Femme/Enfant (avec pagination)
     $sousCategoriesAutres = SousCategorie::with('categorie')
         ->where('type_categorie_id', '!=', $suprizCategorie->id ?? 0)
+        ->orderBy('id')
         ->paginate(5, ['*'], 'autres_page');
 
     // Pour compatibilité avec l'ancien code
-    $sousCategories = SousCategorie::with('categorie')->paginate(5);
+    $sousCategories = SousCategorie::with('categorie')->orderBy('id')->paginate(5);
 
     // Récupérer les catégories Supriz prédéfinies
     $categoriesSuprizPredefinies = ['Anniversaire', 'Mariage', 'Vœux', 'Nouvel an', 'Noël'];

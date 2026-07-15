@@ -22,7 +22,7 @@ class PruneOldNotifications extends Command
      *
      * @var string
      */
-    protected $description = 'Supprime les notifications ADMIN (dashboard, globales) de plus de N jours (7 par défaut)';
+    protected $description = 'Supprime les notifications (dashboard ET personnelles) de plus de N jours (7 par défaut)';
 
     /**
      * Execute the console command.
@@ -36,11 +36,9 @@ class PruneOldNotifications extends Command
 
         $cutoff = now()->subDays($days);
 
-        // Uniquement les notifications ADMIN (envoyées depuis le dashboard) :
-        // elles sont globales (user_id null). Les notifs personnelles/anniversaire
-        // (user_id renseigné) sont préservées.
-        $ids = Notification::whereNull('user_id')
-            ->where('created_at', '<', $cutoff)
+        // Toutes les notifications de plus de N jours : globales (dashboard,
+        // user_id null) comme personnelles (anniversaire…, user_id renseigné).
+        $ids = Notification::where('created_at', '<', $cutoff)
             ->pluck('id');
 
         if ($ids->isEmpty()) {
