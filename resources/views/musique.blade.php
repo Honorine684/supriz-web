@@ -288,10 +288,10 @@
                     @endforeach
                 </div>
 
-                <!-- Pagination pour cette catégorie -->
+                <!-- Pagination pour cette catégorie (appends : conserve la page des autres catégories) -->
                 @if($musiques->hasPages())
                 <div class="mb-8 px-4">
-                    {{ $musiques->links() }}
+                    {{ $musiques->appends(request()->except('page_' . $categorieId))->links() }}
                 </div>
                 @else
                 <div class="mb-8"></div>

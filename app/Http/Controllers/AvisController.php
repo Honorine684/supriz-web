@@ -37,7 +37,9 @@ class AvisController extends Controller
      */
     public function index()
     {
-        $avis = Avis::orderBy('created_at', 'desc')->paginate(20);
+        $avis = Avis::orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc') // départage les créations simultanées (ordre stable entre pages)
+            ->paginate(20);
         $active_link = 'avis';
         return view('admin.avis.index', compact('avis', 'active_link'));
     }
