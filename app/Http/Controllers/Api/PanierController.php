@@ -45,11 +45,72 @@ class PanierController extends Controller
                 return $carry;
             }
             $prixUnitaire = $produit->prix_promo ?: $produit->price;
-            $livraison = $produit->prix_livraison ?? 0;
-            return $carry + ($prixUnitaire * $achat->qte_achat) + $livraison;
+            return $carry + ($prixUnitaire * $achat->qte_achat);
         }, 0);
 
+        return (int) round($total) + $this->computeDeliveryFee($commande);
+    }
+
+    /**
+     * Frais de livraison de la commande, basés sur la distance marchand →
+     * adresse de livraison (une course par marchand, estimation Gozem :
+     * 500 FCFA jusqu'à 2 km, puis +100 FCFA/km, distance vol d'oiseau × 1,3).
+     * Repli sur les prix_livraison par produit quand les coordonnées du
+     * marchand ou de la livraison sont absentes.
+     * Doit rester aligné avec DeliveryFeeCalculator côté app Flutter.
+     */
+    private function computeDeliveryFee(Commandes $commande): int
+    {
+        $achats = Achat::where('commande_id', $commande->id)->get();
+        $productIds = $achats->pluck('product_id')->unique()->toArray();
+        $products = Product::whereIn('id', $productIds)->with('marchand')->get()->keyBy('id');
+
+        $hasDest = $commande->latitude_livraison !== null
+            && $commande->longitude_livraison !== null;
+
+        $total = 0;
+        $marchandsFactures = [];
+        foreach ($achats as $achat) {
+            $produit = $products->get($achat->product_id);
+            if (!$produit) {
+                continue;
+            }
+            $marchand = $produit->marchand;
+            if ($hasDest && $marchand
+                && $marchand->latitude !== null && $marchand->longitude !== null) {
+                if (isset($marchandsFactures[$marchand->id])) {
+                    continue; // une seule course par marchand
+                }
+                $marchandsFactures[$marchand->id] = true;
+                $total += $this->distanceDeliveryFee(
+                    (float) $marchand->latitude,
+                    (float) $marchand->longitude,
+                    (float) $commande->latitude_livraison,
+                    (float) $commande->longitude_livraison,
+                );
+            } else {
+                $total += $produit->prix_livraison ?? 0;
+            }
+        }
+
         return (int) round($total);
+    }
+
+    /**
+     * Tarif d'une course : Haversine × 1,3 ; 500 FCFA ≤ 2 km, puis +100 FCFA/km.
+     */
+    private function distanceDeliveryFee(float $lat1, float $lng1, float $lat2, float $lng2): int
+    {
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLng = deg2rad($lng2 - $lng1);
+        $a = sin($dLat / 2) ** 2
+            + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+        $km = 6371 * 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $routeKm = $km * 1.3;
+        if ($routeKm <= 2) {
+            return 500;
+        }
+        return (int) round(500 + ($routeKm - 2) * 100);
     }
 
     /**
@@ -656,7 +717,7 @@ public function closePaiement(Request $request)
         $productIds = $achats->pluck('product_id')->unique()->toArray();
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        $sommeLivraison = 0;
+        $sommeLivraison = $this->computeDeliveryFee($commande);
         $totalProduits = 0;
         $nomsProduits = [];
 
@@ -669,7 +730,6 @@ public function closePaiement(Request $request)
                 $achat->save();
 
                 $totalProduits += $prixUnitaire * $achat->qte_achat;
-                $sommeLivraison += $product->prix_livraison ?? 0;
                 $nomsProduits[] = $product->title;
             }
         }
@@ -780,15 +840,7 @@ public function successPage(Request $request)
      */
     private function calculateDeliveryFee(Commandes $commande)
     {
-        // Calculer le prix total de la livraison
-        $total_prix_livraison = Achat::where('commande_id', $commande->id)
-                        ->get()
-                        ->reduce(function ($carry, $achat) {
-                            $produit = Product::find($achat->product_id);
-                            return $carry + ($produit ? $produit->prix_livraison : 0);
-                        }, 0);
-
-        return $total_prix_livraison;
+        return $this->computeDeliveryFee($commande);
     }
 
     /**
