@@ -115,7 +115,7 @@
 
             <div class="flex w-full overflow-x-auto">
                 @foreach ($publicite as $item)
-                    <div class="grid p-3 mr-3 rounded-20 bg-gray-primary2">
+                    <div class="grid p-3 mr-3 rounded-20 bg-gray-primary2 js-recherche-item">
                         <div class="relative img-pub image-publicite">
                             <form action="{{ route('admin.publicite.destroy', $item->id) }}" method="POST" class="absolute right-0 float-right cursor-pointer text-end ">
                                 @csrf
@@ -193,6 +193,7 @@
     <script src="{{ asset('js/imagefile.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

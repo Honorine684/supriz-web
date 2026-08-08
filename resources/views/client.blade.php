@@ -118,6 +118,7 @@ document.getElementById('search-client').addEventListener('input', function () {
     <script src="js/script.js"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

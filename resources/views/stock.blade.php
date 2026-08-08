@@ -31,11 +31,13 @@
                 <div class="flex items-center flex-wrap gap-2">
                     <img class="mr-3" src="{{ asset('/images/svg/menu-alt_svgrepo.com.svg') }}" alt="">
 
-                    <div class="flex relative">
-                        <input type="text" class="pr-10 rounded-20 w-full max-w-[200px]" placeholder="Recherche">
+                    {{-- Entrée = recherche serveur sur tout le catalogue (?q=) ;
+                         la frappe filtre aussi la page affichée (partials.recherche-liste). --}}
+                    <form method="GET" action="{{ route('admin.stocks') }}" class="flex relative">
+                        <input type="text" name="q" value="{{ request('q') }}" id="recherche-produit" class="pr-10 rounded-20 w-full max-w-[200px]" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon"
                             src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
-                    </div>
+                    </form>
                 </div>
             </div>
 
@@ -74,7 +76,7 @@
 
         <div
             class="p-3 overflow-x-auto bg-white border border-gray-100 shadow-md rounded-20 shadow-black/5 lg:col-span-2">
-            <table class="w-full min-w-[720px]">
+            <table class="w-full min-w-[720px]" id="table-produits">
 
                 <tbody>
 
@@ -137,6 +139,7 @@
             </table>
         </div>
 
+        {{ $produits->onEachSide(1)->links('partials.pagination') }}
 
         </div>
     </main>
@@ -171,6 +174,7 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

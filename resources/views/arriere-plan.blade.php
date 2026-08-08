@@ -230,7 +230,7 @@
                 <div class="mb-8 overflow-x-auto pb-4" style="scrollbar-width: thin;">
                     <div class="flex gap-4" style="min-width: max-content;">
                         @foreach($arrierePlans as $arrierePlan)
-                            <div class="bg-card flex-shrink-0" style="width: 160px;">
+                            <div class="bg-card flex-shrink-0 js-recherche-item" style="width: 160px;">
                                 <!-- Image preview -->
                                 <div class="mb-3">
                                     @if($arrierePlan->image)
@@ -362,6 +362,7 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

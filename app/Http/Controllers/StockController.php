@@ -9,7 +9,7 @@ use App\Models\Product;
 class StockController extends Controller
 {
     //
-    public function stocks()
+    public function stocks(Request $request)
 {
     $achats = 0;
     $montantEncaisse = 0; // Initialisation de la variable
@@ -23,9 +23,20 @@ class StockController extends Controller
         $montantEncaisse += ($commande->prix_total_commande);
     }
 
-    // Nombre de produits
-    $produits = Product::latest()->get();
-    $nbrproduits = $produits->count();
+    // Nombre total de produits (tout le catalogue, pas seulement la page)
+    $nbrproduits = Product::count();
+
+    // Liste paginée, avec recherche serveur (?q=) sur le nom et le marchand
+    $recherche = trim((string) $request->query('q', ''));
+    $produits = Product::latest()
+        ->when($recherche !== '', function ($query) use ($recherche) {
+            $query->where(function ($q) use ($recherche) {
+                $q->where('title', 'like', "%{$recherche}%")
+                  ->orWhere('entreprise', 'like', "%{$recherche}%");
+            });
+        })
+        ->paginate(20)
+        ->appends($request->only('q'));
 
     // Variable pour activer le lien dans la vue
     $active_link = 's';

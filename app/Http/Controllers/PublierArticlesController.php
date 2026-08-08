@@ -16,7 +16,7 @@ class PublierArticlesController extends Controller
     public function publierArticles()
     {
         $souscategorie = SousCategorie::All();
-        $produits = Product::latest()->take(7)->get();
+        $produits = Product::latest()->paginate(7)->withQueryString();
         $marchands = Marchand::orderBy('nom')->get();
         $badges = Badge::orderBy('name')->get();
         $active_link = "s";
@@ -159,7 +159,7 @@ public function edit($id)
 
 
     $active_link = "s";
-    $produits = Product::latest()->take(7)->get();
+    $produits = Product::latest()->paginate(7)->withQueryString();
     $marchands = Marchand::orderBy('nom')->get();
     $badges = Badge::orderBy('name')->get();
     return view('article', compact('article','active_link','produits','firstCategory','sousCategories','sousCategoriesNonAssociees','marchands','badges'));
@@ -247,7 +247,7 @@ public function update(Request $request, $id)
         );
 
         $souscategorie = SousCategorie::All();
-        $produits = Product::latest()->take(7)->get();
+        $produits = Product::latest()->paginate(7)->withQueryString();
         $active_link = "s";
         // Rediriger avec un message de succès
         return redirect()->route('admin.publierArticles')  // Remplacez 'article.index' par le nom de votre route de redirection

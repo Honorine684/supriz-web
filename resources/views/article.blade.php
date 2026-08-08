@@ -521,7 +521,7 @@
             </form>
 
             {{-- Récentes publications --}}
-            <h3 class="mt-8 mb-3 font-semibold text-gray-700">Publications récentes</h3>
+            <h3 id="publications" class="mt-8 mb-3 font-semibold text-gray-700">Publications récentes</h3>
             <div class="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
                 @if($produits->isEmpty())
                     <p class="p-6 text-center text-gray-400">Aucune publication.</p>
@@ -587,6 +587,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
+                <div class="px-4 pb-4">
+                    {{ $produits->onEachSide(1)->fragment('publications')->links('partials.pagination') }}
                 </div>
                 @endif
             </div>

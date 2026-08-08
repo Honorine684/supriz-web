@@ -222,7 +222,7 @@
                 <!-- Musiques de cette catégorie -->
                 <div class="mb-4">
                     @foreach($musiques as $musique)
-                        <div class="music-card">
+                        <div class="music-card js-recherche-item">
                             <div class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center flex-wrap">
                                 <!-- Audio Player -->
                                 <div class="flex items-center flex-1 min-w-0 w-full md:w-auto">
@@ -417,6 +417,7 @@
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="{{ asset('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

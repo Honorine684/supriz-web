@@ -101,7 +101,7 @@
     $linkShownMarchands = [];
 @endphp
 
-<div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-4">
+<div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-4 js-recherche-item">
     {{-- Header --}}
     <div class="px-5 py-4 border-b border-gray-100 flex items-center justify-between gap-3 flex-wrap">
         <div class="flex items-center gap-3">

@@ -53,7 +53,7 @@
             @foreach ($notifs as $notif)
                 @if ($notif->titre && !$notif->user_id)
                     {{-- Notification admin : à droite, en bleu --}}
-                    <div class="flex mt-4 justify-end">
+                    <div class="flex mt-4 justify-end js-recherche-item">
                         <div class="p-3 font-light rounded-20" style="background-color: #005792; color: white; max-width: 85%;">
                             <p class="font-semibold">{{ $notif->titre }}</p>
                             <p>{{ $notif->contenus }}</p>
@@ -69,7 +69,7 @@
                     </div>
                 @else
                     {{-- Notification de réaction/vue : à gauche --}}
-                    <div class="flex mt-4">
+                    <div class="flex mt-4 js-recherche-item">
                         <div class="profil-photo top-4 mr-2" style="width: 40px; height: 40px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             <span style="font-size: 18px;">{{ preg_match('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}]/u', $notif->contenus, $matches) ? $matches[0] : '👤' }}</span>
                         </div>
@@ -163,6 +163,7 @@
     <script src="js/script.js"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

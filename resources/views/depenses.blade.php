@@ -186,6 +186,7 @@
     <script src="{{ asset('js/imagefile.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

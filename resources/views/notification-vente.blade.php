@@ -220,6 +220,7 @@
     <script src="{{ asset('js/showblock.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 
+    @include('partials.recherche-liste')
 </body>
 
 </html>

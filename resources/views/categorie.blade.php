@@ -962,6 +962,7 @@
         // Vérifier lors du changement de sélection
         categorieSelect.addEventListener('change', togglePlaceholderField);
     </script>
+    @include('partials.recherche-liste')
 </body>
 
 </html>
