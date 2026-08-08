@@ -13,10 +13,20 @@ use Illuminate\Support\Facades\Storage;
 class PublierArticlesController extends Controller
 {
     //
-    public function publierArticles()
+    public function publierArticles(Request $request)
     {
         $souscategorie = SousCategorie::All();
-        $produits = Product::latest()->paginate(7)->withQueryString();
+
+        // Recherche serveur (?q=) sur le nom du produit et le marchand
+        $recherche = trim((string) $request->query('q', ''));
+        $produits = Product::latest()
+            ->when($recherche !== '', function ($query) use ($recherche) {
+                $query->where(function ($q) use ($recherche) {
+                    $q->where('title', 'like', "%{$recherche}%")
+                      ->orWhere('entreprise', 'like', "%{$recherche}%");
+                });
+            })
+            ->paginate(7)->withQueryString();
         $marchands = Marchand::orderBy('nom')->get();
         $badges = Badge::orderBy('name')->get();
         $active_link = "s";

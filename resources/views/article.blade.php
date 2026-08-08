@@ -521,7 +521,17 @@
             </form>
 
             {{-- Récentes publications --}}
-            <h3 id="publications" class="mt-8 mb-3 font-semibold text-gray-700">Publications récentes</h3>
+            <div id="publications" class="mt-8 mb-3 flex items-center justify-between gap-3 flex-wrap">
+                <h3 class="font-semibold text-gray-700">Publications récentes</h3>
+                {{-- Entrée = recherche serveur sur tout le catalogue (nom ou marchand) --}}
+                <form method="GET" action="{{ route('admin.publierArticles') }}#publications" class="flex relative">
+                    <input type="text" name="q" value="{{ request('q') }}"
+                        class="pr-10 rounded-20 w-full max-w-[220px] border border-gray-200"
+                        placeholder="Recherche">
+                    <img class="absolute cursor-pointer search_icon"
+                        src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
+                </form>
+            </div>
             <div class="bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
                 @if($produits->isEmpty())
                     <p class="p-6 text-center text-gray-400">Aucune publication.</p>
@@ -757,6 +767,7 @@
     </script>
 
     <script src="https://unpkg.com/@popperjs/core@2"></script>
+    @include('partials.recherche-liste')
 </body>
 
 </html>
