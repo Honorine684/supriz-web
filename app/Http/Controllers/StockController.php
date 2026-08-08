@@ -35,7 +35,7 @@ class StockController extends Controller
                   ->orWhere('entreprise', 'like', "%{$recherche}%");
             });
         })
-        ->paginate(20)
+        ->paginate(10)
         ->appends($request->only('q'));
 
     // Variable pour activer le lien dans la vue

@@ -83,6 +83,10 @@
                     <!-- Continue this pattern for the rest of the rows -->
                     @foreach ($produits as $item)
                         <tr>
+                            <td class="px-4 py-2 border-b border-b-gray-50">
+                                <img class="w-12 h-12 rounded object-cover"
+                                     src="{{ asset('storage/' . $item->photo_main) }}" alt="">
+                            </td>
                             <td class="px-4 py-2 border-b w-60 border-b-gray-50">
                                 <span class="text-[13px] font-medium text-gray-400">
                                     {{ $item->title }}
