@@ -82,7 +82,11 @@
     }
 
     function init() {
-        const inputs = document.querySelectorAll('input[data-admin-search], input[placeholder="Recherche"]');
+        // On EXCLUT les champs des listes paginées (data-recherche-serveur) :
+        // sur ces pages la recherche se fait côté serveur sur TOUT le catalogue.
+        // Un filtre client ne verrait que la page affichée et viderait le
+        // tableau dès qu'on cherche un produit d'une autre page.
+        const inputs = document.querySelectorAll('input[data-admin-search]:not([data-recherche-serveur]), input[placeholder="Recherche"]:not([data-recherche-serveur])');
         inputs.forEach((input) => {
             input.setAttribute('data-admin-search', '');
             let timer = null;
