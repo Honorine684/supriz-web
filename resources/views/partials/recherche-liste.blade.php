@@ -32,5 +32,26 @@
                 });
             });
         });
+
+        // Recherche SERVEUR (listes paginées) : on soumet le formulaire tout
+        // seul après une courte pause de frappe, pour chercher dans TOUT le
+        // catalogue sans que l'utilisateur ait à appuyer sur Entrée.
+        document.querySelectorAll('input[placeholder="Recherche"][data-recherche-serveur]').forEach(function (champ) {
+            // Après le rechargement, on redonne le focus et on place le curseur
+            // en fin de texte pour pouvoir continuer à taper sans cliquer.
+            if (champ.value) {
+                champ.focus();
+                var v = champ.value;
+                champ.value = '';
+                champ.value = v;
+            }
+            var minuteur = null;
+            champ.addEventListener('input', function () {
+                if (minuteur) clearTimeout(minuteur);
+                minuteur = setTimeout(function () {
+                    if (champ.form) champ.form.submit();
+                }, 450);
+            });
+        });
     })();
 </script>
