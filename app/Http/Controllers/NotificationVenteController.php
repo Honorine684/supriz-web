@@ -20,6 +20,33 @@ class NotificationVenteController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->get();
 
+    // Auto-nettoyage : un panier « en cours » dont le marchand a été supprimé
+    // (ou dont tous les produits ont été supprimés) ne pourra jamais être
+    // finalisé. Il encombre l'admin et reste coincé dans le panier du client.
+    // On le purge ici. Un panier est vivant s'il a au moins une ligne dont le
+    // produit existe encore ET dont le marchand existe encore (relation null
+    // si le marchand est en soft-delete).
+    $commandes_mortes = $commandes_encours->filter(function ($commande) {
+        if ($commande->achats->isEmpty()) {
+            return false; // laissé aux autres nettoyages (panier fraîchement créé)
+        }
+        $vivante = $commande->achats->contains(function ($achat) {
+            return $achat->product
+                && !$achat->product->trashed()
+                && $achat->product->marchand;
+        });
+        return !$vivante;
+    });
+
+    if ($commandes_mortes->isNotEmpty()) {
+        $idsMortes = $commandes_mortes->pluck('id');
+        Achat::whereIn('commande_id', $idsMortes)->delete();
+        Commandes::whereIn('id', $idsMortes)->delete();
+        $commandes_encours = $commandes_encours->reject(function ($commande) use ($idsMortes) {
+            return $idsMortes->contains($commande->id);
+        });
+    }
+
     $commandes_entente = Commandes::where('status', 'confirmer')
                         ->with(['achats.product' => function ($query) {
                             $query->withTrashed(); // Inclut les produits qui ont été supprimés

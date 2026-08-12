@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Marchand;
+use App\Models\Product;
+use App\Models\Achat;
+use App\Models\Commandes;
 use Illuminate\Http\Request;
 
 class MarchandController extends Controller
@@ -95,6 +98,33 @@ class MarchandController extends Controller
             return redirect()
                 ->back()
                 ->with('error', 'Impossible de supprimer : ce marchand a des produits associés.');
+        }
+
+        // Purger les paniers EN COURS contenant des produits (même déjà
+        // supprimés) de ce marchand : sinon leurs lignes d'achat deviennent
+        // orphelines — invisibles pour le client, impossibles à finaliser, et
+        // elles encombrent l'admin « Notification ventes ». On ne touche jamais
+        // aux commandes finalisées (historique).
+        $productIds = Product::withTrashed()
+            ->where('marchand_id', $marchand->id)
+            ->pluck('id');
+
+        if ($productIds->isNotEmpty()) {
+            $commandeIds = Achat::whereIn('product_id', $productIds)
+                ->whereHas('commande', function ($q) {
+                    $q->where('status', 'encours');
+                })
+                ->pluck('commande_id')
+                ->unique();
+
+            Achat::whereIn('product_id', $productIds)
+                ->whereIn('commande_id', $commandeIds)
+                ->delete();
+
+            Commandes::whereIn('id', $commandeIds)
+                ->where('status', 'encours')
+                ->doesntHave('achats')
+                ->delete();
         }
 
         $marchand->delete();
