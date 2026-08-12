@@ -525,7 +525,7 @@
                 <h3 class="font-semibold text-gray-700">Publications récentes</h3>
                 {{-- Entrée = recherche serveur sur tout le catalogue (nom ou marchand) --}}
                 <form method="GET" action="{{ route('admin.publierArticles') }}#publications" class="flex relative">
-                    <input type="text" name="q" value="{{ request('q') }}"
+                    <input type="text" name="q" value="{{ request('q') }}" data-recherche-serveur
                         class="pr-10 rounded-20 w-full max-w-[220px] border border-gray-200"
                         placeholder="Recherche">
                     <img class="absolute cursor-pointer search_icon"

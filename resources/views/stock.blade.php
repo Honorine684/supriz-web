@@ -34,7 +34,7 @@
                     {{-- Entrée = recherche serveur sur tout le catalogue (?q=) ;
                          la frappe filtre aussi la page affichée (partials.recherche-liste). --}}
                     <form method="GET" action="{{ route('admin.stocks') }}" class="flex relative">
-                        <input type="text" name="q" value="{{ request('q') }}" id="recherche-produit" class="pr-10 rounded-20 w-full max-w-[200px]" placeholder="Recherche">
+                        <input type="text" name="q" value="{{ request('q') }}" id="recherche-produit" data-recherche-serveur class="pr-10 rounded-20 w-full max-w-[200px]" placeholder="Recherche">
                         <img class="absolute cursor-pointer search_icon"
                             src="{{ asset('/images/svg/search-alt-1_svgrepo.com.svg') }}" alt="">
                     </form>
