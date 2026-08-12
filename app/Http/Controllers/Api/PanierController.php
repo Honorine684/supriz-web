@@ -545,10 +545,37 @@ public function updateBeneficiere(Request $request)
             return response()->json([]);
         }
 
-        $achat = Achat::where('commande_id',$commande->id);
         // Récupérer tous les achats de l'utilisateur authentifié
-        $achats = $achat->with('product.marchand')
+        $achats = Achat::where('commande_id', $commande->id)
+                       ->with('product.marchand')
                        ->get();
+
+        // Auto-nettoyage des lignes orphelines : un produit (ou son marchand)
+        // a pu être supprimé côté admin alors qu'il était encore dans un
+        // panier. La ligne d'achat pointe alors dans le vide — invisible dans
+        // l'app, mais elle fait planter l'affichage (product null) et bloque
+        // l'ajout d'autres produits ("panier déjà rempli"). On la purge ici.
+        $orphelins = $achats->filter(function ($achat) {
+            return $achat->product === null || $achat->product->marchand === null;
+        });
+
+        if ($orphelins->isNotEmpty()) {
+            Achat::whereIn('id', $orphelins->pluck('id'))->delete();
+            $orphelinIds = $orphelins->pluck('id')->all();
+            $achats = $achats->reject(function ($achat) use ($orphelinIds) {
+                return in_array($achat->id, $orphelinIds, true);
+            });
+
+            // Panier désormais vide : on supprime la commande en cours pour
+            // que l'app reparte d'un panier propre.
+            if ($achats->isEmpty()) {
+                $commande->delete();
+                Log::info("Panier auto-nettoyé (orphelins) pour l'utilisateur ID {$userId} : commande {$commande->id} vidée et supprimée.");
+                return response()->json([]);
+            }
+
+            Log::info("Panier auto-nettoyé (orphelins) pour l'utilisateur ID {$userId} : " . count($orphelinIds) . " ligne(s) supprimée(s).");
+        }
 
         // Mapper les achats dans le format requis pour cartItems
         $cartItems = $achats->map(function ($achat) {

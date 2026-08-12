@@ -71,6 +71,27 @@ public function destroyProduit($id)
 
     // Vérifie si l'élément existe
     if ($produit) {
+        // Nettoyer les paniers EN COURS qui contiennent ce produit, sinon la
+        // ligne d'achat devient orpheline (invisible dans l'app mais bloque
+        // l'ajout d'autres produits et fait planter l'affichage du panier).
+        // On ne touche jamais aux commandes finalisées (historique).
+        $commandeIds = Achat::where('product_id', $produit->id)
+            ->whereHas('commande', function ($q) {
+                $q->where('status', 'encours');
+            })
+            ->pluck('commande_id')
+            ->unique();
+
+        Achat::where('product_id', $produit->id)
+            ->whereIn('commande_id', $commandeIds)
+            ->delete();
+
+        // Supprimer les paniers en cours devenus vides.
+        Commandes::whereIn('id', $commandeIds)
+            ->where('status', 'encours')
+            ->doesntHave('achats')
+            ->delete();
+
         $produit->delete();  // Supprime l'élément
         return redirect()->back()->with('success', 'Produit supprimé avec succès.');
     } else {
