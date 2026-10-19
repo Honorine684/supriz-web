@@ -57,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/historiques', [ApiHistoriqueController::class, 'index'])->name('historiques.index');
 
     Route::post('/create-transaction', [PanierController::class, 'createTransaction']);
+    Route::get('/transaction-status', [PanierController::class, 'transactionStatus']);
 
     // Routes Messages (authentifiées)
     Route::get('/messages', [ApiMessageController::class, 'index']);

@@ -351,6 +351,8 @@
             const lngInput = document.getElementById('longitude');
             const searchInput = document.getElementById('map-search');
             const resultsList = document.getElementById('map-results');
+            const adresseInput = document.querySelector('input[name="adresse"]');
+            const villeInput = document.querySelector('input[name="ville"]');
 
             const initialLat = parseFloat(latInput.value);
             const initialLng = parseFloat(lngInput.value);
@@ -436,7 +438,7 @@
                             li.addEventListener('click', function () {
                                 placesService.getDetails({
                                     placeId: pred.place_id,
-                                    fields: ['geometry', 'formatted_address'],
+                                    fields: ['geometry', 'formatted_address', 'address_components'],
                                     sessionToken: sessionToken,
                                 }, function (place, st) {
                                     if (st === google.maps.places.PlacesServiceStatus.OK && place.geometry) {
@@ -446,6 +448,21 @@
                                         map.setZoom(17);
                                         setMarker(lat, lng);
                                         searchInput.value = place.formatted_address || pred.description;
+
+                                        // Remplit le champ « Adresse » (localisation du
+                                        // marchand) pour que l'app n'affiche plus le nom à la
+                                        // place du point de retrait.
+                                        if (adresseInput && place.formatted_address) {
+                                            adresseInput.value = place.formatted_address;
+                                        }
+                                        // Extrait la ville depuis les composants d'adresse.
+                                        if (villeInput && place.address_components) {
+                                            const city = place.address_components.find(function (c) {
+                                                return c.types.indexOf('locality') !== -1
+                                                    || c.types.indexOf('administrative_area_level_2') !== -1;
+                                            });
+                                            if (city) villeInput.value = city.long_name;
+                                        }
                                     }
                                     hideResults();
                                 });

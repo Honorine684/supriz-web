@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Achat;
@@ -632,9 +633,8 @@ public function createTransaction(Request $request)
         'name' => 'required|string',
         'email' => 'required|email',
         'phone_number' => 'required|string',
-        'phone_number_country' => 'required|string',
+        'operator' => 'required|string|in:mtn,moov,celtiis',
     ]);
-
 
     // Vérifier que l'utilisateur est authentifié
     if (!Auth::check()) {
@@ -667,12 +667,18 @@ public function createTransaction(Request $request)
         return response()->json(['error' => "Le montant de la commande est invalide."], 422);
     }
 
+    // Opérateur → mode FedaPay (Bénin). Le push USSD se fait via HTTP brut car
+    // le SDK 0.4.2 ne connaît pas le mode « sbin » (Celtiis).
+    $mode = $this->operatorMode($request->operator);
+    $phone = $this->normalizeBeninPhoneForFedaPay($request->phone_number);
+
     // Log des variables reçues (jamais le montant client).
     Log::info('Données reçues pour la transaction:', [
         'user_id' => $userId,
         'commande_id' => $commande->id,
         'amount_serveur' => $amount,
-        'phone_number_country' => $request->phone_number_country,
+        'operator' => $request->operator,
+        'mode' => $mode,
     ]);
 
     // Configurer FedaPay depuis la config (.env).
@@ -684,29 +690,41 @@ public function createTransaction(Request $request)
             "description" => "Transaction for {$request->email}",
             "amount" => $amount,
             "currency" => ["iso" => "XOF"],
-            // Ajout de l'ID utilisateur dans l'URL de callback
-            "callback_url" => secure_url(route('payment.callback', ['user_id' => auth()->user()->id])),
+            // Ajout de l'ID utilisateur dans l'URL de callback (webhook serveur).
+            "callback_url" => secure_url(route('payment.callback', ['user_id' => $userId])),
             "customer" => [
                 "firstname" => $request->name,
                 "lastname" => $request->name,
                 "email" => $request->email,
                 "phone_number" => [
-                    "number" => $request->phone_number,
-                    "country" => $request->phone_number_country,
+                    "number" => $phone,
+                    "country" => "BJ",
                 ]
             ]
         ]);
 
-        // Mémoriser l'id de transaction pour vérifier le paiement au callback.
+        // Mémoriser l'id de transaction pour vérifier le paiement (polling/callback).
         $commande->fedapay_transaction_id = $transaction->id;
         $commande->save();
 
-        // Log de la transaction réussie
-        Log::info('Transaction créée avec succès', [
+        // Générer le token (2e appel obligatoire avant le push USSD).
+        $token = $transaction->generateToken()->token;
+
+        // Push USSD direct sur le téléphone du client.
+        $status = $this->pushUssd($mode, $token, $phone);
+
+        Log::info('Push USSD envoyé', [
             'transaction_id' => $transaction->id,
+            'operator' => $request->operator,
+            'mode' => $mode,
+            'status' => $status,
         ]);
 
-        return response()->json(['transaction_url' => $transaction->generateToken(),'code'=>$commande->code_commandes]);
+        return response()->json([
+            'status' => $status,
+            'transaction_id' => $transaction->id,
+            'code' => $commande->code_commandes,
+        ]);
     } catch (\FedaPay\Error\ApiConnection $e) {
         Log::error('Erreur de connexion à l\'API FedaPay:', ['message' => $e->getMessage()]);
         return response()->json(['error' => 'Erreur de connexion à l\'API : ' . $e->getMessage()], 500);
@@ -739,60 +757,7 @@ public function closePaiement(Request $request)
     $paid = false;
     if ($commande && $commande->fedapay_transaction_id && $this->verifyFedaPayPayment($commande)) {
         $paid = true;
-        // Récupérer les achats associés à la commande
-        $achats = Achat::where('commande_id', $commande->id)->get();
-        $productIds = $achats->pluck('product_id')->unique()->toArray();
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
-
-        $sommeLivraison = $this->computeDeliveryFee($commande);
-        $totalProduits = 0;
-        $nomsProduits = [];
-
-        foreach ($achats as $achat) {
-            $product = $products->get($achat->product_id);
-
-            if ($product) {
-                $prixUnitaire = $product->prix_promo ? $product->prix_promo : $product->price;
-                $achat->price = $prixUnitaire;
-                $achat->save();
-
-                $totalProduits += $prixUnitaire * $achat->qte_achat;
-                $nomsProduits[] = $product->title;
-            }
-        }
-
-        // Calculer les totaux de la commande
-        $commande->prix_total_commande = $totalProduits;
-        $commande->prix_total_livraison = $sommeLivraison;
-        $commande->status = 'confirmer'; // Mettre à jour le statut de la commande
-        $commande->save();
-
-        $descriptionProduits = implode(', ', $nomsProduits);
-
-        // Créer un enregistrement d'historique
-        Historique::create([
-            'id_commande' => $commande->id,
-            'users_id' => $userId,
-            'description' => 'Commande supriz : ' . $descriptionProduits,
-            'type' => 'simple',
-            'prix' => $commande->prix_total_commande,
-            'code_historiques' => $commande->code_commandes,
-        ]);
-
-        // Push FCM au client
-        $user = User::find($userId);
-        if ($user && $user->fcm_token) {
-            $this->firebaseService->sendNotification(
-                $user->fcm_token,
-                'Commande confirmée',
-                'Votre commande #' . $commande->code_commandes . ' a été confirmée. Total : ' . ($commande->prix_total_commande + $commande->prix_total_livraison) . ' FCFA.',
-                [
-                    'type' => 'order_confirmed',
-                    'commande_id' => (string) $commande->id,
-                    'code_commande' => (string) $commande->code_commandes,
-                ]
-            );
-        }
+        $this->confirmOrder($commande, $userId);
     }
 
     // Rediriger en indiquant le VRAI résultat du paiement (jamais "success"
@@ -845,6 +810,207 @@ private function verifyFedaPayPayment(Commandes $commande): bool
         return false;
     }
 }
+
+    /**
+     * Confirme une commande (statut + historique + FCM). Idempotent : n'agit
+     * que si la commande est encore « encours ». Partagé par le callback
+     * (flux hébergé) et le polling USSD (transactionStatus).
+     */
+    private function confirmOrder(Commandes $commande, $userId): void
+    {
+        if ($commande->status !== 'encours') {
+            return;
+        }
+
+        $achats = Achat::where('commande_id', $commande->id)->get();
+        $productIds = $achats->pluck('product_id')->unique()->toArray();
+        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+
+        $sommeLivraison = $this->computeDeliveryFee($commande);
+        $totalProduits = 0;
+        $nomsProduits = [];
+
+        foreach ($achats as $achat) {
+            $product = $products->get($achat->product_id);
+
+            if ($product) {
+                $prixUnitaire = $product->prix_promo ? $product->prix_promo : $product->price;
+                $achat->price = $prixUnitaire;
+                $achat->save();
+
+                $totalProduits += $prixUnitaire * $achat->qte_achat;
+                $nomsProduits[] = $product->title;
+            }
+        }
+
+        $commande->prix_total_commande = $totalProduits;
+        $commande->prix_total_livraison = $sommeLivraison;
+        $commande->status = 'confirmer';
+        $commande->save();
+
+        $descriptionProduits = implode(', ', $nomsProduits);
+
+        Historique::create([
+            'id_commande' => $commande->id,
+            'users_id' => $userId,
+            'description' => 'Commande supriz : ' . $descriptionProduits,
+            'type' => 'simple',
+            'prix' => $commande->prix_total_commande,
+            'code_historiques' => $commande->code_commandes,
+        ]);
+
+        $user = User::find($userId);
+        if ($user && $user->fcm_token) {
+            $this->firebaseService->sendNotification(
+                $user->fcm_token,
+                'Commande confirmée',
+                'Votre commande #' . $commande->code_commandes . ' a été confirmée. Total : ' . ($commande->prix_total_commande + $commande->prix_total_livraison) . ' FCFA.',
+                [
+                    'type' => 'order_confirmed',
+                    'commande_id' => (string) $commande->id,
+                    'code_commande' => (string) $commande->code_commandes,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Statut du paiement en cours, pollé par l'app pendant le push USSD.
+     * Sur « approved », on confirme la commande (idempotent).
+     */
+    public function transactionStatus(Request $request)
+    {
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $userId = Auth::id();
+        $commande = Commandes::where('users_id', $userId)
+            ->where('status', 'encours')
+            ->first();
+
+        if (!$commande || !$commande->fedapay_transaction_id) {
+            return response()->json(['status' => 'pending']);
+        }
+
+        $this->configureFedaPay();
+
+        try {
+            $transaction = \FedaPay\Transaction::retrieve($commande->fedapay_transaction_id);
+            $status = $transaction->status ?? 'pending';
+
+            if ($this->isPaidStatus($status)) {
+                $this->confirmOrder($commande, $userId);
+                return response()->json([
+                    'status' => 'approved',
+                    'code' => $commande->code_commandes,
+                ]);
+            }
+
+            if ($this->isFailedStatus($status)) {
+                return response()->json(['status' => 'declined']);
+            }
+
+            return response()->json(['status' => 'pending']);
+        } catch (\Throwable $e) {
+            Log::error('Erreur statut transaction FedaPay', [
+                'commande_id' => $commande->id,
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json(['status' => 'pending']);
+        }
+    }
+
+    /**
+     * Opérateur client → mode FedaPay (Bénin).
+     */
+    private function operatorMode(string $operator): string
+    {
+        return [
+            'mtn' => 'mtn_open',
+            'moov' => 'moov',
+            'celtiis' => 'sbin',
+        ][$operator] ?? 'moov';
+    }
+
+    /**
+     * URL de base de l'API FedaPay selon l'environnement configuré.
+     */
+    private function fedapayBaseUrl(): string
+    {
+        return config('fedapay.environment', 'sandbox') === 'live'
+            ? 'https://api.fedapay.com/v1'
+            : 'https://sandbox-api.fedapay.com/v1';
+    }
+
+    /**
+     * Numéro Bénin → 8 chiffres sans « 01 » (attendu par FedaPay pour le push).
+     */
+    private function normalizeBeninPhoneForFedaPay(string $phone): string
+    {
+        $d = preg_replace('/\D/', '', $phone);
+        if (str_starts_with($d, '00229')) {
+            $d = substr($d, 5);
+        } elseif (str_starts_with($d, '229')) {
+            $d = substr($d, 3);
+        }
+        if (strlen($d) === 8) {
+            $d = '01' . $d;
+        }
+        return preg_replace('/^01/', '', $d);
+    }
+
+    /**
+     * Push USSD direct (Mobile Money) sur le téléphone du client.
+     * HTTP brut car le SDK 0.4.2 ne connaît pas le mode « sbin » (Celtiis).
+     */
+    private function pushUssd(string $mode, string $token, string $phone): string
+    {
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config('fedapay.secret_key'),
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'User-Agent' => 'supriz/1.0',
+        ])->post($this->fedapayBaseUrl() . '/' . $mode, [
+            'token' => $token,
+            'phone_number' => [
+                'number' => $phone,
+                'country' => 'BJ',
+            ],
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Push USSD FedaPay en échec', [
+                'mode' => $mode,
+                'http_status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return 'failed';
+        }
+
+        $json = $response->json();
+        $intent = $json['v1/payment_intent'] ?? $json['payment_intent'] ?? $json;
+        return (string) ($intent['status'] ?? 'pending');
+    }
+
+    /**
+     * Statuts FedaPay considérés comme payés.
+     */
+    private function isPaidStatus(string $status): bool
+    {
+        return in_array($status, [
+            'approved', 'completed', 'transferred', 'refunded',
+            'approved_partially_refunded', 'transferred_partially_refunded',
+        ], true);
+    }
+
+    /**
+     * Statuts FedaPay considérés comme refusés/échoués.
+     */
+    private function isFailedStatus(string $status): bool
+    {
+        return in_array($status, ['declined', 'failed', 'canceled', 'cancelled'], true);
+    }
 
 public function successPage(Request $request)
 {
