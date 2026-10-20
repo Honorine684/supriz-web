@@ -388,8 +388,35 @@
                 lngInput.value = lng.toFixed(7);
             }
 
+            // Reverse geocoding des coordonnées → pré-remplit Adresse + Ville
+            // (uniquement les champs vides). Utilisé à l'ouverture de « Modifier ».
+            function fillAddressFromCoords(lat, lng) {
+                if (!adresseInput && !villeInput) return;
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ location: { lat: lat, lng: lng } }, function (results, status) {
+                    if (status !== 'OK' || !results || !results.length) return;
+                    const result = results[0];
+                    let formatted = (result.formatted_address || '')
+                        .replace(/^[A-Z0-9]{4,8}\+[A-Z0-9]{2,3},?\s*/, '')
+                        .trim();
+                    if (adresseInput && !adresseInput.value.trim() && formatted) {
+                        adresseInput.value = formatted;
+                    }
+                    if (villeInput && !villeInput.value.trim() && result.address_components) {
+                        const city = result.address_components.find(function (c) {
+                            return c.types.indexOf('locality') !== -1
+                                || c.types.indexOf('administrative_area_level_2') !== -1;
+                        });
+                        if (city) villeInput.value = city.long_name;
+                    }
+                });
+            }
+
             if (hasInitial) {
                 setMarker(initialLat, initialLng);
+                // Auto-remplissage à l'ouverture de « Modifier » : reverse
+                // geocoding des coordonnées existantes.
+                fillAddressFromCoords(initialLat, initialLng);
             }
 
             // Click sur la carte pose / déplace le marqueur
