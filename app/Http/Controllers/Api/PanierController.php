@@ -898,6 +898,7 @@ private function verifyFedaPayPayment(Commandes $commande): bool
         try {
             $transaction = \FedaPay\Transaction::retrieve($commande->fedapay_transaction_id);
             $status = $transaction->status ?? 'pending';
+            $errorCode = $transaction->last_error_code ?? null;
 
             if ($this->isPaidStatus($status)) {
                 $this->confirmOrder($commande, $userId);
@@ -908,7 +909,11 @@ private function verifyFedaPayPayment(Commandes $commande): bool
             }
 
             if ($this->isFailedStatus($status)) {
-                return response()->json(['status' => 'declined']);
+                return response()->json([
+                    'status' => 'declined',
+                    'error_code' => $errorCode,
+                    'message' => $this->fedaPayErrorMessage($errorCode, $status),
+                ]);
             }
 
             return response()->json(['status' => 'pending']);
@@ -919,6 +924,23 @@ private function verifyFedaPayPayment(Commandes $commande): bool
             ]);
             return response()->json(['status' => 'pending']);
         }
+    }
+
+    /**
+     * Message lisible du refus/échec FedaPay, à partir du code d'erreur renvoyé
+     * par l'API (ex. INSUFFICIENT_FUND_ERROR → « solde insuffisant »).
+     */
+    private function fedaPayErrorMessage(?string $errorCode, string $status): string
+    {
+        return match ($errorCode) {
+            'INSUFFICIENT_FUND_ERROR' => 'Solde insuffisant sur votre compte Mobile Money.',
+            'TRANSACTION_CANCELED', 'CANCELED' => 'Paiement annulé.',
+            'INVALID_PHONE_NUMBER', 'PHONE_NUMBER_NOT_FOUND' => 'Numéro Mobile Money invalide.',
+            'INCORRECT_PIN' => 'Code PIN incorrect.',
+            default => $status === 'canceled'
+                ? 'Paiement non confirmé (expiré).'
+                : 'Paiement refusé.',
+        };
     }
 
     /**
