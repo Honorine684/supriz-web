@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Services\SocialAuthService;
 use Illuminate\Validation\Rule;
+use App\Mail\WelcomeEmail;
 
 class UserController extends Controller
 {
@@ -46,6 +47,17 @@ class UserController extends Controller
                 'numero' => $request->numero,
                 'password' => $request->password, // Will be hashed in the model's mutator
             ]);
+
+            // Email de bienvenue (non bloquant : si l'envoi échoue,
+            // l'inscription reste valide).
+            try {
+                Mail::to($user->email)->send(new WelcomeEmail($user->nom));
+            } catch (\Throwable $e) {
+                \Log::error('Email de bienvenue non envoyé', [
+                    'email' => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
 
             return response()->json([
                 'status' => true,

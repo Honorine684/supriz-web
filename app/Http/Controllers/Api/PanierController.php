@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Achat;
@@ -12,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use FedaPay\FedaPay;
 use App\Models\Historique;
+use App\Mail\OrderConfirmation;
+use App\Mail\MerchantOrderNotification;
 class PanierController extends Controller
 {
     protected $firebaseService;
@@ -871,6 +874,39 @@ private function verifyFedaPayPayment(Commandes $commande): bool
                     'code_commande' => (string) $commande->code_commandes,
                 ]
             );
+        }
+
+        // Emails : confirmation au client + notification au marchand.
+        $totalCommande = (int) round($commande->prix_total_commande + $commande->prix_total_livraison);
+
+        if ($user && $user->email) {
+            try {
+                Mail::to($user->email)->send(new OrderConfirmation(
+                    $user->nom,
+                    $commande->code_commandes,
+                    $descriptionProduits,
+                    $totalCommande,
+                ));
+            } catch (\Throwable $e) {
+                Log::error('Email confirmation commande non envoyé', [
+                    'email' => $user->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        try {
+            Mail::to('contact@suprizs.com')->send(new MerchantOrderNotification(
+                $commande->code_commandes,
+                $descriptionProduits,
+                $totalCommande,
+                $user ? ($user->nom ?? 'Client') : 'Client',
+                $user ? ($user->numero ?? '') : '',
+            ));
+        } catch (\Throwable $e) {
+            Log::error('Email notification marchand non envoyé', [
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
