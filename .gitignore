@@ -30,3 +30,11 @@ supriz-*.json
 
 
 
+
+# Outils IA / local
+.claude/
+CLAUDE.local.md
+
+# Archives de déploiement / sauvegardes
+*.tar.gz
+*.zip
