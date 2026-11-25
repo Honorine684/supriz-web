@@ -18,9 +18,9 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('register', [UserController::class, 'createUser']);
-Route::post('login', [UserController::class, 'loginUser']);
-Route::post('social-login', [UserController::class, 'socialLogin']);
+Route::post('register', [UserController::class, 'createUser'])->middleware('throttle:10,1');
+Route::post('login', [UserController::class, 'loginUser'])->middleware('throttle:10,1');
+Route::post('social-login', [UserController::class, 'socialLogin'])->middleware('throttle:10,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [UserController::class, 'logout']); // Ajout de la route de déconnexion
@@ -87,16 +87,16 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::get('paiement/success', [PanierController::class, 'successPage'])->name('paiement.success');
 
 Route::get('/payment-callback', [PanierController::class, 'closePaiement'])->name('payment.callback');
-Route::post('/send-otp', [UserController::class, 'sendOtp']);
+Route::post('/send-otp', [UserController::class, 'sendOtp'])->middleware('throttle:5,1');
 Route::get('/publicites', [PubliciteController::class, 'show']);
 
 // Routes publiques pour les messages
 Route::get('/public/messages/{slug}', [ApiMessageController::class, 'showPublic']);
 Route::post('/public/messages/{slug}/react', [ApiMessageController::class, 'addReaction']);
-Route::post('/send-otp-mdp', [UserController::class, 'sendOtpMdp']);
-Route::post('/verify-otp', [UserController::class, 'verifyOtp']);
-Route::post('/verify-otp-compte', [UserController::class, 'verifyOtpCompte']);
-Route::post('/update-password-mdp', [UserController::class, 'updatePasswordMdp']);
+Route::post('/send-otp-mdp', [UserController::class, 'sendOtpMdp'])->middleware('throttle:5,1');
+Route::post('/verify-otp', [UserController::class, 'verifyOtp'])->middleware('throttle:10,1');
+Route::post('/verify-otp-compte', [UserController::class, 'verifyOtpCompte'])->middleware('throttle:10,1');
+Route::post('/update-password-mdp', [UserController::class, 'updatePasswordMdp'])->middleware('throttle:10,1');
 
 // Endpoint pour cron-job.org (notifications anniversaire)
 Route::get('/cron/birthday-notifications', [CronController::class, 'sendBirthdayNotifications']);

@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
@@ -16,6 +17,55 @@ use App\Mail\WelcomeEmail;
 
 class UserController extends Controller
 {
+    /**
+     * Nombre de chiffres du code OTP. Reste à 4 tant que l'ancienne version
+     * de l'app (saisie limitée à 4 chiffres) est en circulation ; passera à 6
+     * une fois la nouvelle version publiée sur le Play Store.
+     */
+    private const OTP_DIGITS = 4;
+
+    /** Nombre d'essais faux avant invalidation du code OTP. */
+    private const OTP_MAX_ATTEMPTS = 5;
+
+    private function generateOtp(): string
+    {
+        $min = 10 ** (self::OTP_DIGITS - 1);
+        return (string) random_int($min, (10 * $min) - 1);
+    }
+
+    private function otpAttemptsKey(User $user): string
+    {
+        return 'otp_attempts:' . $user->id;
+    }
+
+    /**
+     * Vérifie le code OTP saisi. Après OTP_MAX_ATTEMPTS échecs, le code est
+     * invalidé : l'utilisateur doit en demander un nouveau. Empêche de deviner
+     * le code par essais successifs.
+     */
+    private function checkOtp(User $user, $otp): bool
+    {
+        $key = $this->otpAttemptsKey($user);
+
+        if ($user->otp && is_string($otp) && hash_equals((string) $user->otp, $otp)
+            && $user->otp_expires_at > now()) {
+            Cache::forget($key);
+            return true;
+        }
+
+        $attempts = (int) Cache::get($key, 0) + 1;
+        if ($attempts >= self::OTP_MAX_ATTEMPTS) {
+            $user->otp = null;
+            $user->otp_expires_at = null;
+            $user->save();
+            Cache::forget($key);
+        } else {
+            Cache::put($key, $attempts, now()->addMinutes(15));
+        }
+
+        return false;
+    }
+
     /**
      * Create User
      */
@@ -293,8 +343,9 @@ class UserController extends Controller
     public function sendOtp(Request $request)
     {
         $user = auth()->user();
-        $otp = random_int(1000, 9999); // Générer un code OTP aléatoire
+        $otp = $this->generateOtp();
         $user->otp = $otp;
+        Cache::forget($this->otpAttemptsKey($user));
         $user->otp_expires_at = now()->addMinutes(10); // Définir une expiration de 10 minutes
         $user->save();
 
@@ -330,8 +381,9 @@ class UserController extends Controller
             ], 404);
         }
 
-        $otp = random_int(1000, 9999); // Générer un code OTP aléatoire
+        $otp = $this->generateOtp();
         $user->otp = $otp;
+        Cache::forget($this->otpAttemptsKey($user));
         $user->otp_expires_at = Carbon::now()->addMinutes(10); // Définir une expiration de 10 minutes
         $user->save();
 
@@ -366,7 +418,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        if ($user->otp === $request->input('otp') && $user->otp_expires_at > now()) {
+        if ($this->checkOtp($user, $request->input('otp'))) {
             // Le code OTP est correct et n'a pas expiré
             $user->otp = null;
             $user->otp_expires_at = null;
@@ -403,7 +455,7 @@ class UserController extends Controller
             ], 404);
         }
 
-        if ($user->otp === $request->input('otp') && $user->otp_expires_at > now()) {
+        if ($this->checkOtp($user, $request->input('otp'))) {
             // Le code OTP est correct et n'a pas expiré
             $user->otp = null;
             $user->otp_expires_at = null;
