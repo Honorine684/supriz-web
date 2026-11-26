@@ -19,6 +19,7 @@ class Message extends Model
         'media_type',
         'background_path',
         'images',
+        'image_captions',
         'musique_id',
         'date_expiration',
         'expiration_type',
@@ -33,6 +34,7 @@ class Message extends Model
         'date_expiration' => 'datetime',
         'is_active' => 'boolean',
         'images' => 'array',
+        'image_captions' => 'array',
         'unique_view' => 'boolean',
     ];
 

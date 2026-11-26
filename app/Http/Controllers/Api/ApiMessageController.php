@@ -49,6 +49,7 @@ class ApiMessageController extends Controller
                         'media_url' => $message->media_path ? asset('storage/' . $message->media_path) : null,
                         'background_path' => $message->background_path,
                         'images' => $message->images,
+                        'image_captions' => $message->image_captions,
                         'musique' => $message->musique ? [
                             'id' => $message->musique->id,
                             'titre' => $message->musique->titre,
@@ -91,6 +92,8 @@ class ApiMessageController extends Controller
                 'media' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:10240',
                 'images' => 'nullable|array',
                 'images.*' => 'file|mimes:jpg,jpeg,png,gif|max:10240',
+                'image_captions' => 'nullable|array',
+                'image_captions.*' => 'nullable|string|max:30',
                 'background_path' => 'nullable|string',
                 'musique_id' => 'nullable|exists:musiques,id',
                 'expiration' => 'nullable|string|in:24h,48h,72h,7d,30d',
@@ -110,6 +113,7 @@ class ApiMessageController extends Controller
             $mediaPath = null;
             $mediaType = null;
             $uploadedImages = [];
+            $uploadedCaptions = [];
 
             // Upload du média principal
             if ($request->hasFile('media')) {
@@ -120,9 +124,12 @@ class ApiMessageController extends Controller
 
             // Upload des images multiples
             if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
+                // La légende de chaque photo porte la même clé que la photo (images[i] / image_captions[i])
+                foreach ($request->file('images') as $key => $image) {
                     $path = $image->store('messages/images', 'public');
                     $uploadedImages[] = asset('storage/' . $path);
+                    $caption = trim((string) $request->input('image_captions.' . $key, ''));
+                    $uploadedCaptions[] = $caption !== '' ? $caption : null;
                 }
             }
 
@@ -157,6 +164,7 @@ class ApiMessageController extends Controller
                 'media_type' => $mediaType,
                 'background_path' => $request->background_path,
                 'images' => !empty($uploadedImages) ? $uploadedImages : null,
+                'image_captions' => array_filter($uploadedCaptions) ? $uploadedCaptions : null,
                 'musique_id' => $request->musique_id,
                 'date_expiration' => $dateExpiration,
                 'expiration_type' => $expiration,
@@ -217,6 +225,7 @@ class ApiMessageController extends Controller
                     'media_url' => $message->media_path ? asset('storage/' . $message->media_path) : null,
                     'background_path' => $message->background_path,
                     'images' => $message->images,
+                    'image_captions' => $message->image_captions,
                     'musique' => $message->musique ? [
                         'id' => $message->musique->id,
                         'titre' => $message->musique->titre,
@@ -523,6 +532,7 @@ class ApiMessageController extends Controller
                     'media_url' => $message->media_path ? asset('storage/' . $message->media_path) : null,
                     'background_path' => $message->background_path,
                     'images' => $message->images,
+                    'image_captions' => $message->image_captions,
                     'musique' => $message->musique ? [
                         'titre' => $message->musique->titre,
                         'artiste' => $message->musique->artiste,
