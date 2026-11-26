@@ -21,7 +21,7 @@
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
         * {
@@ -353,85 +353,6 @@
             display: block;
         }
 
-        /* Carousel */
-        .carousel-wrapper {
-            position: relative;
-        }
-
-        .carousel-track {
-            display: flex;
-            transition: transform 0.4s ease;
-        }
-
-        .carousel-slide {
-            flex: 0 0 100%;
-        }
-
-        .carousel-slide img {
-            width: 100%;
-            height: auto;
-            max-height: 600px;
-            object-fit: contain;
-        }
-
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: none;
-            background: white;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .carousel-btn:hover {
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .carousel-btn i {
-            font-size: 20px;
-            color: #005792;
-        }
-
-        .carousel-btn.prev { left: 12px; }
-        .carousel-btn.next { right: 12px; }
-
-        .carousel-bars {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            right: 8px;
-            display: flex;
-            gap: 4px;
-            z-index: 15;
-        }
-
-        .carousel-bar {
-            flex: 1;
-            height: 3px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        .carousel-bar.active {
-            background: rgba(255, 255, 255, 0.95);
-        }
-
-        .carousel-bar.viewed {
-            background: rgba(255, 255, 255, 0.95);
-        }
-
         /* Message body */
         .message-body {
             padding: 25px;
@@ -662,13 +583,6 @@
             .card-title { font-size: 17px; }
 
             .single-image { height: auto; max-height: none; object-fit: contain; }
-            .carousel-slide img { height: auto; max-height: none; object-fit: contain; }
-            .carousel-btn { width: 36px; height: 36px; }
-            .carousel-btn.prev { left: 8px; }
-            .carousel-btn.next { right: 8px; }
-            .carousel-btn i { font-size: 18px; }
-            .carousel-bars { top: 6px; left: 6px; right: 6px; gap: 3px; }
-            .carousel-bar { height: 2px; }
 
             .message-body { padding: 18px 20px; }
             .message-text { font-size: 14px; line-height: 1.7; }
@@ -742,10 +656,6 @@
             .card-title { font-size: 16px; }
 
             .single-image { height: auto; max-height: none; object-fit: contain; }
-            .carousel-slide img { height: auto; max-height: none; object-fit: contain; }
-            .carousel-btn { width: 32px; height: 32px; }
-            .carousel-btn i { font-size: 16px; }
-            .carousel-bars { top: 5px; left: 5px; right: 5px; }
 
             .message-body { padding: 15px 18px; }
             .message-text { font-size: 13px; }
@@ -775,6 +685,212 @@
             .emoji-btn { width: 46px; height: 46px; min-width: 46px; font-size: 24px; }
             .emoji-buttons-wrapper::before,
             .emoji-buttons-wrapper::after { width: 15px; }
+        }
+
+        /* ===== Lot 5 : planche kraft, pile de polaroids, lettre qui se déplie ===== */
+        .message-card {
+            --kraft: #C9A27A;
+            --paper: #FFFDF8;
+            --ink: #2A1D10;
+            --line: #D9E4EE;
+            --hand: 'Caveat', 'Segoe Print', 'Comic Sans MS', cursive;
+            --pw: min(250px, 68vw); /* largeur d'un polaroid */
+            background-color: var(--kraft);
+            background-image:
+                radial-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+                radial-gradient(rgba(90,55,20,.10) 1px, transparent 1px);
+            background-size: 7px 7px, 11px 11px;
+            background-position: 0 0, 3px 5px;
+            overflow: visible;
+            padding-bottom: 22px;
+        }
+
+        .message-card .reactions-section { padding-bottom: 0; }
+
+        .message-card .card-header { border-bottom: 0; text-align: center; }
+        .message-card .card-title { color: var(--ink); font-weight: 800; }
+
+        .polaroid-stack {
+            position: relative;
+            width: var(--pw);
+            height: calc(var(--pw) + 40px + 26px);
+            margin: 4px auto 0;
+        }
+
+        .polaroid-stack[data-count="1"] { height: calc(var(--pw) + 40px + 8px); }
+
+        .polaroid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 10px 0;
+            border: 0;
+            background: var(--paper);
+            box-shadow: 0 10px 22px rgba(60,35,10,.28);
+            display: flex;
+            flex-direction: column;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            transition: transform .45s cubic-bezier(.2,.8,.2,1);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .polaroid-stack[data-count="1"] .polaroid { cursor: default; }
+
+        .polaroid img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            display: block;
+            background: #222;
+        }
+
+        .polaroid-caption {
+            font-family: var(--hand);
+            font-size: 22px;
+            font-weight: 700;
+            color: #2B2B2B;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 4px;
+        }
+
+        .stack-hint {
+            margin: 6px 0 0;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4E3420;
+        }
+
+        .letter-note {
+            margin: 18px 22px 0;
+            background: var(--paper);
+            border-radius: 4px;
+            padding: 14px 16px;
+            box-shadow: 0 6px 16px rgba(60,35,10,.18);
+        }
+
+        .letter-text {
+            margin: 0;
+            font-family: var(--hand);
+            font-size: 23px;
+            line-height: 1.22;
+            color: #2B2B2B;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .letter-note.clamped .letter-text {
+            max-height: 5.1em;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(#000 55%, transparent);
+            mask-image: linear-gradient(#000 55%, transparent);
+        }
+
+        .letter-signature {
+            margin: 6px 0 0;
+            font-family: 'Caveat', 'Segoe Print', 'Comic Sans MS', cursive;
+            font-size: 22px;
+            color: #005792;
+            text-align: right;
+        }
+
+        .letter-note.clamped .letter-signature { display: none; }
+
+        .letter-more {
+            display: block;
+            margin: 14px auto 0;
+            border: 0;
+            background: #005792;
+            color: #fff;
+            font: 700 14px 'Montserrat', sans-serif;
+            padding: 12px 22px;
+            min-height: 44px;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .letter-more:hover { background: #003D66; }
+        .letter-more[hidden] { display: none; }
+
+        .letter-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(42,29,16,.55);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .3s, visibility .3s;
+        }
+
+        .letter-sheet.open { opacity: 1; visibility: visible; }
+
+        .letter-paper {
+            width: 100%;
+            max-width: 550px;
+            max-height: 86vh;
+            overflow-y: auto;
+            background: repeating-linear-gradient(#FFFDF8 0 31px, #D9E4EE 31px 32px);
+            border-radius: 20px 20px 0 0;
+            padding: 22px 22px 28px;
+            transform: translateY(30px);
+            transition: transform .35s;
+        }
+
+        .letter-sheet.open .letter-paper { transform: none; }
+
+        .letter-full {
+            margin: 0;
+            font-family: 'Caveat', 'Segoe Print', 'Comic Sans MS', cursive;
+            font-size: 25px;
+            line-height: 32px;
+            color: #2B2B2B;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .letter-paper .letter-signature { font-size: 24px; line-height: 32px; margin: 0; }
+
+        .letter-close {
+            display: block;
+            margin: 16px auto 0;
+            border: 0;
+            background: #005792;
+            color: #fff;
+            font: 700 14px 'Montserrat', sans-serif;
+            padding: 12px 22px;
+            min-height: 44px;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+
+        .message-card .reactions-section { background: transparent; border-top: 0; }
+        .message-card .reactions-title { color: var(--ink); font-weight: 700; }
+        .message-card .emoji-buttons-wrapper::before { background: linear-gradient(to right, var(--kraft) 0%, transparent 100%); }
+        .message-card .emoji-buttons-wrapper::after { background: linear-gradient(to left, var(--kraft) 0%, transparent 100%); }
+        .message-card .emoji-btn { border-color: transparent; background: rgba(255,253,248,.92); }
+
+        .message-card .video-section { padding: 0 22px; }
+        .message-card .video-section video { width: 100%; max-height: 400px; border-radius: 6px; }
+
+        @media (max-width: 480px) {
+            .letter-note { margin: 16px 14px 0; }
+            .letter-text { font-size: 21px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .polaroid, .letter-sheet, .letter-paper { transition: none; }
         }
 
         /* Fix for iOS Safari */
@@ -870,54 +986,50 @@
                     <h1 class="card-title">{{ $message->titre }}</h1>
                 </div>
 
-                <!-- Images -->
-                @if($message->images && count($message->images) > 0)
-                    <div class="image-section">
-                        @if(count($message->images) == 1)
-                            <img src="{{ $message->images[0] }}" alt="{{ $message->titre }}" class="single-image">
-                        @else
-                            <div class="carousel-wrapper">
-                                <!-- Barres style Stories en haut -->
-                                <div class="carousel-bars">
-                                    @foreach($message->images as $index => $imageUrl)
-                                        <span class="carousel-bar {{ $index == 0 ? 'active' : '' }}" onclick="goToSlide({{ $index }})"></span>
-                                    @endforeach
-                                </div>
-                                <div style="overflow: hidden;">
-                                    <div class="carousel-track" id="carouselTrack">
-                                        @foreach($message->images as $index => $imageUrl)
-                                            <div class="carousel-slide">
-                                                <img src="{{ $imageUrl }}" alt="{{ $message->titre }}">
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <button class="carousel-btn prev" onclick="prevSlide()">
-                                    <i class="ri-arrow-left-s-line"></i>
-                                </button>
-                                <button class="carousel-btn next" onclick="nextSlide()">
-                                    <i class="ri-arrow-right-s-line"></i>
-                                </button>
-                            </div>
-                        @endif
+                <!-- Photos : pile de polaroids (une légende par photo) -->
+                @php
+                    $photos = [];
+                    if ($message->images && count($message->images) > 0) {
+                        $captions = $message->image_captions ?? [];
+                        foreach (array_values($message->images) as $i => $imageUrl) {
+                            $photos[] = ['src' => $imageUrl, 'caption' => $captions[$i] ?? null];
+                        }
+                    } elseif ($message->media_path && $message->media_type === 'image') {
+                        $photos[] = ['src' => asset('storage/' . $message->media_path), 'caption' => null];
+                    }
+                    // Même nom que celui affiché dans l'app (champ « nom » du compte)
+                    $signature = trim($message->user->nom ?? '') ?: null;
+                @endphp
+
+                @if(count($photos) > 0)
+                    <div class="polaroid-stack" id="polaroidStack" data-count="{{ count($photos) }}">
+                        @foreach($photos as $i => $photo)
+                            <button type="button" class="polaroid" aria-label="{{ count($photos) > 1 ? 'Photo ' . ($i + 1) . ' sur ' . count($photos) . ', toucher pour voir la suivante' : 'Photo' }}">
+                                <img src="{{ $photo['src'] }}" alt="{{ $photo['caption'] ?? $message->titre }}" {{ $i > 0 ? 'loading=lazy' : '' }}>
+                                <span class="polaroid-caption">{{ $photo['caption'] }}</span>
+                            </button>
+                        @endforeach
                     </div>
-                @elseif($message->media_path)
-                    <div class="image-section">
-                        @if($message->media_type === 'image')
-                            <img src="{{ asset('storage/' . $message->media_path) }}" alt="{{ $message->titre }}" class="single-image">
-                        @elseif($message->media_type === 'video')
-                            <video controls style="width: 100%; max-height: 400px;">
-                                <source src="{{ asset('storage/' . $message->media_path) }}" type="video/mp4">
-                            </video>
-                        @endif
+                    @if(count($photos) > 1)
+                        <p class="stack-hint" id="stackHint" aria-live="polite">Touche la photo pour voir la suivante · 1 / {{ count($photos) }}</p>
+                    @endif
+                @elseif($message->media_path && $message->media_type === 'video')
+                    <div class="video-section">
+                        <video controls>
+                            <source src="{{ asset('storage/' . $message->media_path) }}" type="video/mp4">
+                        </video>
                     </div>
                 @endif
 
-                <!-- Message text -->
+                <!-- Texte : la lettre qui se déplie si elle est longue -->
                 @if($message->contenu)
-                <div class="message-body">
-                    <p class="message-text">{{ trim($message->contenu) }}</p>
-                </div>
+                    <div class="letter-note clamped" id="letterNote">
+                        <p class="letter-text">{{ trim($message->contenu) }}</p>
+                        @if($signature)
+                            <p class="letter-signature">— {{ $signature }}</p>
+                        @endif
+                    </div>
+                    <button type="button" class="letter-more" id="letterMore" hidden onclick="openLetter()">Lire la lettre</button>
                 @endif
 
                 <!-- Reactions -->
@@ -951,6 +1063,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Lettre complète (feuille qui monte du bas de l'écran) -->
+    @if($message->contenu)
+        <div class="letter-sheet" id="letterSheet" role="dialog" aria-modal="true" aria-label="Lettre complète" onclick="if (event.target === this) closeLetter()">
+            <div class="letter-paper">
+                <p class="letter-full">{{ trim($message->contenu) }}</p>
+                @if($signature)
+                    <p class="letter-signature">— {{ $signature }}</p>
+                @endif
+                <button type="button" class="letter-close" id="letterClose" onclick="closeLetter()">Fermer la lettre</button>
+            </div>
+        </div>
+    @endif
 
     <!-- Audio -->
     @if($message->musique)
@@ -1015,6 +1140,8 @@
             createConfetti();
             document.getElementById('giftContainer').style.display = 'none';
             document.getElementById('messageContent').style.display = 'block';
+            // Le texte n'est mesurable qu'une fois le message affiché
+            checkLetterLength();
 
             @if($message->musique)
             const audio = document.getElementById('backgroundMusic');
@@ -1028,63 +1155,79 @@
         // Auto open after 10s
         setTimeout(openGift, 10000);
 
-        // Carousel
-        let currentSlide = 0;
-        const totalSlides = {{ $message->images ? count($message->images) : 0 }};
-        let autoScrollInterval = null;
+        // Pile de polaroids : un toucher fait passer la photo du dessus en dessous
+        (function () {
+            const stack = document.getElementById('polaroidStack');
+            if (!stack) return;
+            const cards = Array.from(stack.querySelectorAll('.polaroid'));
+            const total = cards.length;
+            const hint = document.getElementById('stackHint');
+            const spots = [
+                'rotate(-2deg)',
+                'translate(12px, 7px) rotate(6deg)',
+                'translate(-14px, 10px) rotate(-8deg)',
+                'translate(7px, 14px) rotate(10deg)',
+                'translate(-6px, 18px) rotate(-4deg)'
+            ];
+            let top = 0;
 
-        function updateCarousel() {
-            const track = document.getElementById('carouselTrack');
-            if (track) {
-                track.style.transform = `translateX(-${currentSlide * 100}%)`;
-                document.querySelectorAll('.carousel-bar').forEach((bar, i) => {
-                    bar.classList.remove('active', 'viewed');
-                    if (i < currentSlide) {
-                        bar.classList.add('viewed');
-                    } else if (i === currentSlide) {
-                        bar.classList.add('active');
-                    }
+            function paint() {
+                cards.forEach((card, i) => {
+                    const pos = (i - top + total) % total;
+                    card.style.transform = spots[Math.min(pos, spots.length - 1)];
+                    card.style.zIndex = String(total - pos);
+                    card.tabIndex = pos === 0 ? 0 : -1;
+                    card.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
                 });
+                if (hint) hint.textContent = 'Touche la photo pour voir la suivante · ' + (top + 1) + ' / ' + total;
             }
+
+            cards.forEach((card) => {
+                card.addEventListener('click', () => {
+                    if (total < 2) return;
+                    top = (top + 1) % total;
+                    paint();
+                    cards[top].focus({ preventScroll: true });
+                });
+            });
+
+            paint();
+        })();
+
+        // Lettre : « Lire la lettre » n'apparaît que si le texte dépasse l'aperçu
+        function checkLetterLength() {
+            const note = document.getElementById('letterNote');
+            const more = document.getElementById('letterMore');
+            if (!note || !more) return;
+            note.classList.add('clamped');
+            const text = note.querySelector('.letter-text');
+            const overflows = text.scrollHeight > text.clientHeight + 2;
+            note.classList.toggle('clamped', overflows);
+            more.hidden = !overflows;
         }
 
-        function nextSlide() {
-            if (totalSlides > 1) {
-                currentSlide = (currentSlide + 1) % totalSlides;
-                updateCarousel();
-                resetAutoScroll();
-            }
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(checkLetterLength);
         }
 
-        function prevSlide() {
-            if (totalSlides > 1) {
-                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-                updateCarousel();
-                resetAutoScroll();
-            }
+        function openLetter() {
+            const sheet = document.getElementById('letterSheet');
+            if (!sheet) return;
+            sheet.classList.add('open');
+            document.getElementById('letterClose').focus();
         }
 
-        function goToSlide(index) {
-            currentSlide = index;
-            updateCarousel();
-            resetAutoScroll();
+        function closeLetter() {
+            const sheet = document.getElementById('letterSheet');
+            if (!sheet || !sheet.classList.contains('open')) return;
+            sheet.classList.remove('open');
+            const more = document.getElementById('letterMore');
+            if (more) more.focus();
         }
 
-        function startAutoScroll() {
-            if (totalSlides > 1) {
-                autoScrollInterval = setInterval(() => {
-                    currentSlide = (currentSlide + 1) % totalSlides;
-                    updateCarousel();
-                }, 3000);
-            }
-        }
-
-        function resetAutoScroll() {
-            clearInterval(autoScrollInterval);
-            setTimeout(startAutoScroll, 2000);
-        }
-
-        if (totalSlides > 1) startAutoScroll();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLetter();
+        });
 
         @if($message->user_id)
         // Reactions
